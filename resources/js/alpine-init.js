@@ -1,11 +1,19 @@
-// Alpine.js initialization for Livewire 3
-// This file initializes Alpine components using Livewire's built-in Alpine instance
+// Alpine.js initialization - Use Livewire's Alpine instance
+// Import plugins only (Alpine comes from Livewire)
+import collapse from '@alpinejs/collapse';
+import focus from '@alpinejs/focus';
+import intersect from '@alpinejs/intersect';
 
-document.addEventListener('alpine:init', () => {
-    // Import Alpine plugins if needed
-    // Note: These should be loaded via CDN or included in your build process
-    // since we're not importing Alpine directly anymore
-    
+// Wait for Livewire to load Alpine, then configure it
+document.addEventListener('livewire:init', () => {
+    // Get Alpine from Livewire
+    const Alpine = window.Alpine;
+
+    // Register plugins
+    Alpine.plugin(collapse);
+    Alpine.plugin(focus);
+    Alpine.plugin(intersect);
+
     // Global Alpine stores
     Alpine.store('sidebar', {
         open: false,

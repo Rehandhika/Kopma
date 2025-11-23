@@ -14,8 +14,8 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-    <!-- Scripts -->
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <!-- Styles -->
+    @vite(['resources/css/app.css'])
     @livewireStyles
 </head>
 <body class="bg-gray-50 font-sans antialiased">
@@ -33,75 +33,83 @@
              x-cloak></div>
 
         <!-- Sidebar -->
-        <div class="fixed inset-y-0 left-0 z-30 w-64 transform transition-transform duration-300 ease-in-out md:translate-x-0"
-             :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'">
-            <div class="flex flex-col h-full bg-white border-r border-gray-200">
+        <aside class="fixed inset-y-0 left-0 z-30 w-64 transform transition-transform duration-300 ease-in-out md:translate-x-0"
+               :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'"
+               role="navigation"
+               aria-label="Main navigation">
+            <div class="flex flex-col h-full bg-white border-r border-gray-200 shadow-sm">
                 <!-- Logo -->
                 <div class="flex items-center justify-between px-4 py-5 border-b border-gray-200">
-                    <div class="flex items-center">
-                        <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center flex-shrink-0">
                             <span class="text-white font-bold text-sm">S</span>
                         </div>
-                        <span class="ml-2 text-xl font-semibold text-gray-900">SIKOPMA</span>
+                        <span class="text-xl font-semibold text-gray-900">SIKOPMA</span>
                     </div>
-                    <button @click="sidebarOpen = false" class="md:hidden text-gray-500 hover:text-gray-700">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                        </svg>
+                    <button @click="sidebarOpen = false" 
+                            type="button"
+                            class="md:hidden text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-500 rounded-lg p-1 transition-colors"
+                            aria-label="Close sidebar">
+                        <x-ui.icon name="x" class="w-6 h-6" />
                     </button>
                 </div>
 
                 <!-- Navigation -->
-                <nav class="flex-1 px-2 py-4 space-y-1 overflow-y-auto">
+                <nav class="flex-1 px-2 py-4 space-y-1 overflow-y-auto" aria-label="Sidebar navigation">
                     @include('components.navigation')
                 </nav>
 
                 <!-- User Menu -->
-                <div class="flex-shrink-0 border-t border-gray-200 p-4">
+                <div class="flex-shrink-0 border-t border-gray-200 p-4 bg-gray-50">
                     @auth
                         <div class="flex items-center w-full">
-                            <div class="flex-shrink-0">
-                                <div class="w-8 h-8 bg-indigo-500 rounded-full flex items-center justify-center">
-                                    <span class="text-white font-bold text-sm">{{ substr(auth()->user()->name, 0, 1) }}</span>
-                                </div>
-                            </div>
+                            <x-ui.avatar 
+                                :name="auth()->user()->name" 
+                                size="sm" 
+                                class="flex-shrink-0"
+                            />
                             <div class="ml-3 flex-1 min-w-0">
                                 <p class="text-sm font-medium text-gray-900 truncate">{{ auth()->user()->name }}</p>
                                 <p class="text-xs text-gray-500 truncate">{{ auth()->user()->nim }}</p>
                             </div>
                             <form method="POST" action="{{ route('logout') }}" class="ml-3">
                                 @csrf
-                                <button type="submit" class="text-gray-400 hover:text-gray-600" title="Logout">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
-                                    </svg>
+                                <button type="submit" 
+                                        class="text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-primary-500 rounded-lg p-1 transition-colors" 
+                                        title="Logout"
+                                        aria-label="Logout">
+                                    <x-ui.icon name="arrow-right-on-rectangle" class="w-5 h-5" />
                                 </button>
                             </form>
                         </div>
                     @else
                         <div class="text-center text-sm text-gray-500">
-                            <p>Belum login.</p>
-                            <a href="{{ route('login') }}" class="text-indigo-600 hover:text-indigo-500">Ke halaman login</a>
+                            <p class="mb-2">Belum login.</p>
+                            <a href="{{ route('login') }}" 
+                               class="text-primary-600 hover:text-primary-700 font-medium transition-colors">
+                                Ke halaman login
+                            </a>
                         </div>
                     @endauth
                 </div>
             </div>
-        </div>
+        </aside>
 
         <!-- Main content -->
-        <div class="flex-1 md:ml-64">
+        <div class="flex-1 md:ml-64 flex flex-col min-h-screen">
             <!-- Top bar for mobile -->
-            <div class="sticky top-0 z-10 bg-white border-b border-gray-200 md:hidden">
+            <header class="sticky top-0 z-10 bg-white border-b border-gray-200 md:hidden shadow-sm">
                 <div class="flex items-center justify-between px-4 py-3">
-                    <button @click="sidebarOpen = true" type="button" class="text-gray-500 hover:text-gray-900">
-                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                        </svg>
+                    <button @click="sidebarOpen = true" 
+                            type="button" 
+                            class="text-gray-500 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary-500 rounded-lg p-1 transition-colors"
+                            aria-label="Open sidebar">
+                        <x-ui.icon name="bars-3" class="h-6 w-6" />
                     </button>
                     <span class="text-lg font-semibold text-gray-900">SIKOPMA</span>
                     <div class="w-6"></div>
                 </div>
-            </div>
+            </header>
 
             <!-- Page Content -->
             <main class="flex-1">
@@ -115,6 +123,7 @@
         </div>
     </div>
 
+    @vite(['resources/js/app.js'])
     @livewireScripts
     
     {{-- Toast Notifications --}}
@@ -137,30 +146,31 @@
     x-transition:leave="transition ease-in duration-200"
     x-transition:leave-start="opacity-100 transform translate-y-0"
     x-transition:leave-end="opacity-0 transform translate-y-2"
-    class="fixed top-4 right-4 z-50 max-w-sm w-full"
-    style="display: none;">
+    class="fixed top-4 right-4 z-50 max-w-sm w-full pointer-events-none"
+    style="display: none;"
+    role="alert"
+    aria-live="polite">
         <div :class="{
-            'bg-green-50 border-green-200 text-green-800': type === 'success',
-            'bg-red-50 border-red-200 text-red-800': type === 'error',
-            'bg-yellow-50 border-yellow-200 text-yellow-800': type === 'warning',
-            'bg-blue-50 border-blue-200 text-blue-800': type === 'info'
-        }" class="border-l-4 p-4 rounded-lg shadow-lg">
-            <div class="flex items-center">
+            'bg-success-50 border-success-200 text-success-800': type === 'success',
+            'bg-danger-50 border-danger-200 text-danger-800': type === 'error',
+            'bg-warning-50 border-warning-200 text-warning-800': type === 'warning',
+            'bg-info-50 border-info-200 text-info-800': type === 'info'
+        }" class="border-l-4 p-4 rounded-lg shadow-lg pointer-events-auto">
+            <div class="flex items-start">
                 <div class="flex-shrink-0">
-                    <svg x-show="type === 'success'" class="h-5 w-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                    </svg>
-                    <svg x-show="type === 'error'" class="h-5 w-5 text-red-400" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
-                    </svg>
+                    <x-ui.icon x-show="type === 'success'" name="check-circle" class="h-5 w-5 text-success-400" />
+                    <x-ui.icon x-show="type === 'error'" name="x-circle" class="h-5 w-5 text-danger-400" />
+                    <x-ui.icon x-show="type === 'warning'" name="exclamation-triangle" class="h-5 w-5 text-warning-400" />
+                    <x-ui.icon x-show="type === 'info'" name="information-circle" class="h-5 w-5 text-info-400" />
                 </div>
-                <div class="ml-3">
+                <div class="ml-3 flex-1">
                     <p class="text-sm font-medium" x-text="message"></p>
                 </div>
-                <button @click="show = false" class="ml-auto flex-shrink-0 inline-flex text-gray-400 hover:text-gray-500">
-                    <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/>
-                    </svg>
+                <button @click="show = false" 
+                        type="button"
+                        class="ml-auto flex-shrink-0 inline-flex text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 rounded-lg p-1 transition-colors"
+                        aria-label="Close notification">
+                    <x-ui.icon name="x" class="h-5 w-5" />
                 </button>
             </div>
         </div>

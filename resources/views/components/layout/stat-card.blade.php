@@ -2,8 +2,8 @@
     'label' => '',
     'value' => '',
     'icon' => null,
-    'iconColor' => 'bg-primary-100',
-    'iconTextColor' => 'text-primary-600',
+    'iconColor' => 'bg-indigo-100',
+    'iconTextColor' => 'text-indigo-600',
     'trend' => null,
     'trendUp' => true,
     'subtitle' => null,
@@ -29,8 +29,8 @@
             <dd class="mt-2 flex items-center text-sm">
                 <span @class([
                     'font-medium flex items-center',
-                    'text-success-600' => $trendUp,
-                    'text-danger-600' => !$trendUp,
+                    'text-green-600' => $trendUp,
+                    'text-red-600' => !$trendUp,
                 ])>
                     @if($trendUp)
                     <x-ui.icon name="arrow-up" class="w-4 h-4 mr-1" />

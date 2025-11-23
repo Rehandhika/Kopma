@@ -8,37 +8,31 @@
     {{-- Week Navigation --}}
     <div class="bg-white rounded-lg shadow p-4 mb-6">
         <div class="flex items-center justify-between">
-            <button wire:click="previousWeek" class="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition">
-                <svg class="w-5 h-5 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
-                </svg>
+            <x-ui.button wire:click="previousWeek" variant="white" icon="chevron-left">
                 Minggu Lalu
-            </button>
+            </x-ui.button>
 
             <div class="text-center">
                 <div class="text-lg font-semibold text-gray-900">
                     {{ $currentWeekStart->locale('id')->format('d M') }} - {{ $currentWeekEnd->locale('id')->format('d M Y') }}
                 </div>
                 @if($weekOffset === 0)
-                <span class="inline-flex items-center px-2 py-1 text-xs font-medium text-blue-700 bg-blue-100 rounded-full mt-1">
+                <x-ui.badge variant="info" size="sm" rounded class="mt-1">
                     Minggu Ini
-                </span>
+                </x-ui.badge>
                 @endif
             </div>
 
-            <button wire:click="nextWeek" class="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition">
+            <x-ui.button wire:click="nextWeek" variant="white" icon="chevron-right">
                 Minggu Depan
-                <svg class="w-5 h-5 inline-block ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                </svg>
-            </button>
+            </x-ui.button>
         </div>
 
         @if($weekOffset !== 0)
         <div class="mt-3 text-center">
-            <button wire:click="currentWeek" class="text-sm text-blue-600 hover:text-blue-800">
+            <x-ui.button wire:click="currentWeek" variant="ghost" size="sm">
                 Kembali ke Minggu Ini
-            </button>
+            </x-ui.button>
         </div>
         @endif
     </div>
@@ -63,9 +57,9 @@
                             </p>
                         </div>
                         @if($day['isToday'])
-                        <span class="px-2 py-1 text-xs font-medium text-blue-700 bg-blue-100 rounded-full">
+                        <x-ui.badge variant="info" size="sm" rounded>
                             Hari Ini
-                        </span>
+                        </x-ui.badge>
                         @endif
                     </div>
 
@@ -100,9 +94,9 @@
                                         @endif
                                     </div>
                                     @if(!$day['isPast'])
-                                    <a href="{{ route('swap.create') }}" class="text-xs text-blue-600 hover:text-blue-800">
+                                    <x-ui.button href="{{ route('swap.create') }}" variant="ghost" size="sm">
                                         Tukar
-                                    </a>
+                                    </x-ui.button>
                                     @endif
                                 </div>
                             </div>
@@ -168,7 +162,7 @@
     {{-- Loading State --}}
     <div wire:loading class="fixed inset-0 bg-gray-900/50 flex items-center justify-center z-50">
         <div class="bg-white rounded-lg p-6 shadow-xl">
-            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+            <x-ui.spinner size="lg" class="mx-auto" />
             <p class="mt-4 text-gray-700 font-medium">Memuat jadwal...</p>
         </div>
     </div>

@@ -1,16 +1,31 @@
 <div class="max-w-4xl mx-auto space-y-6">
-    <h2 class="text-2xl font-bold text-gray-900">Edit Profil</h2>
+    <x-layout.page-header 
+        title="Edit Profil"
+        description="Kelola informasi profil dan keamanan akun Anda"
+    />
 
     <!-- Tabs -->
-    <div class="bg-white rounded-lg shadow">
+    <x-ui.card :padding="false">
         <div class="border-b border-gray-200">
             <nav class="flex -mb-px">
-                <button wire:click="$set('activeTab', 'profile')" 
-                        class="px-6 py-3 text-sm font-medium {{ $activeTab === 'profile' ? 'border-b-2 border-indigo-600 text-indigo-600' : 'text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
+                <button 
+                    wire:click="$set('activeTab', 'profile')" 
+                    @class([
+                        'px-6 py-3 text-sm font-medium transition-colors',
+                        'border-b-2 border-primary-600 text-primary-600' => $activeTab === 'profile',
+                        'text-gray-500 hover:text-gray-700 hover:border-gray-300' => $activeTab !== 'profile'
+                    ])
+                >
                     Informasi Profil
                 </button>
-                <button wire:click="$set('activeTab', 'password')" 
-                        class="px-6 py-3 text-sm font-medium {{ $activeTab === 'password' ? 'border-b-2 border-indigo-600 text-indigo-600' : 'text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
+                <button 
+                    wire:click="$set('activeTab', 'password')" 
+                    @class([
+                        'px-6 py-3 text-sm font-medium transition-colors',
+                        'border-b-2 border-primary-600 text-primary-600' => $activeTab === 'password',
+                        'text-gray-500 hover:text-gray-700 hover:border-gray-300' => $activeTab !== 'password'
+                    ])
+                >
                     Ubah Password
                 </button>
             </nav>
@@ -19,82 +34,123 @@
         <!-- Profile Tab -->
         @if($activeTab === 'profile')
             <form wire:submit="updateProfile" class="p-6 space-y-6">
-                <!-- Photo Upload -->
-                <div class="flex items-center space-x-6">
-                    <div class="flex-shrink-0">
-                        @if($current_photo)
-                            <img src="{{ Storage::url($current_photo) }}" alt="Profile" class="w-24 h-24 rounded-full object-cover">
-                        @elseif($photo)
-                            <img src="{{ $photo->temporaryUrl() }}" alt="Preview" class="w-24 h-24 rounded-full object-cover">
-                        @else
-                            <div class="w-24 h-24 bg-indigo-500 rounded-full flex items-center justify-center">
-                                <span class="text-white font-bold text-3xl">{{ substr($name, 0, 1) }}</span>
-                            </div>
-                        @endif
+                <x-layout.form-section 
+                    title="Foto Profil"
+                    description="Upload foto profil Anda untuk personalisasi akun"
+                >
+                    <div class="flex items-center space-x-6">
+                        <div class="flex-shrink-0">
+                            @if($current_photo)
+                                <x-ui.avatar 
+                                    :src="Storage::url($current_photo)" 
+                                    :name="$name" 
+                                    size="xl" 
+                                    class="w-24 h-24"
+                                />
+                            @elseif($photo)
+                                <x-ui.avatar 
+                                    :src="$photo->temporaryUrl()" 
+                                    :name="$name" 
+                                    size="xl" 
+                                    class="w-24 h-24"
+                                />
+                            @else
+                                <x-ui.avatar 
+                                    :name="$name" 
+                                    size="xl" 
+                                    class="w-24 h-24"
+                                />
+                            @endif
+                        </div>
+                        <div class="flex-1">
+                            <label class="cursor-pointer">
+                                <x-ui.button variant="white" type="button" icon="camera">
+                                    Upload Foto
+                                </x-ui.button>
+                                <input type="file" wire:model="photo" accept="image/*" class="hidden">
+                            </label>
+                            @if($current_photo)
+                                <x-ui.button 
+                                    variant="ghost" 
+                                    type="button" 
+                                    wire:click="deletePhoto" 
+                                    class="ml-2 text-danger-600 hover:text-danger-700"
+                                >
+                                    Hapus Foto
+                                </x-ui.button>
+                            @endif
+                            @error('photo') 
+                                <span class="block text-sm text-danger-600 mt-1">{{ $message }}</span> 
+                            @enderror
+                            <p class="text-xs text-gray-500 mt-1">JPG, PNG. Max 2MB</p>
+                        </div>
                     </div>
-                    <div class="flex-1">
-                        <label class="btn btn-white cursor-pointer">
-                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                            </svg>
-                            Upload Foto
-                            <input type="file" wire:model="photo" accept="image/*" class="hidden">
-                        </label>
-                        @if($current_photo)
-                            <button type="button" wire:click="deletePhoto" class="ml-2 text-sm text-red-600 hover:text-red-800">
-                                Hapus Foto
-                            </button>
-                        @endif
-                        @error('photo') <span class="block text-sm text-red-600 mt-1">{{ $message }}</span> @enderror
-                        <p class="text-xs text-gray-500 mt-1">JPG, PNG. Max 2MB</p>
-                    </div>
-                </div>
+                </x-layout.form-section>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <label class="form-label">NIM <span class="text-red-500">*</span></label>
-                        <input type="text" wire:model="nim" class="form-control" required>
-                        @error('nim') <span class="form-error">{{ $message }}</span> @enderror
-                    </div>
+                <x-layout.form-section 
+                    title="Informasi Pribadi"
+                    description="Update informasi pribadi Anda"
+                >
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <x-ui.input
+                            label="NIM"
+                            name="nim"
+                            wire:model="nim"
+                            :required="true"
+                            :error="$errors->first('nim')"
+                        />
 
-                    <div>
-                        <label class="form-label">Nama Lengkap <span class="text-red-500">*</span></label>
-                        <input type="text" wire:model="name" class="form-control" required>
-                        @error('name') <span class="form-error">{{ $message }}</span> @enderror
-                    </div>
+                        <x-ui.input
+                            label="Nama Lengkap"
+                            name="name"
+                            wire:model="name"
+                            :required="true"
+                            :error="$errors->first('name')"
+                        />
 
-                    <div>
-                        <label class="form-label">Email <span class="text-red-500">*</span></label>
-                        <input type="email" wire:model="email" class="form-control" required>
-                        @error('email') <span class="form-error">{{ $message }}</span> @enderror
-                    </div>
+                        <x-ui.input
+                            label="Email"
+                            name="email"
+                            type="email"
+                            wire:model="email"
+                            :required="true"
+                            :error="$errors->first('email')"
+                        />
 
-                    <div>
-                        <label class="form-label">No. Telepon</label>
-                        <input type="text" wire:model="phone" class="form-control" placeholder="08xxxxxxxxxx">
-                        @error('phone') <span class="form-error">{{ $message }}</span> @enderror
-                    </div>
+                        <x-ui.input
+                            label="No. Telepon"
+                            name="phone"
+                            type="tel"
+                            wire:model="phone"
+                            placeholder="08xxxxxxxxxx"
+                            :error="$errors->first('phone')"
+                        />
 
-                    <div class="md:col-span-2">
-                        <label class="form-label">Alamat</label>
-                        <textarea wire:model="address" rows="3" class="form-control" placeholder="Alamat lengkap"></textarea>
-                        @error('address') <span class="form-error">{{ $message }}</span> @enderror
+                        <div class="md:col-span-2">
+                            <x-ui.textarea
+                                label="Alamat"
+                                name="address"
+                                wire:model="address"
+                                rows="3"
+                                placeholder="Alamat lengkap"
+                                :error="$errors->first('address')"
+                            />
+                        </div>
                     </div>
-                </div>
+                </x-layout.form-section>
 
-                <div class="flex items-center justify-between pt-4 border-t">
+                <div class="flex items-center justify-between pt-4 border-t border-gray-200">
                     <div class="text-sm text-gray-500">
                         <strong>Role:</strong> 
                         @foreach($user->roles as $role)
-                            <span class="badge badge-secondary ml-1">{{ ucfirst($role->name) }}</span>
+                            <x-ui.badge variant="secondary" class="ml-1">
+                                {{ ucfirst($role->name) }}
+                            </x-ui.badge>
                         @endforeach
                     </div>
-                    <button type="submit" class="btn btn-primary">
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                        </svg>
+                    <x-ui.button type="submit" icon="check">
                         Simpan Perubahan
-                    </button>
+                    </x-ui.button>
                 </div>
             </form>
         @endif
@@ -102,46 +158,55 @@
         <!-- Password Tab -->
         @if($activeTab === 'password')
             <form wire:submit="updatePassword" class="p-6 space-y-6">
-                <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                <div class="bg-warning-50 border border-warning-200 rounded-lg p-4">
                     <div class="flex">
-                        <svg class="w-5 h-5 text-yellow-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
-                        </svg>
-                        <div class="text-sm text-yellow-800">
+                        <x-ui.icon name="exclamation-triangle" class="w-5 h-5 text-warning-600 mr-2 flex-shrink-0" />
+                        <div class="text-sm text-warning-800">
                             <strong>Perhatian:</strong> Pastikan password baru Anda kuat dan mudah diingat. Gunakan kombinasi huruf besar, huruf kecil, angka, dan simbol.
                         </div>
                     </div>
                 </div>
 
-                <div class="max-w-md space-y-4">
-                    <div>
-                        <label class="form-label">Password Saat Ini <span class="text-red-500">*</span></label>
-                        <input type="password" wire:model="current_password" class="form-control" required>
-                        @error('current_password') <span class="form-error">{{ $message }}</span> @enderror
-                    </div>
+                <x-layout.form-section 
+                    title="Ubah Password"
+                    description="Perbarui password Anda untuk keamanan akun"
+                >
+                    <div class="max-w-md space-y-4">
+                        <x-ui.input
+                            label="Password Saat Ini"
+                            name="current_password"
+                            type="password"
+                            wire:model="current_password"
+                            :required="true"
+                            :error="$errors->first('current_password')"
+                        />
 
-                    <div>
-                        <label class="form-label">Password Baru <span class="text-red-500">*</span></label>
-                        <input type="password" wire:model="new_password" class="form-control" required>
-                        @error('new_password') <span class="form-error">{{ $message }}</span> @enderror
-                        <p class="text-xs text-gray-500 mt-1">Minimal 8 karakter</p>
-                    </div>
+                        <x-ui.input
+                            label="Password Baru"
+                            name="new_password"
+                            type="password"
+                            wire:model="new_password"
+                            :required="true"
+                            help="Minimal 8 karakter"
+                            :error="$errors->first('new_password')"
+                        />
 
-                    <div>
-                        <label class="form-label">Konfirmasi Password Baru <span class="text-red-500">*</span></label>
-                        <input type="password" wire:model="new_password_confirmation" class="form-control" required>
+                        <x-ui.input
+                            label="Konfirmasi Password Baru"
+                            name="new_password_confirmation"
+                            type="password"
+                            wire:model="new_password_confirmation"
+                            :required="true"
+                        />
                     </div>
-                </div>
+                </x-layout.form-section>
 
-                <div class="flex justify-end pt-4 border-t">
-                    <button type="submit" class="btn btn-primary">
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
-                        </svg>
+                <div class="flex justify-end pt-4 border-t border-gray-200">
+                    <x-ui.button type="submit" icon="lock-closed">
                         Ubah Password
-                    </button>
+                    </x-ui.button>
                 </div>
             </form>
         @endif
-    </div>
+    </x-ui.card>
 </div>

@@ -1,114 +1,138 @@
 <div class="space-y-6">
     <!-- Header -->
-    <div class="flex items-center justify-between">
-        <h2 class="text-2xl font-bold text-gray-900">Manajemen Stok</h2>
-        <div class="flex items-center gap-2">
-            <a href="{{ route('products.create') }}" class="btn btn-primary">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                </svg>
+    <x-layout.page-header 
+        title="Manajemen Stok"
+        description="Kelola dan monitor stok produk"
+    >
+        <x-slot:actions>
+            <x-ui.button 
+                variant="secondary" 
+                href="{{ route('products.create') }}"
+                icon="plus"
+            >
                 Tambah Produk
-            </a>
-            <a href="{{ route('stock.adjustment') }}" class="btn btn-secondary">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                </svg>
+            </x-ui.button>
+            <x-ui.button 
+                variant="primary" 
+                href="{{ route('stock.adjustment') }}"
+                icon="adjustments"
+            >
                 Penyesuaian Stok
-            </a>
-        </div>
-    </div>
+            </x-ui.button>
+        </x-slot:actions>
+    </x-layout.page-header>
 
     <!-- Stats -->
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div class="bg-white rounded-lg shadow p-4">
-            <div class="text-2xl font-bold text-gray-900">{{ $stats['total_products'] }}</div>
-            <div class="text-sm text-gray-600">Total Produk</div>
-        </div>
-        <div class="bg-white rounded-lg shadow p-4">
-            <div class="text-2xl font-bold text-yellow-600">{{ $stats['low_stock'] }}</div>
-            <div class="text-sm text-gray-600">Stok Rendah</div>
-        </div>
-        <div class="bg-white rounded-lg shadow p-4">
-            <div class="text-2xl font-bold text-red-600">{{ $stats['out_of_stock'] }}</div>
-            <div class="text-sm text-gray-600">Stok Habis</div>
-        </div>
-        <div class="bg-white rounded-lg shadow p-4">
-            <div class="text-2xl font-bold text-green-600">Rp {{ number_format($stats['total_stock_value'], 0, ',', '.') }}</div>
-            <div class="text-sm text-gray-600">Nilai Stok</div>
-        </div>
-    </div>
+    <x-layout.grid cols="4" gap="4">
+        <x-layout.stat-card
+            label="Total Produk"
+            :value="$stats['total_products']"
+            icon="cube"
+            iconColor="bg-primary-100"
+            iconTextColor="text-primary-600"
+        />
+        <x-layout.stat-card
+            label="Stok Rendah"
+            :value="$stats['low_stock']"
+            icon="exclamation-triangle"
+            iconColor="bg-warning-100"
+            iconTextColor="text-warning-600"
+        />
+        <x-layout.stat-card
+            label="Stok Habis"
+            :value="$stats['out_of_stock']"
+            icon="x-circle"
+            iconColor="bg-danger-100"
+            iconTextColor="text-danger-600"
+        />
+        <x-layout.stat-card
+            label="Nilai Stok"
+            :value="'Rp ' . number_format($stats['total_stock_value'], 0, ',', '.')"
+            icon="currency-dollar"
+            iconColor="bg-success-100"
+            iconTextColor="text-success-600"
+        />
+    </x-layout.grid>
 
     <!-- Filters -->
-    <div class="bg-white rounded-lg shadow p-4">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <input type="text" wire:model.live="search" placeholder="Cari produk..." 
-                   class="px-4 py-2 border border-gray-300 rounded-lg">
-            <select wire:model.live="stockFilter" class="px-4 py-2 border border-gray-300 rounded-lg">
+    <x-ui.card padding="true">
+        <x-layout.grid cols="2" gap="4">
+            <x-ui.input 
+                type="text" 
+                wire:model.live="search" 
+                placeholder="Cari produk..." 
+                icon="search"
+            />
+            <x-ui.select wire:model.live="stockFilter">
                 <option value="all">Semua Stok</option>
                 <option value="low">Stok Rendah</option>
                 <option value="out">Stok Habis</option>
-            </select>
-        </div>
-    </div>
+            </x-ui.select>
+        </x-layout.grid>
+    </x-ui.card>
 
     <!-- Stock Table -->
-    <div class="bg-white rounded-lg shadow overflow-hidden">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Produk</th>
-                    <th>SKU</th>
-                    <th>Kategori</th>
-                    <th>Stok Saat Ini</th>
-                    <th>Min. Stok</th>
-                    <th>Harga Modal</th>
-                    <th>Nilai Total</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($products as $product)
-                    <tr>
-                        <td>
-                            <div class="flex items-center">
-                                <div class="w-10 h-10 bg-gray-200 rounded flex-shrink-0">
-                                    @if($product->image)
-                                        <img src="{{ asset('storage/' . $product->image) }}" class="w-full h-full object-cover rounded">
-                                    @endif
-                                </div>
-                                <div class="ml-3">
-                                    <div class="font-medium text-gray-900">{{ $product->name }}</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td>{{ $product->sku }}</td>
-                        <td>{{ $product->category?->name ?? '-' }}</td>
-                        <td>
-                            <span class="text-lg font-bold {{ $product->stock <= $product->min_stock ? 'text-red-600' : 'text-gray-900' }}">
-                                {{ $product->stock }}
-                            </span>
-                        </td>
-                        <td>{{ $product->min_stock }}</td>
-                        <td>Rp {{ number_format($product->cost, 0, ',', '.') }}</td>
-                        <td class="font-medium">Rp {{ number_format($product->stock * $product->cost, 0, ',', '.') }}</td>
-                        <td>
-                            @if($product->stock > $product->min_stock)
-                                <span class="badge badge-secondary">Normal</span>
-                            @elseif($product->stock > 0)
-                                <span class="badge badge-warning">Rendah</span>
-                            @else
-                                <span class="badge badge-danger">Habis</span>
+    <x-data.table 
+        :headers="['Produk', 'SKU', 'Kategori', 'Stok Saat Ini', 'Min. Stok', 'Harga Modal', 'Nilai Total', 'Status']"
+        striped="true"
+        hoverable="true"
+    >
+        @forelse($products as $product)
+            <x-data.table-row>
+                <x-data.table-cell>
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 bg-gray-200 rounded flex-shrink-0">
+                            @if($product->image)
+                                <img src="{{ asset('storage/' . $product->image) }}" class="w-full h-full object-cover rounded" alt="{{ $product->name }}">
                             @endif
-                        </td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="8" class="text-center py-8 text-gray-500">Tidak ada produk</td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
-    </div>
+                        </div>
+                        <div class="ml-3">
+                            <div class="font-medium text-gray-900">{{ $product->name }}</div>
+                        </div>
+                    </div>
+                </x-data.table-cell>
+                <x-data.table-cell>{{ $product->sku }}</x-data.table-cell>
+                <x-data.table-cell>{{ $product->category?->name ?? '-' }}</x-data.table-cell>
+                <x-data.table-cell>
+                    <span @class([
+                        'text-lg font-bold',
+                        'text-danger-600' => $product->stock <= $product->min_stock,
+                        'text-gray-900' => $product->stock > $product->min_stock,
+                    ])>
+                        {{ $product->stock }}
+                    </span>
+                </x-data.table-cell>
+                <x-data.table-cell>{{ $product->min_stock }}</x-data.table-cell>
+                <x-data.table-cell>Rp {{ number_format($product->cost, 0, ',', '.') }}</x-data.table-cell>
+                <x-data.table-cell class="font-medium">Rp {{ number_format($product->stock * $product->cost, 0, ',', '.') }}</x-data.table-cell>
+                <x-data.table-cell>
+                    @if($product->stock > $product->min_stock)
+                        <x-ui.badge variant="success">Normal</x-ui.badge>
+                    @elseif($product->stock > 0)
+                        <x-ui.badge variant="warning">Rendah</x-ui.badge>
+                    @else
+                        <x-ui.badge variant="danger">Habis</x-ui.badge>
+                    @endif
+                </x-data.table-cell>
+            </x-data.table-row>
+        @empty
+            <x-data.table-row>
+                <x-data.table-cell colspan="8">
+                    <x-layout.empty-state
+                        icon="cube"
+                        title="Tidak ada produk"
+                        description="Belum ada produk yang terdaftar dalam sistem"
+                    >
+                        <x-slot:action>
+                            <x-ui.button variant="primary" href="{{ route('products.create') }}">
+                                Tambah Produk
+                            </x-ui.button>
+                        </x-slot:action>
+                    </x-layout.empty-state>
+                </x-data.table-cell>
+            </x-data.table-row>
+        @endforelse
+    </x-data.table>
 
     <!-- Pagination -->
     <div>

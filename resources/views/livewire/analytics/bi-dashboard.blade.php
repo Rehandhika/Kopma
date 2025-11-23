@@ -1,52 +1,49 @@
 <div class="space-y-6">
     <!-- Header Controls -->
-    <div class="bg-white rounded-lg shadow p-4">
+    <x-ui.card>
         <div class="flex items-center justify-between mb-4">
             <h2 class="text-2xl font-bold text-gray-900">Business Intelligence Dashboard</h2>
             <div class="flex items-center space-x-4">
                 <!-- Period Selector -->
-                <select wire:model.live="selectedPeriod" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                <x-ui.select wire:model.live="selectedPeriod" name="selectedPeriod">
                     <option value="today">Hari Ini</option>
                     <option value="week">Minggu Ini</option>
                     <option value="month">Bulan Ini</option>
                     <option value="quarter">Kuartal Ini</option>
                     <option value="year">Tahun Ini</option>
-                </select>
+                </x-ui.select>
 
                 <!-- Auto Refresh Toggle -->
                 <div class="flex items-center space-x-2">
-                    <button wire:click="toggleAutoRefresh" 
-                            class="px-3 py-2 {{ $autoRefresh ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700' }} rounded-lg transition">
-                        <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
-                        </svg>
+                    <x-ui.button 
+                        wire:click="toggleAutoRefresh" 
+                        :variant="$autoRefresh ? 'success' : 'ghost'"
+                        size="sm"
+                    >
+                        <x-ui.icon name="refresh" class="w-4 h-4 mr-1" />
                         {{ $autoRefresh ? 'Auto Refresh ON' : 'Auto Refresh OFF' }}
-                    </button>
+                    </x-ui.button>
                     
                     @if($autoRefresh)
-                        <select wire:model.live="refreshInterval" class="px-2 py-1 border border-gray-300 rounded text-sm">
+                        <x-ui.select wire:model.live="refreshInterval" name="refreshInterval" class="text-sm">
                             <option value="15">15s</option>
                             <option value="30">30s</option>
                             <option value="60">1m</option>
                             <option value="300">5m</option>
-                        </select>
+                        </x-ui.select>
                     @endif
                 </div>
 
                 <!-- Actions -->
-                <button wire:click="exportReport" class="btn btn-white">
-                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                    </svg>
+                <x-ui.button wire:click="exportReport" variant="white" size="sm">
+                    <x-ui.icon name="download" class="w-4 h-4 mr-2" />
                     Export
-                </button>
+                </x-ui.button>
                 
-                <button wire:click="scheduleReport" class="btn btn-indigo-600 text-white">
-                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
+                <x-ui.button wire:click="scheduleReport" variant="primary" size="sm">
+                    <x-ui.icon name="clock" class="w-4 h-4 mr-2" />
                     Jadwalkan
-                </button>
+                </x-ui.button>
             </div>
         </div>
 
@@ -54,18 +51,16 @@
         <div class="text-sm text-gray-600">
             Periode: {{ $startDate->locale('id')->isoFormat('D MMMM YYYY') }} - {{ $endDate->locale('id')->isoFormat('D MMMM YYYY') }}
         </div>
-    </div>
+    </x-ui.card>
 
     <!-- KPI Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <x-layout.grid cols="4">
         <!-- Attendance KPIs -->
-        <div class="bg-white rounded-lg shadow p-6">
+        <x-ui.card>
             <div class="flex items-center justify-between mb-4">
                 <h3 class="text-lg font-semibold text-gray-900">Kehadiran</h3>
                 <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                    <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                    </svg>
+                    <x-ui.icon name="users" class="w-4 h-4 text-blue-600" />
                 </div>
             </div>
             
@@ -90,16 +85,14 @@
                     <span class="text-lg font-bold text-yellow-600">{{ $kpis['attendance_metrics']['total_late'] ?? 0 }}</span>
                 </div>
             </div>
-        </div>
+        </x-ui.card>
 
         <!-- Sales KPIs -->
-        <div class="bg-white rounded-lg shadow p-6">
+        <x-ui.card>
             <div class="flex items-center justify-between mb-4">
                 <h3 class="text-lg font-semibold text-gray-900">Penjualan</h3>
                 <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                    <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
+                    <x-ui.icon name="currency-dollar" class="w-4 h-4 text-green-600" />
                 </div>
             </div>
             
@@ -126,16 +119,14 @@
                     </span>
                 </div>
             </div>
-        </div>
+        </x-ui.card>
 
         <!-- Operational KPIs -->
-        <div class="bg-white rounded-lg shadow p-6">
+        <x-ui.card>
             <div class="flex items-center justify-between mb-4">
                 <h3 class="text-lg font-semibold text-gray-900">Operasional</h3>
                 <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
-                    <svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-                    </svg>
+                    <x-ui.icon name="chart-bar" class="w-4 h-4 text-purple-600" />
                 </div>
             </div>
             
@@ -160,16 +151,14 @@
                     <span class="text-lg font-bold text-yellow-600">{{ ($kpis['operational_metrics']['pending_swap_requests'] ?? 0) + ($kpis['operational_metrics']['pending_leave_requests'] ?? 0) }}</span>
                 </div>
             </div>
-        </div>
+        </x-ui.card>
 
         <!-- Financial KPIs -->
-        <div class="bg-white rounded-lg shadow p-6">
+        <x-ui.card>
             <div class="flex items-center justify-between mb-4">
                 <h3 class="text-lg font-semibold text-gray-900">Keuangan</h3>
                 <div class="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center">
-                    <svg class="w-4 h-4 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
-                    </svg>
+                    <x-ui.icon name="calculator" class="w-4 h-4 text-yellow-600" />
                 </div>
             </div>
             
@@ -196,12 +185,11 @@
                     <span class="text-lg font-bold text-gray-900">{{ $getKPIDisplay('financial_metrics', 'revenue_per_day')['formatted_value'] }}</span>
                 </div>
             </div>
-        </div>
-    </div>
+        </x-ui.card>
+    </x-layout.grid>
 
     <!-- Real-time Metrics -->
-    <div class="bg-white rounded-lg shadow p-6">
-        <h3 class="text-lg font-semibold text-gray-900 mb-4">Metrik Real-time</h3>
+    <x-ui.card title="Metrik Real-time">
         <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
             <div class="text-center">
                 <div class="relative inline-flex items-center justify-center">
@@ -278,50 +266,52 @@
                 <p class="text-sm text-gray-600 mt-2">CPU Usage</p>
             </div>
         </div>
-    </div>
+    </x-ui.card>
 
     <!-- Charts Section -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <x-layout.grid cols="2">
         <!-- Attendance Trend Chart -->
-        <div class="bg-white rounded-lg shadow p-6">
+        <x-ui.card>
             <div class="flex items-center justify-between mb-4">
                 <h3 class="text-lg font-semibold text-gray-900">Trend Kehadiran</h3>
-                <select wire:model.live="chartType" class="px-2 py-1 border border-gray-300 rounded text-sm">
+                <x-ui.select wire:model.live="chartType" name="chartType" class="text-sm">
                     <option value="line">Line</option>
                     <option value="bar">Bar</option>
                     <option value="area">Area</option>
-                </select>
+                </x-ui.select>
             </div>
             <div class="h-64">
                 <canvas id="attendance-chart"></canvas>
             </div>
-        </div>
+        </x-ui.card>
 
         <!-- Sales Trend Chart -->
-        <div class="bg-white rounded-lg shadow p-6">
+        <x-ui.card>
             <div class="flex items-center justify-between mb-4">
                 <h3 class="text-lg font-semibold text-gray-900">Trend Penjualan</h3>
-                <button wire:click="toggleComparison" 
-                        class="px-2 py-1 {{ $compareWithPrevious ? 'bg-indigo-100 text-indigo-700' : 'bg-gray-100 text-gray-700' }} rounded text-sm">
+                <x-ui.button 
+                    wire:click="toggleComparison" 
+                    :variant="$compareWithPrevious ? 'primary' : 'ghost'"
+                    size="sm"
+                >
                     {{ $compareWithPrevious ? 'Bandingkan: ON' : 'Bandingkan: OFF' }}
-                </button>
+                </x-ui.button>
             </div>
             <div class="h-64">
                 <canvas id="sales-chart"></canvas>
             </div>
-        </div>
-    </div>
+        </x-ui.card>
+    </x-layout.grid>
 
     <!-- Predictions Section -->
-    <div class="bg-white rounded-lg shadow p-6">
-        <h3 class="text-lg font-semibold text-gray-900 mb-4">Prediksi & Analitik</h3>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+    <x-ui.card title="Prediksi & Analitik">
+        <x-layout.grid cols="4">
             <div class="border border-gray-200 rounded-lg p-4">
                 <div class="flex items-center justify-between mb-2">
                     <span class="text-sm font-medium text-gray-700">Prediksi Kehadiran</span>
-                    <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
+                    <x-ui.badge variant="info" size="sm">
                         {{ $predictions['attendance_forecast']['confidence'] }}% confidence
-                    </span>
+                    </x-ui.badge>
                 </div>
                 <div class="text-2xl font-bold text-gray-900">{{ $predictions['attendance_forecast']['prediction'] }}</div>
                 <div class="text-sm text-gray-600">orang/hari</div>
@@ -333,9 +323,9 @@
             <div class="border border-gray-200 rounded-lg p-4">
                 <div class="flex items-center justify-between mb-2">
                     <span class="text-sm font-medium text-gray-700">Prediksi Penjualan</span>
-                    <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">
+                    <x-ui.badge variant="success" size="sm">
                         {{ $predictions['sales_forecast']['confidence'] }}% confidence
-                    </span>
+                    </x-ui.badge>
                 </div>
                 <div class="text-2xl font-bold text-gray-900">Rp {{ number_format($predictions['sales_forecast']['prediction'], 0, ',', '.') }}</div>
                 <div class="text-sm text-gray-600">per hari</div>
@@ -347,9 +337,9 @@
             <div class="border border-gray-200 rounded-lg p-4">
                 <div class="flex items-center justify-between mb-2">
                     <span class="text-sm font-medium text-gray-700">Kebutuhan Staff</span>
-                    <span class="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded">
+                    <x-ui.badge variant="secondary" size="sm">
                         {{ $predictions['staffing_needs']['utilization_rate'] }}% utilized
-                    </span>
+                    </x-ui.badge>
                 </div>
                 <div class="text-2xl font-bold text-gray-900">{{ $predictions['staffing_needs']['required_staff'] }}</div>
                 <div class="text-sm text-gray-600">staff dibutuhkan</div>
@@ -361,9 +351,9 @@
             <div class="border border-gray-200 rounded-lg p-4">
                 <div class="flex items-center justify-between mb-2">
                     <span class="text-sm font-medium text-gray-700">Prediksi Revenue</span>
-                    <span class="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">
+                    <x-ui.badge variant="warning" size="sm">
                         {{ $predictions['revenue_forecast']['confidence'] }}% confidence
-                    </span>
+                    </x-ui.badge>
                 </div>
                 <div class="text-2xl font-bold text-gray-900">Rp {{ number_format($predictions['revenue_forecast']['prediction'], 0, ',', '.') }}</div>
                 <div class="text-sm text-gray-600">per bulan</div>
@@ -371,8 +361,8 @@
                     +{{ $predictions['revenue_forecast']['growth_rate'] }}% growth
                 </div>
             </div>
-        </div>
-    </div>
+        </x-layout.grid>
+    </x-ui.card>
 </div>
 
 <!-- Chart JavaScript -->

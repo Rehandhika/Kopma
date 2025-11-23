@@ -3,17 +3,9 @@
     <div class="flex items-center justify-between">
         <h2 class="text-2xl font-bold text-gray-900">Kalender Jadwal</h2>
         <div class="flex items-center space-x-2">
-            <button wire:click="previousWeek" class="btn btn-white">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-                </svg>
-            </button>
-            <button wire:click="today" class="btn btn-white">Hari Ini</button>
-            <button wire:click="nextWeek" class="btn btn-white">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                </svg>
-            </button>
+            <x-ui.button wire:click="previousWeek" variant="white" icon="chevron-left" />
+            <x-ui.button wire:click="today" variant="white">Hari Ini</x-ui.button>
+            <x-ui.button wire:click="nextWeek" variant="white" icon="chevron-right" />
         </div>
     </div>
 
@@ -38,8 +30,10 @@
                         @foreach($day['schedules'] as $schedule)
                             <div class="text-xs p-2 rounded bg-indigo-100 text-indigo-800 hover:bg-indigo-200 cursor-pointer">
                                 <div class="font-medium">{{ $schedule->user->name }}</div>
-                                <div class="text-indigo-600">Sesi {{ $schedule->session }}</div>
-                                <div>{{ Carbon\Carbon::parse($schedule->time_start)->format('H:i') }}</div>
+                                <div class="flex items-center gap-1 mt-1">
+                                    <x-ui.badge variant="info" size="sm">Sesi {{ $schedule->session }}</x-ui.badge>
+                                </div>
+                                <div class="mt-1">{{ Carbon\Carbon::parse($schedule->time_start)->format('H:i') }}</div>
                             </div>
                         @endforeach
                     </div>

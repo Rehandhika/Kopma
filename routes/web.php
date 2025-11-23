@@ -49,6 +49,10 @@ Route::get('/demo/modal', function () {
     return view('components.ui.modal-test');
 })->name('demo.modal');
 
+Route::get('/demo/modal-debug', function () {
+    return view('modal-debug');
+})->name('demo.modal.debug');
+
 Route::get('/demo/modal-example', function () {
     return view('components.ui.modal-example');
 })->name('demo.modal-example');
@@ -80,6 +84,11 @@ Route::get('/demo/table', function () {
 Route::get('/demo/breadcrumb', function () {
     return view('components.data.breadcrumb-test');
 })->name('demo.breadcrumb');
+
+// Alpine.js Test Page
+Route::get('/alpine-test', function () {
+    return view('alpine-test');
+})->name('alpine.test');
 
 /*
 |--------------------------------------------------------------------------

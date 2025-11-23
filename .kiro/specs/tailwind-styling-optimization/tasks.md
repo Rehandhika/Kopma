@@ -352,7 +352,12 @@ Implementation plan ini akan mengubah seluruh styling aplikasi SIKOPMA menjadi l
   - Test keyboard navigation and accessibility
   - _Requirements: 3.1, 3.5, 4.1, 4.2, 7.1, 7.2, 7.3, 7.4, 7.5_
 
-- [ ] 23. Refactor app layout
+- [x] 23. Refactor app layout
+
+
+
+
+
   - Update resources/views/layouts/app.blade.php
   - Replace inline Tailwind classes with layout components where appropriate
   - Ensure sidebar responsive behavior works correctly
@@ -360,7 +365,12 @@ Implementation plan ini akan mengubah seluruh styling aplikasi SIKOPMA menjadi l
   - Verify mobile menu functionality
   - _Requirements: 3.1, 4.1, 4.2, 7.1, 7.2, 11.1, 11.2_
 
-- [ ] 24. Refactor dashboard view
+- [x] 24. Refactor dashboard view
+
+
+
+
+
   - Update resources/views/livewire/dashboard/index.blade.php
   - Replace stat cards with <x-layout.stat-card> component
   - Replace hardcoded card markup with <x-ui.card> component
@@ -369,7 +379,12 @@ Implementation plan ini akan mengubah seluruh styling aplikasi SIKOPMA menjadi l
   - Test all interactive elements
   - _Requirements: 3.1, 4.1, 4.2, 4.3, 11.1, 11.2, 11.3_
 
-- [ ] 25. Refactor login form
+- [x] 25. Refactor login form
+
+
+
+
+
   - Update resources/views/livewire/auth/login-form.blade.php
   - Replace input fields with <x-ui.input> component
   - Replace button with <x-ui.button> component
@@ -380,18 +395,28 @@ Implementation plan ini akan mengubah seluruh styling aplikasi SIKOPMA menjadi l
 
 ### Priority 2: Core Features
 
+
+
+
+
 - [ ] 26. Refactor attendance views
+
   - Update resources/views/livewire/attendance/check-in-out.blade.php
   - Update resources/views/livewire/attendance/index.blade.php
   - Update resources/views/livewire/attendance/history.blade.php
   - Replace forms with form components
   - Replace tables with <x-data.table> component
+
+
   - Use <x-ui.badge> for status indicators
   - Test check-in/out functionality
   - _Requirements: 3.1, 4.1, 4.2, 4.3, 11.1, 11.2_
 
 
-- [ ] 27. Refactor schedule views
+- [x] 27. Refactor schedule views
+
+
+
   - Update resources/views/livewire/schedule/index.blade.php
   - Update resources/views/livewire/schedule/my-schedule.blade.php
   - Update resources/views/livewire/schedule/calendar-month.blade.php
@@ -402,7 +427,12 @@ Implementation plan ini akan mengubah seluruh styling aplikasi SIKOPMA menjadi l
   - Test calendar interactions
   - _Requirements: 3.1, 4.1, 4.2, 4.3, 11.1, 11.2_
 
-- [ ] 28. Refactor cashier/POS views
+- [x] 28. Refactor cashier/POS views
+
+
+
+
+
   - Update resources/views/livewire/cashier/pos.blade.php
   - Update resources/views/livewire/cashier/sales-list.blade.php
   - Update resources/views/livewire/cashier/transaction-form.blade.php
@@ -414,7 +444,11 @@ Implementation plan ini akan mengubah seluruh styling aplikasi SIKOPMA menjadi l
 
 ### Priority 3: Management Pages
 
-- [ ] 29. Refactor user management views
+- [x] 29. Refactor user management views
+
+
+
+
   - Update resources/views/livewire/user/index.blade.php
   - Update resources/views/livewire/user/user-management.blade.php
   - Replace user table with <x-data.table> component
@@ -424,7 +458,12 @@ Implementation plan ini akan mengubah seluruh styling aplikasi SIKOPMA menjadi l
   - Test user CRUD operations
   - _Requirements: 3.1, 4.1, 4.2, 4.3, 11.1, 11.2_
 
-- [ ] 30. Refactor product management views
+
+- [x] 30. Refactor product management views
+
+
+
+
   - Update resources/views/livewire/product/index.blade.php
   - Update resources/views/livewire/product/product-list.blade.php
   - Replace product cards/table with components
@@ -432,8 +471,13 @@ Implementation plan ini akan mengubah seluruh styling aplikasi SIKOPMA menjadi l
   - Use <x-layout.empty-state> for no products
   - Test product CRUD operations
   - _Requirements: 3.1, 4.1, 4.2, 4.3, 11.1, 11.2_
+-
 
-- [ ] 31. Refactor stock management views
+- [x] 31. Refactor stock management views
+
+
+
+
   - Update resources/views/livewire/stock/index.blade.php
   - Update resources/views/livewire/stock/stock-adjustment.blade.php
   - Replace stock table with <x-data.table> component
@@ -442,7 +486,15 @@ Implementation plan ini akan mengubah seluruh styling aplikasi SIKOPMA menjadi l
   - Test stock operations
   - _Requirements: 3.1, 4.1, 4.2, 4.3, 11.1, 11.2_
 
-- [ ] 32. Refactor report views
+- [x] 32. Refactor report views
+
+
+
+
+
+
+
+
   - Update resources/views/livewire/report/attendance-report.blade.php
   - Update resources/views/livewire/report/sales-report.blade.php
   - Update resources/views/livewire/report/penalty-report.blade.php
@@ -454,7 +506,12 @@ Implementation plan ini akan mengubah seluruh styling aplikasi SIKOPMA menjadi l
 
 ### Priority 4: Secondary Features
 
-- [ ] 33. Refactor leave request views
+
+- [x] 33. Refactor leave request views
+
+
+
+
   - Update resources/views/livewire/leave/index.blade.php
   - Update resources/views/livewire/leave/my-requests.blade.php
   - Update resources/views/livewire/leave/create-request.blade.php
@@ -465,7 +522,12 @@ Implementation plan ini akan mengubah seluruh styling aplikasi SIKOPMA menjadi l
   - Test leave request workflow
   - _Requirements: 3.1, 4.1, 4.2, 4.3, 11.1, 11.2_
 
-- [ ] 34. Refactor swap request views
+
+- [x] 34. Refactor swap request views
+
+
+
+
   - Update resources/views/livewire/swap/index.blade.php
   - Update resources/views/livewire/swap/my-requests.blade.php
   - Update resources/views/livewire/swap/create-request.blade.php
@@ -473,9 +535,14 @@ Implementation plan ini akan mengubah seluruh styling aplikasi SIKOPMA menjadi l
   - Replace forms with form components
   - Use <x-ui.badge> for swap status
   - Test swap request workflow
+
+
   - _Requirements: 3.1, 4.1, 4.2, 4.3, 11.1, 11.2_
 
-- [ ] 35. Refactor penalty views
+- [x] 35. Refactor penalty views
+
+
+
   - Update resources/views/livewire/penalty/index.blade.php
   - Update resources/views/livewire/penalty/my-penalties.blade.php
   - Update resources/views/livewire/penalty/manage-penalties.blade.php
@@ -485,16 +552,26 @@ Implementation plan ini akan mengubah seluruh styling aplikasi SIKOPMA menjadi l
   - Test penalty management
   - _Requirements: 3.1, 4.1, 4.2, 4.3, 11.1, 11.2_
 
+
+
+
+
 - [ ] 36. Refactor settings views
+
   - Update resources/views/livewire/settings/general.blade.php
   - Update resources/views/livewire/settings/system-settings.blade.php
   - Replace forms with form components
+
   - Use <x-layout.form-section> for grouped settings
+
   - Use <x-ui.card> for settings sections
   - Test settings save functionality
   - _Requirements: 3.1, 4.1, 4.2, 4.3, 11.1, 11.2_
 
-- [ ] 37. Refactor profile view
+- [x] 37. Refactor profile view
+
+
+
   - Update resources/views/livewire/profile/edit.blade.php
   - Replace form inputs with form components
   - Use <x-ui.avatar> for profile picture
@@ -502,24 +579,39 @@ Implementation plan ini akan mengubah seluruh styling aplikasi SIKOPMA menjadi l
   - Test profile update functionality
   - _Requirements: 3.1, 4.1, 4.2, 4.3, 11.1, 11.2_
 
-- [ ] 38. Refactor notification views
+
+- [x] 38. Refactor notification views
+
+
+
+
   - Update resources/views/livewire/notification/index.blade.php
   - Update resources/views/livewire/notification/my-notifications.blade.php
   - Replace notification list with consistent card styling
   - Use <x-ui.badge> for notification types
   - Use <x-layout.empty-state> for no notifications
   - Test notification interactions
+
+
+
   - _Requirements: 3.1, 4.1, 4.2, 4.3, 11.1, 11.2_
 
+
 - [ ] 39. Refactor role management view
+
   - Update resources/views/livewire/role/index.blade.php
+
+
+
   - Replace role table with <x-data.table> component
+
   - Use <x-ui.checkbox> for permission selection
   - Use <x-ui.modal> for role create/edit
   - Test role and permission management
   - _Requirements: 3.1, 4.1, 4.2, 4.3, 11.1, 11.2_
 
 - [ ] 40. Refactor analytics dashboard
+
   - Update resources/views/livewire/analytics/bi-dashboard.blade.php
   - Replace metric cards with <x-layout.stat-card> component
   - Ensure chart.js integration still works
@@ -570,6 +662,10 @@ Implementation plan ini akan mengubah seluruh styling aplikasi SIKOPMA menjadi l
   - Add before/after code examples
   - Create testing checklist
   - Add troubleshooting section
+
+
+
+
   - _Requirements: 15.1, 15.2, 15.3, 15.4, 15.5_
 
 - [ ]* 46. Finalize all documentation
@@ -581,6 +677,7 @@ Implementation plan ini akan mengubah seluruh styling aplikasi SIKOPMA menjadi l
   - _Requirements: 1.4, 1.5_
 
 - [ ] 47. Final validation and cleanup
+
   - Verify all requirements are met
   - Remove any unused CSS
   - Remove any unused components

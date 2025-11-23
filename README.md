@@ -120,7 +120,8 @@ SIKOPMA (Sistem Informasi Koperasi Mahasiswa) is a comprehensive web-based manag
 - **Caching**: Redis (optional)
 
 ### Frontend
-- **CSS Framework**: Tailwind CSS v4
+- **CSS Framework**: Tailwind CSS v4 (Optimized - 13.53 KB gzipped)
+- **Design System**: 29+ reusable Blade components
 - **JavaScript**: Alpine.js v3
 - **Charts**: Chart.js
 - **Date Picker**: Flatpickr
@@ -246,6 +247,7 @@ Complete reference for building SIKOPMA features with consistency and quality.
 ### 🎨 UI/UX Documentation
 - **[UI_IMPROVEMENTS.md](UI_IMPROVEMENTS.md)** - UI/UX improvements and design system
 - **[FINAL_UI_UPDATE_SUMMARY.md](FINAL_UI_UPDATE_SUMMARY.md)** - Latest UI updates summary
+- **[Tailwind Optimization](.kiro/specs/tailwind-styling-optimization/)** - Complete Tailwind CSS v4 optimization documentation
 
 ### Essential Guides
 

@@ -1,16 +1,16 @@
 @php
 // Navigation link base classes
-$linkBaseClasses = 'flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2';
-$linkActiveClasses = 'bg-primary-50 text-primary-700';
+$linkBaseClasses = 'flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2';
+$linkActiveClasses = 'bg-indigo-50 text-indigo-700';
 $linkInactiveClasses = 'text-gray-700 hover:bg-gray-100 hover:text-gray-900';
 
 // Submenu link classes
-$submenuLinkBaseClasses = 'block px-3 py-2 text-sm rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2';
-$submenuLinkActiveClasses = 'bg-primary-50 text-primary-700 font-medium';
+$submenuLinkBaseClasses = 'block px-3 py-2 text-sm rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2';
+$submenuLinkActiveClasses = 'bg-indigo-50 text-indigo-700 font-medium';
 $submenuLinkInactiveClasses = 'text-gray-600 hover:bg-gray-100 hover:text-gray-900';
 
 // Dropdown button classes
-$dropdownButtonBaseClasses = 'w-full flex items-center justify-between px-3 py-2 text-sm font-medium rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2';
+$dropdownButtonBaseClasses = 'w-full flex items-center justify-between px-3 py-2 text-sm font-medium rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2';
 @endphp
 
 {{-- Dashboard --}}

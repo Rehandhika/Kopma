@@ -1,337 +1,300 @@
 <div class="p-6">
-    {{-- Flash Messages --}}
     @if (session()->has('success'))
-    <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 3000)" 
-         class="mb-4 p-4 bg-green-50 border border-green-200 text-green-800 rounded-lg">
-        {{ session('success') }}
-    </div>
+        <x-ui.alert variant="success" dismissible class="mb-4">
+            {{ session('success') }}
+        </x-ui.alert>
     @endif
     
     @if (session()->has('error'))
-    <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 3000)" 
-         class="mb-4 p-4 bg-red-50 border border-red-200 text-red-800 rounded-lg">
-        {{ session('error') }}
-    </div>
+        <x-ui.alert variant="danger" dismissible class="mb-4">
+            {{ session('error') }}
+        </x-ui.alert>
     @endif
 
-    {{-- Header --}}
-    <div class="flex justify-between items-center mb-6">
-        <div>
-            <h1 class="text-2xl font-bold text-gray-900">Manajemen Produk</h1>
-            <p class="mt-1 text-sm text-gray-600">Kelola produk untuk penjualan</p>
-        </div>
-        <button wire:click="create" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition flex items-center space-x-2">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-            </svg>
-            <span>Tambah Produk</span>
-        </button>
-    </div>
-
-    {{-- Stats Cards --}}
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <div class="bg-white rounded-lg shadow p-4">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-sm text-gray-600">Total Produk</p>
-                    <p class="text-2xl font-bold text-gray-900">{{ $stats['total'] }}</p>
-                </div>
-                <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                    <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
-                    </svg>
-                </div>
-            </div>
-        </div>
-
-        <div class="bg-white rounded-lg shadow p-4">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-sm text-gray-600">Produk Aktif</p>
-                    <p class="text-2xl font-bold text-green-600">{{ $stats['active'] }}</p>
-                </div>
-                <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                    <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                    </svg>
-                </div>
-            </div>
-        </div>
-
-        <div class="bg-white rounded-lg shadow p-4">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-sm text-gray-600">Stok Menipis</p>
-                    <p class="text-2xl font-bold text-yellow-600">{{ $stats['low_stock'] }}</p>
-                </div>
-                <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
-                    <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
-                    </svg>
-                </div>
-            </div>
-        </div>
-
-        <div class="bg-white rounded-lg shadow p-4">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-sm text-gray-600">Stok Habis</p>
-                    <p class="text-2xl font-bold text-red-600">{{ $stats['out_of_stock'] }}</p>
-                </div>
-                <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
-                    <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                    </svg>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    {{-- Filters --}}
-    <div class="bg-white rounded-lg shadow p-4 mb-6">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Cari Produk</label>
-                <input wire:model.live.debounce.300ms="search" type="text" placeholder="Nama, SKU, Kategori..." 
-                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-            </div>
-
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
-                <select wire:model.live="statusFilter" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
-                    <option value="all">Semua Status</option>
-                    <option value="active">Aktif</option>
-                    <option value="inactive">Nonaktif</option>
-                </select>
-            </div>
-
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Kategori</label>
-                <select wire:model.live="categoryFilter" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
-                    <option value="all">Semua Kategori</option>
-                    @foreach($categories as $cat)
-                        <option value="{{ $cat }}">{{ $cat }}</option>
-                    @endforeach
-                </select>
-            </div>
-
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Stok</label>
-                <select wire:model.live="stockFilter" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
-                    <option value="all">Semua Stok</option>
-                    <option value="available">Tersedia</option>
-                    <option value="low">Stok Menipis</option>
-                    <option value="out">Stok Habis</option>
-                </select>
-            </div>
-        </div>
-    </div>
-
-    {{-- Products Table --}}
-    <div class="bg-white rounded-lg shadow overflow-hidden">
-        <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
-                    <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Produk</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">SKU</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kategori</th>
-                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Harga</th>
-                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Stok</th>
-                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
-                    @forelse ($products as $product)
-                    <tr class="hover:bg-gray-50">
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="font-medium text-gray-900">{{ $product->name }}</div>
-                            @if($product->description)
-                            <div class="text-sm text-gray-500 truncate max-w-xs">{{ Str::limit($product->description, 50) }}</div>
-                            @endif
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                            {{ $product->sku ?? '-' }}
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            @if($product->category)
-                            <span class="px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">
-                                {{ $product->category }}
-                            </span>
-                            @else
-                            <span class="text-sm text-gray-400">-</span>
-                            @endif
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-right font-semibold text-gray-900">
-                            Rp {{ number_format($product->price, 0, ',', '.') }}
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-center">
-                            <span @class([
-                                'px-3 py-1 text-sm font-semibold rounded-full',
-                                'bg-green-100 text-green-800' => $product->stock > $product->min_stock,
-                                'bg-yellow-100 text-yellow-800' => $product->isLowStock() && !$product->isOutOfStock(),
-                                'bg-red-100 text-red-800' => $product->isOutOfStock(),
-                            ])>
-                                {{ $product->stock }}
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-center">
-                            <button wire:click="toggleStatus({{ $product->id }})" 
-                                    @class([
-                                        'px-3 py-1 text-xs font-medium rounded-full transition',
-                                        'bg-green-100 text-green-800 hover:bg-green-200' => $product->status === 'active',
-                                        'bg-gray-100 text-gray-800 hover:bg-gray-200' => $product->status === 'inactive',
-                                    ])>
-                                {{ $product->status === 'active' ? 'Aktif' : 'Nonaktif' }}
-                            </button>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
-                            <button wire:click="edit({{ $product->id }})" class="text-blue-600 hover:text-blue-900">
-                                Edit
-                            </button>
-                            <button wire:click="delete({{ $product->id }})" 
-                                    wire:confirm="Yakin ingin menghapus produk ini?"
-                                    class="text-red-600 hover:text-red-900">
-                                Hapus
-                            </button>
-                        </td>
-                    </tr>
-                    @empty
-                    <tr>
-                        <td colspan="7" class="px-6 py-12 text-center">
-                            <svg class="w-16 h-16 mx-auto mb-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
-                            </svg>
-                            <p class="text-gray-500 font-medium">Tidak ada produk ditemukan</p>
-                            <p class="text-sm text-gray-400 mt-1">Coba ubah filter atau tambah produk baru</p>
-                        </td>
-                    </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-
-        <div class="px-6 py-4 border-t border-gray-200">
-            {{ $products->links() }}
-        </div>
-    </div>
-
-    {{-- Modal Form --}}
-    @if($showModal)
-    <div 
-        x-data
-        @keydown.escape.window="$wire.set('showModal', false)"
-        class="fixed inset-0 bg-gray-900/75 flex items-center justify-center z-50 p-0 md:p-4"
-        @click.self="$wire.set('showModal', false)"
+    <x-layout.page-header 
+        title="Manajemen Produk"
+        description="Kelola produk untuk penjualan"
     >
-        <div class="bg-white rounded-none md:rounded-lg shadow-xl w-screen h-screen md:h-auto md:w-full md:max-w-2xl md:max-h-[90vh] overflow-y-auto">
-            <div class="p-4 md:p-6">
-                <h3 class="text-2xl font-bold text-gray-900 mb-6">
-                    {{ $editingId ? 'Edit Produk' : 'Tambah Produk Baru' }}
-                </h3>
+        <x-slot:actions>
+            <x-ui.button 
+                variant="primary" 
+                icon="plus"
+                wire:click="create"
+            >
+                Tambah Produk
+            </x-ui.button>
+        </x-slot:actions>
+    </x-layout.page-header>
 
-                <form wire:submit.prevent="save">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
-                        {{-- Name --}}
-                        <div class="md:col-span-2">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Nama Produk *</label>
-                            <input wire:model="name" type="text" autofocus
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            @error('name') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-                        </div>
+    <x-layout.grid cols="4" class="mb-6">
+        <x-layout.stat-card 
+            label="Total Produk"
+            :value="$stats['total']"
+            icon="cube"
+            icon-color="bg-primary-100"
+            icon-text-color="text-primary-600"
+        />
 
-                        {{-- SKU --}}
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">SKU</label>
-                            <input wire:model="sku" type="text" placeholder="Opsional"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            @error('sku') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-                        </div>
+        <x-layout.stat-card 
+            label="Produk Aktif"
+            :value="$stats['active']"
+            icon="check-circle"
+            icon-color="bg-success-100"
+            icon-text-color="text-success-600"
+        />
 
-                        {{-- Category --}}
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Kategori</label>
-                            <input wire:model="category" type="text" list="categories" placeholder="Opsional"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            <datalist id="categories">
-                                @foreach($categories as $cat)
-                                    <option value="{{ $cat }}">
-                                @endforeach
-                            </datalist>
-                            @error('category') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-                        </div>
+        <x-layout.stat-card 
+            label="Stok Menipis"
+            :value="$stats['low_stock']"
+            icon="exclamation-triangle"
+            icon-color="bg-warning-100"
+            icon-text-color="text-warning-600"
+        />
 
-                        {{-- Price --}}
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Harga *</label>
-                            <div class="relative">
-                                <span class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500">Rp</span>
-                                <input wire:model="price" type="number" min="0" step="100"
-                                    class="w-full pl-12 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            </div>
-                            @error('price') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-                        </div>
+        <x-layout.stat-card 
+            label="Stok Habis"
+            :value="$stats['out_of_stock']"
+            icon="x-circle"
+            icon-color="bg-danger-100"
+            icon-text-color="text-danger-600"
+        />
+    </x-layout.grid>
 
-                        {{-- Stock --}}
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Stok Awal *</label>
-                            <input wire:model="stock" type="number" min="0"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            @error('stock') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-                        </div>
+    <x-ui.card class="mb-6">
+        <x-layout.grid cols="4">
+            <x-ui.input 
+                label="Cari Produk"
+                type="text"
+                wire:model.live.debounce.300ms="search"
+                placeholder="Nama, SKU, Kategori..."
+            />
 
-                        {{-- Min Stock --}}
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Stok Minimum *</label>
-                            <input wire:model="min_stock" type="number" min="0"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            @error('min_stock') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-                        </div>
+            <x-ui.select 
+                label="Status"
+                wire:model.live="statusFilter"
+                placeholder="Semua Status"
+                :options="[
+                    'active' => 'Aktif',
+                    'inactive' => 'Nonaktif'
+                ]"
+            />
 
-                        {{-- Status --}}
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Status *</label>
-                            <select wire:model="status" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
-                                <option value="active">Aktif</option>
-                                <option value="inactive">Nonaktif</option>
-                            </select>
-                            @error('status') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-                        </div>
+            <x-ui.select 
+                label="Kategori"
+                wire:model.live="categoryFilter"
+                placeholder="Semua Kategori"
+                :options="collect($categories)->mapWithKeys(fn($cat) => [$cat => $cat])->toArray()"
+            />
 
-                        {{-- Description --}}
-                        <div class="md:col-span-2">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Deskripsi</label>
-                            <textarea wire:model="description" rows="3" placeholder="Opsional"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
-                            @error('description') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-                        </div>
+            <x-ui.select 
+                label="Stok"
+                wire:model.live="stockFilter"
+                placeholder="Semua Stok"
+                :options="[
+                    'available' => 'Tersedia',
+                    'low' => 'Stok Menipis',
+                    'out' => 'Stok Habis'
+                ]"
+            />
+        </x-layout.grid>
+    </x-ui.card>
+
+    <x-data.table :headers="['Produk', 'SKU', 'Kategori', 'Harga', 'Stok', 'Status', 'Aksi']">
+        @forelse ($products as $product)
+            <x-data.table-row>
+                <x-data.table-cell>
+                    <div class="font-medium text-gray-900">{{ $product->name }}</div>
+                    @if($product->description)
+                        <div class="text-sm text-gray-500 truncate max-w-xs">{{ Str::limit($product->description, 50) }}</div>
+                    @endif
+                </x-data.table-cell>
+                <x-data.table-cell>
+                    {{ $product->sku ?? '-' }}
+                </x-data.table-cell>
+                <x-data.table-cell>
+                    @if($product->category)
+                        <x-ui.badge variant="info" size="sm">{{ $product->category }}</x-ui.badge>
+                    @else
+                        <span class="text-sm text-gray-400">-</span>
+                    @endif
+                </x-data.table-cell>
+                <x-data.table-cell>
+                    <span class="font-semibold text-gray-900">Rp {{ number_format($product->price, 0, ',', '.') }}</span>
+                </x-data.table-cell>
+                <x-data.table-cell>
+                    @if($product->stock > $product->min_stock)
+                        <x-ui.badge variant="success">{{ $product->stock }}</x-ui.badge>
+                    @elseif($product->isLowStock() && !$product->isOutOfStock())
+                        <x-ui.badge variant="warning">{{ $product->stock }}</x-ui.badge>
+                    @else
+                        <x-ui.badge variant="danger">{{ $product->stock }}</x-ui.badge>
+                    @endif
+                </x-data.table-cell>
+                <x-data.table-cell>
+                    <x-ui.button 
+                        :variant="$product->status === 'active' ? 'success' : 'secondary'"
+                        size="sm"
+                        wire:click="toggleStatus({{ $product->id }})"
+                    >
+                        {{ $product->status === 'active' ? 'Aktif' : 'Nonaktif' }}
+                    </x-ui.button>
+                </x-data.table-cell>
+                <x-data.table-cell>
+                    <div class="flex items-center justify-end space-x-2">
+                        <x-ui.button 
+                            variant="ghost" 
+                            size="sm"
+                            wire:click="edit({{ $product->id }})"
+                        >
+                            Edit
+                        </x-ui.button>
+                        <x-ui.button 
+                            variant="ghost" 
+                            size="sm"
+                            wire:click="delete({{ $product->id }})"
+                            wire:confirm="Yakin ingin menghapus produk ini?"
+                        >
+                            Hapus
+                        </x-ui.button>
                     </div>
+                </x-data.table-cell>
+            </x-data.table-row>
+        @empty
+            <tr>
+                <td colspan="7">
+                    <x-layout.empty-state 
+                        icon="cube"
+                        title="Tidak ada produk ditemukan"
+                        description="Coba ubah filter atau tambah produk baru"
+                    >
+                        <x-slot:action>
+                            <x-ui.button 
+                                variant="primary"
+                                icon="plus"
+                                wire:click="create"
+                            >
+                                Tambah Produk
+                            </x-ui.button>
+                        </x-slot:action>
+                    </x-layout.empty-state>
+                </td>
+            </tr>
+        @endforelse
+    </x-data.table>
 
-                    {{-- Actions --}}
-                    <div class="flex flex-col-reverse md:flex-row md:justify-end md:space-x-3 gap-3 mt-6 pt-6 border-t border-gray-200">
-                        <button type="button" wire:click="$set('showModal', false)" 
-                            class="px-6 py-3 md:py-2 bg-gray-200 text-gray-800 font-medium rounded-lg hover:bg-gray-300 transition w-full md:w-auto">
-                            Batal
-                        </button>
-                        <button type="submit" 
-                            wire:loading.attr="disabled"
-                            class="px-6 py-3 md:py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition disabled:opacity-50 w-full md:w-auto">
-                            <span wire:loading.remove wire:target="save">{{ $editingId ? 'Update' : 'Simpan' }}</span>
-                            <span wire:loading wire:target="save">Menyimpan...</span>
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
+    <div class="mt-4">
+        {{ $products->links() }}
     </div>
+
+    @if($showModal)
+        <x-ui.modal 
+            name="product-form"
+            :title="$editingId ? 'Edit Produk' : 'Tambah Produk Baru'"
+            max-width="2xl"
+            x-data="{ show: @entangle('showModal') }"
+            x-show="show"
+        >
+            <form wire:submit.prevent="save">
+                <x-layout.grid cols="2">
+                    <div class="md:col-span-2">
+                        <x-ui.input 
+                            label="Nama Produk"
+                            type="text"
+                            wire:model="name"
+                            required
+                            :error="$errors->first('name')"
+                        />
+                    </div>
+
+                    <x-ui.input 
+                        label="SKU"
+                        type="text"
+                        wire:model="sku"
+                        placeholder="Opsional"
+                        :error="$errors->first('sku')"
+                    />
+
+                    <x-ui.input 
+                        label="Kategori"
+                        type="text"
+                        wire:model="category"
+                        placeholder="Opsional"
+                        :error="$errors->first('category')"
+                    />
+
+                    <x-ui.input 
+                        label="Harga"
+                        type="number"
+                        wire:model="price"
+                        required
+                        help="Masukkan harga dalam Rupiah"
+                        :error="$errors->first('price')"
+                    />
+
+                    <x-ui.input 
+                        label="Stok Awal"
+                        type="number"
+                        wire:model="stock"
+                        required
+                        :error="$errors->first('stock')"
+                    />
+
+                    <x-ui.input 
+                        label="Stok Minimum"
+                        type="number"
+                        wire:model="min_stock"
+                        required
+                        :error="$errors->first('min_stock')"
+                    />
+
+                    <x-ui.select 
+                        label="Status"
+                        wire:model="status"
+                        :options="[
+                            'active' => 'Aktif',
+                            'inactive' => 'Nonaktif'
+                        ]"
+                        required
+                        :error="$errors->first('status')"
+                    />
+
+                    <div class="md:col-span-2">
+                        <x-ui.textarea 
+                            label="Deskripsi"
+                            wire:model="description"
+                            rows="3"
+                            placeholder="Opsional"
+                            :error="$errors->first('description')"
+                        />
+                    </div>
+                </x-layout.grid>
+
+                <x-slot:footer>
+                    <x-ui.button 
+                        variant="white"
+                        type="button"
+                        wire:click="$set('showModal', false)"
+                    >
+                        Batal
+                    </x-ui.button>
+                    <x-ui.button 
+                        variant="primary"
+                        type="submit"
+                        :loading="$wire->loading('save')"
+                    >
+                        {{ $editingId ? 'Update' : 'Simpan' }}
+                    </x-ui.button>
+                </x-slot:footer>
+            </form>
+        </x-ui.modal>
     @endif
 
-    {{-- Loading State --}}
     <div wire:loading class="fixed inset-0 bg-gray-900/50 flex items-center justify-center z-40">
-        <div class="bg-white rounded-lg p-6 shadow-xl">
-            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-            <p class="mt-4 text-gray-700 font-medium">Memuat...</p>
-        </div>
+        <x-ui.card class="p-6">
+            <div class="text-center">
+                <x-ui.spinner size="lg" class="mx-auto mb-4" />
+                <p class="text-gray-700 font-medium">Memuat...</p>
+            </div>
+        </x-ui.card>
     </div>
 </div>

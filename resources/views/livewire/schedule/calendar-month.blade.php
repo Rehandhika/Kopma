@@ -59,9 +59,9 @@
                         {{ $date->format('d') }}
                     </span>
                     @if($dayData && $dayData['total_schedules'] > 0)
-                        <span class="text-xs bg-indigo-100 text-indigo-800 px-1 rounded">
+                        <x-ui.badge variant="info" size="sm">
                             {{ $dayData['total_schedules'] }}
-                        </span>
+                        </x-ui.badge>
                     @endif
                 </div>
             </div>
@@ -80,7 +80,7 @@
                                 </svg>
                                 <div class="truncate flex-1">
                                     <div class="font-medium">{{ $schedule->user->name }}</div>
-                                    <div class="text-indigo-600">Sesi {{ $session }}</div>
+                                    <x-ui.badge variant="info" size="sm" class="mt-0.5">Sesi {{ $session }}</x-ui.badge>
                                 </div>
                             </div>
                         </div>

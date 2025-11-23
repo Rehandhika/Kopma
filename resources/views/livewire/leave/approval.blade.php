@@ -1,130 +1,127 @@
 <div class="space-y-6">
-    <div class="flex items-center justify-between">
-        <h2 class="text-2xl font-bold text-gray-900">Persetujuan Cuti</h2>
-        <div class="flex items-center space-x-4">
-            <div class="bg-yellow-100 px-4 py-2 rounded-lg">
-                <span class="text-sm text-yellow-800">Menunggu: <strong>{{ $stats['pending'] }}</strong></span>
+    <x-layout.page-header 
+        title="Persetujuan Cuti"
+        description="Kelola persetujuan permintaan cuti anggota">
+        <x-slot:actions>
+            <div class="flex items-center space-x-4">
+                <x-ui.badge variant="warning" size="md">
+                    Menunggu: <strong>{{ $stats['pending'] }}</strong>
+                </x-ui.badge>
+                <x-ui.badge variant="success" size="md">
+                    Disetujui Hari Ini: <strong>{{ $stats['approved_today'] }}</strong>
+                </x-ui.badge>
             </div>
-            <div class="bg-green-100 px-4 py-2 rounded-lg">
-                <span class="text-sm text-green-800">Disetujui Hari Ini: <strong>{{ $stats['approved_today'] }}</strong></span>
-            </div>
-        </div>
-    </div>
+        </x-slot:actions>
+    </x-layout.page-header>
 
-    <div class="bg-white rounded-lg shadow overflow-hidden">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Tanggal Pengajuan</th>
-                    <th>Anggota</th>
-                    <th>Jenis Cuti</th>
-                    <th>Periode</th>
-                    <th>Durasi</th>
-                    <th>Alasan</th>
-                    <th>Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($leaves as $leave)
-                    <tr>
-                        <td>{{ $leave->created_at->format('d/m/Y H:i') }}</td>
-                        <td>
-                            <div class="font-medium">{{ $leave->user->name }}</div>
-                            <div class="text-sm text-gray-500">{{ $leave->user->nim }}</div>
-                        </td>
-                        <td>{{ $leave->leaveType->name ?? '-' }}</td>
-                        <td>
-                            <div class="text-sm">
-                                {{ $leave->date_from->format('d/m/Y') }} -
-                                {{ $leave->date_to->format('d/m/Y') }}
-                            </div>
-                        </td>
-                        <td>{{ $leave->days }} hari</td>
-                        <td>
-                            <div class="max-w-xs truncate">{{ $leave->reason }}</div>
-                        </td>
-                        <td>
-                            <div class="flex items-center space-x-2">
-                                <button wire:click="viewDetails({{ $leave->id }})" 
-                                        class="text-blue-600 hover:text-blue-800 text-sm">
-                                    Detail
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="7" class="text-center py-8 text-gray-500">
-                            Tidak ada permintaan cuti yang menunggu persetujuan
-                        </td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
-    </div>
+    <x-ui.card padding="false">
+        <x-data.table :headers="['Tanggal Pengajuan', 'Anggota', 'Jenis Cuti', 'Periode', 'Durasi', 'Alasan', 'Aksi']">
+            @forelse($leaves as $leave)
+                <x-data.table-row>
+                    <x-data.table-cell>{{ $leave->created_at->format('d/m/Y H:i') }}</x-data.table-cell>
+                    <x-data.table-cell>
+                        <div class="font-medium">{{ $leave->user->name }}</div>
+                        <div class="text-sm text-gray-500">{{ $leave->user->nim }}</div>
+                    </x-data.table-cell>
+                    <x-data.table-cell>{{ $leave->leaveType->name ?? '-' }}</x-data.table-cell>
+                    <x-data.table-cell>
+                        <div class="text-sm">
+                            {{ $leave->date_from->format('d/m/Y') }} -
+                            {{ $leave->date_to->format('d/m/Y') }}
+                        </div>
+                    </x-data.table-cell>
+                    <x-data.table-cell>{{ $leave->days }} hari</x-data.table-cell>
+                    <x-data.table-cell>
+                        <div class="max-w-xs truncate">{{ $leave->reason }}</div>
+                    </x-data.table-cell>
+                    <x-data.table-cell>
+                        <x-ui.button 
+                            variant="ghost" 
+                            size="sm"
+                            wire:click="viewDetails({{ $leave->id }})">
+                            Detail
+                        </x-ui.button>
+                    </x-data.table-cell>
+                </x-data.table-row>
+            @empty
+                <x-data.table-row>
+                    <x-data.table-cell colspan="7">
+                        <x-layout.empty-state 
+                            icon="clipboard-check"
+                            title="Tidak ada permintaan cuti yang menunggu persetujuan"
+                            description="Semua permintaan cuti telah ditinjau" />
+                    </x-data.table-cell>
+                </x-data.table-row>
+            @endforelse
+        </x-data.table>
+    </x-ui.card>
 
-    <div>{{ $leaves->links() }}</div>
+    <x-data.pagination :paginator="$leaves" />
 
-    <!-- Modal -->
     @if($showModal && $selectedLeave)
-        <div class="fixed inset-0 bg-gray-600 bg-opacity-75 flex items-center justify-center z-50" 
-             x-data @click.self="$wire.set('showModal', false)">
-            <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4">
-                <div class="px-6 py-4 border-b border-gray-200">
-                    <h3 class="text-lg font-semibold text-gray-900">Detail Permintaan Cuti</h3>
-                </div>
-                
-                <div class="px-6 py-4 space-y-4">
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="text-sm font-medium text-gray-500">Nama</label>
-                            <div class="mt-1 text-gray-900">{{ $selectedLeave->user->name }}</div>
-                        </div>
-                        <div>
-                            <label class="text-sm font-medium text-gray-500">NIM</label>
-                            <div class="mt-1 text-gray-900">{{ $selectedLeave->user->nim }}</div>
-                        </div>
-                        <div>
-                            <label class="text-sm font-medium text-gray-500">Jenis Cuti</label>
-                            <div class="mt-1 text-gray-900">{{ $selectedLeave->leaveType->name }}</div>
-                        </div>
-                        <div>
-                            <label class="text-sm font-medium text-gray-500">Durasi</label>
-                            <div class="mt-1 text-gray-900">{{ $selectedLeave->days }} hari</div>
-                        </div>
-                        <div class="col-span-2">
-                            <label class="text-sm font-medium text-gray-500">Periode</label>
-                            <div class="mt-1 text-gray-900">
-                                {{ $selectedLeave->date_from->format('d/m/Y') }} - 
-                                {{ $selectedLeave->date_to->format('d/m/Y') }}
-                            </div>
-                        </div>
-                        <div class="col-span-2">
-                            <label class="text-sm font-medium text-gray-500">Alasan</label>
-                            <div class="mt-1 text-gray-900">{{ $selectedLeave->reason }}</div>
-                        </div>
-                    </div>
-
+        <x-ui.modal 
+            name="leave-detail" 
+            title="Detail Permintaan Cuti"
+            maxWidth="2xl"
+            x-data 
+            x-show="true"
+            @click.away="$wire.set('showModal', false)">
+            
+            <div class="space-y-4">
+                <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="form-label">Catatan Persetujuan (Opsional)</label>
-                        <textarea wire:model="approvalNotes" rows="3" class="form-control"></textarea>
+                        <label class="text-sm font-medium text-gray-500">Nama</label>
+                        <div class="mt-1 text-gray-900">{{ $selectedLeave->user->name }}</div>
+                    </div>
+                    <div>
+                        <label class="text-sm font-medium text-gray-500">NIM</label>
+                        <div class="mt-1 text-gray-900">{{ $selectedLeave->user->nim }}</div>
+                    </div>
+                    <div>
+                        <label class="text-sm font-medium text-gray-500">Jenis Cuti</label>
+                        <div class="mt-1 text-gray-900">{{ $selectedLeave->leaveType->name }}</div>
+                    </div>
+                    <div>
+                        <label class="text-sm font-medium text-gray-500">Durasi</label>
+                        <div class="mt-1 text-gray-900">{{ $selectedLeave->days }} hari</div>
+                    </div>
+                    <div class="col-span-2">
+                        <label class="text-sm font-medium text-gray-500">Periode</label>
+                        <div class="mt-1 text-gray-900">
+                            {{ $selectedLeave->date_from->format('d/m/Y') }} - 
+                            {{ $selectedLeave->date_to->format('d/m/Y') }}
+                        </div>
+                    </div>
+                    <div class="col-span-2">
+                        <label class="text-sm font-medium text-gray-500">Alasan</label>
+                        <div class="mt-1 text-gray-900">{{ $selectedLeave->reason }}</div>
                     </div>
                 </div>
 
-                <div class="px-6 py-4 border-t border-gray-200 flex justify-end space-x-3">
-                    <button wire:click="$set('showModal', false)" class="btn btn-white">
-                        Batal
-                    </button>
-                    <button wire:click="reject({{ $selectedLeave->id }})" 
-                            class="btn btn-danger">
-                        Tolak
-                    </button>
-                    <button wire:click="approve({{ $selectedLeave->id }})" 
-                            class="btn btn-secondary">
-                        Setujui
-                    </button>
-                </div>
+                <x-ui.textarea 
+                    name="approvalNotes"
+                    label="Catatan Persetujuan (Opsional)"
+                    wire:model="approvalNotes"
+                    rows="3" />
             </div>
-        </div>
+
+            <x-slot:footer>
+                <x-ui.button 
+                    variant="white" 
+                    wire:click="$set('showModal', false)">
+                    Batal
+                </x-ui.button>
+                <x-ui.button 
+                    variant="danger" 
+                    wire:click="reject({{ $selectedLeave->id }})">
+                    Tolak
+                </x-ui.button>
+                <x-ui.button 
+                    variant="success" 
+                    wire:click="approve({{ $selectedLeave->id }})">
+                    Setujui
+                </x-ui.button>
+            </x-slot:footer>
+        </x-ui.modal>
     @endif
 </div>

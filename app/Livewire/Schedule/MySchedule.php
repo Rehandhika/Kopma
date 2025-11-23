@@ -52,6 +52,10 @@ class MySchedule extends Component
 
     public function getMySchedulesProperty()
     {
+        if (!$this->currentWeekStart || !$this->currentWeekEnd) {
+            $this->updateWeekDates();
+        }
+
         return ScheduleAssignment::query()
             ->where('user_id', auth()->id())
             ->whereBetween('date', [
@@ -69,6 +73,10 @@ class MySchedule extends Component
 
     public function getWeekDaysProperty()
     {
+        if (!$this->currentWeekStart) {
+            $this->updateWeekDates();
+        }
+
         $days = [];
         for ($i = 0; $i < 7; $i++) {
             $date = $this->currentWeekStart->copy()->addDays($i);
@@ -102,10 +110,17 @@ class MySchedule extends Component
 
     public function render()
     {
+        if (!$this->currentWeekStart || !$this->currentWeekEnd) {
+            $this->updateWeekDates();
+        }
+
         return view('livewire.schedule.my-schedule', [
             'mySchedules' => $this->mySchedules,
             'weekDays' => $this->weekDays,
             'upcomingSchedules' => $this->upcomingSchedules,
+            'currentWeekStart' => $this->currentWeekStart,
+            'currentWeekEnd' => $this->currentWeekEnd,
+            'weekOffset' => $this->weekOffset,
         ])->layout('layouts.app');
     }
 }

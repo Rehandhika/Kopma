@@ -7,12 +7,9 @@
                 <p class="mt-1 text-sm text-gray-600">Buat jadwal shift untuk periode mingguan (Senin-Kamis)</p>
             </div>
             <div class="flex items-center space-x-3">
-                <a href="{{ route('schedule.index') }}" class="btn btn-secondary">
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
-                    </svg>
+                <x-ui.button href="{{ route('schedule.index') }}" variant="secondary" icon="arrow-left">
                     Kembali
-                </a>
+                </x-ui.button>
             </div>
         </div>
     </div>
@@ -44,28 +41,22 @@
             <div class="flex items-center space-x-4">
                 <h2 class="text-lg font-semibold text-gray-900">Mode Pembuatan</h2>
                 <div class="flex items-center space-x-2">
-                    <button wire:click="$set('mode', 'manual')" 
-                            class="px-4 py-2 rounded-lg text-sm font-medium transition-colors {{ $mode === 'manual' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }}">
+                    <x-ui.button 
+                        wire:click="$set('mode', 'manual')" 
+                        :variant="$mode === 'manual' ? 'primary' : 'white'"
+                        size="sm">
                         Manual
-                    </button>
-                    <button wire:click="autoAssign" 
-                            class="px-4 py-2 rounded-lg text-sm font-medium transition-colors {{ $mode === 'auto' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }}"
-                            wire:loading.attr="disabled"
-                            wire:loading.class="opacity-50 cursor-not-allowed">
-                        <span wire:loading.remove wire:target="autoAssign" class="flex items-center">
-                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-                            </svg>
-                            Auto Assign
-                        </span>
-                        <span wire:loading wire:target="autoAssign" class="flex items-center">
-                            <svg class="animate-spin w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24">
-                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                            </svg>
-                            Generating...
-                        </span>
-                    </button>
+                    </x-ui.button>
+                    <x-ui.button 
+                        wire:click="autoAssign" 
+                        :variant="$mode === 'auto' ? 'primary' : 'white'"
+                        size="sm"
+                        icon="lightning-bolt"
+                        :loading="false"
+                        wire:loading.attr="disabled">
+                        <span wire:loading.remove wire:target="autoAssign">Auto Assign</span>
+                        <span wire:loading wire:target="autoAssign">Generating...</span>
+                    </x-ui.button>
                 </div>
             </div>
             
@@ -95,12 +86,9 @@
                 
                 @if(!empty($templates))
                 <div class="relative" x-data="{ open: false }">
-                    <button @click="open = !open" class="btn btn-secondary">
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                        </svg>
+                    <x-ui.button @click="open = !open" variant="secondary" icon="document-text">
                         Load Template
-                    </button>
+                    </x-ui.button>
                     <div x-show="open" @click.away="open = false" 
                          class="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg z-10 max-h-64 overflow-y-auto">
                         @foreach($templates as $template)
@@ -116,15 +104,10 @@
                 
                 {{-- Bulk Actions Dropdown --}}
                 <div class="relative" x-data="{ open: false }">
-                    <button @click="open = !open" class="btn btn-secondary">
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-                        </svg>
+                    <x-ui.button @click="open = !open" variant="secondary" icon="menu">
                         Bulk Actions
-                        <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                        </svg>
-                    </button>
+                        <x-ui.icon name="chevron-down" class="w-4 h-4 ml-2" />
+                    </x-ui.button>
                     <div x-show="open" @click.away="open = false" 
                          class="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg z-10 border border-gray-200">
                         <button @click="$dispatch('open-bulk-assign-modal', { type: 'allSessions' }); open = false" 
@@ -232,12 +215,13 @@
                                                 <div class="text-xs text-gray-500">{{ $assignment['user_nim'] }}</div>
                                             </div>
                                         </div>
-                                        <button wire:click="removeAssignment('{{ $dateStr }}', {{ $session }})" 
-                                                class="text-red-600 hover:text-red-800">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                                            </svg>
-                                        </button>
+                                        <x-ui.button 
+                                            wire:click="removeAssignment('{{ $dateStr }}', {{ $session }})" 
+                                            variant="ghost" 
+                                            size="sm"
+                                            icon="x"
+                                            class="text-red-600 hover:text-red-800" />
+                                    </div>
                                     </div>
                                 @else
                                     <button wire:click="selectCell('{{ $dateStr }}', {{ $session }})" 
@@ -253,14 +237,14 @@
                             {{-- Actions Column --}}
                             <td class="px-6 py-4 text-center">
                                 <div class="flex items-center justify-center space-x-2">
-                                    <button wire:click="clearDay('{{ $dateStr }}')" 
-                                            wire:confirm="Yakin ingin menghapus semua assignment pada {{ $dayName }}, {{ $date->format('d M Y') }}?"
-                                            class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                                            title="Clear Day">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                                        </svg>
-                                    </button>
+                                    <x-ui.button 
+                                        wire:click="clearDay('{{ $dateStr }}')" 
+                                        wire:confirm="Yakin ingin menghapus semua assignment pada {{ $dayName }}, {{ $date->format('d M Y') }}?"
+                                        variant="ghost"
+                                        size="sm"
+                                        icon="trash"
+                                        class="text-red-600 hover:bg-red-50"
+                                        title="Clear Day" />
                                 </div>
                             </td>
                         </tr>
@@ -362,29 +346,23 @@
 
     {{-- Actions --}}
     <div class="flex items-center justify-end space-x-3">
-        <button wire:click="saveDraft" 
-                wire:loading.attr="disabled"
-                class="btn btn-secondary">
-            <span wire:loading.remove wire:target="saveDraft">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/>
-                </svg>
-                Save Draft
-            </span>
+        <x-ui.button 
+            wire:click="saveDraft" 
+            variant="secondary"
+            icon="save"
+            wire:loading.attr="disabled">
+            <span wire:loading.remove wire:target="saveDraft">Save Draft</span>
             <span wire:loading wire:target="saveDraft">Saving...</span>
-        </button>
+        </x-ui.button>
         
-        <button wire:click="publish" 
-                wire:loading.attr="disabled"
-                class="btn btn-primary">
-            <span wire:loading.remove wire:target="publish">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                </svg>
-                Publish Schedule
-            </span>
+        <x-ui.button 
+            wire:click="publish" 
+            variant="primary"
+            icon="check-circle"
+            wire:loading.attr="disabled">
+            <span wire:loading.remove wire:target="publish">Publish Schedule</span>
             <span wire:loading wire:target="publish">Publishing...</span>
-        </button>
+        </x-ui.button>
     </div>
 
     {{-- User Selector Modal --}}
@@ -440,13 +418,13 @@
                         <div class="flex items-center space-x-2">
                             <span class="text-sm text-gray-600">{{ $user['current_assignments'] }} shifts</span>
                             @if($user['has_conflict'])
-                            <span class="px-2 py-1 text-xs font-medium text-red-700 bg-red-100 rounded">Conflict</span>
+                            <x-ui.badge variant="danger" size="sm">Conflict</x-ui.badge>
                             @elseif($user['is_not_available'])
-                            <span class="px-2 py-1 text-xs font-medium text-yellow-700 bg-yellow-100 rounded">Not Available</span>
+                            <x-ui.badge variant="warning" size="sm">Not Available</x-ui.badge>
                             @elseif($user['is_available'])
-                            <span class="px-2 py-1 text-xs font-medium text-green-700 bg-green-100 rounded">Available</span>
+                            <x-ui.badge variant="success" size="sm">Available</x-ui.badge>
                             @else
-                            <span class="px-2 py-1 text-xs font-medium text-gray-700 bg-gray-100 rounded">No Data</span>
+                            <x-ui.badge variant="gray" size="sm">No Data</x-ui.badge>
                             @endif
                         </div>
                     </button>
@@ -463,8 +441,7 @@
          class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50">
         <div class="bg-white rounded-lg shadow-xl p-6 max-w-sm mx-4">
             <div class="flex items-center space-x-4">
-                <svg class="animate-spin h-8 w-8 text-blue-600" fill="none" viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <x-ui.spinner size="lg" />
                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
                 <div>

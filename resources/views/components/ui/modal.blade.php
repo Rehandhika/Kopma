@@ -19,7 +19,7 @@ $maxWidths = [
     x-data="{ show: false }"
     x-on:open-modal-{{ $name }}.window="show = true"
     x-on:close-modal-{{ $name }}.window="show = false"
-    x-on:keydown.escape.window="show = false"
+    @if($closeable) x-on:keydown.escape.window="show = false" @endif
     x-show="show"
     class="fixed inset-0 z-50 overflow-y-auto"
     style="display: none;"
@@ -57,7 +57,7 @@ $maxWidths = [
                 <button 
                     @click="show = false"
                     type="button"
-                    class="text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-primary-500 rounded-lg p-1"
+                    class="text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 rounded-lg p-1"
                 >
                     <x-ui.icon name="x" class="w-5 h-5" />
                 </button>

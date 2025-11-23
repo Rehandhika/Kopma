@@ -1,14 +1,12 @@
-<div class="p-6">
+<div class="space-y-6">
     <div class="max-w-3xl mx-auto">
-        {{-- Header --}}
-        <div class="mb-6">
-            <h1 class="text-2xl font-bold text-gray-900">Ajukan Cuti/Izin</h1>
-            <p class="mt-1 text-sm text-gray-600">Buat pengajuan cuti atau izin dengan mengisi formulir berikut</p>
-        </div>
+        <x-layout.page-header 
+            title="Ajukan Cuti/Izin"
+            description="Buat pengajuan cuti atau izin dengan mengisi formulir berikut" />
 
-        {{-- Form --}}
         <form wire:submit="submit">
-            <div class="bg-white rounded-lg shadow p-6 space-y-6">
+            <x-ui.card padding="true">
+                <div class="space-y-6">
                 {{-- Leave Type --}}
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-3">Jenis Cuti/Izin *</label>
@@ -64,46 +62,39 @@
                     @error('leave_type') <span class="text-red-500 text-sm mt-1">{{ $message }}</span> @enderror
                 </div>
 
-                {{-- Date Range --}}
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Tanggal Mulai *</label>
-                        <input wire:model.live="start_date" type="date" 
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        @error('start_date') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-                    </div>
+                    <x-ui.input 
+                        type="date"
+                        name="start_date"
+                        label="Tanggal Mulai"
+                        wire:model.live="start_date"
+                        required
+                        :error="$errors->first('start_date')" />
 
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Tanggal Selesai *</label>
-                        <input wire:model.live="end_date" type="date" 
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        @error('end_date') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-                    </div>
+                    <x-ui.input 
+                        type="date"
+                        name="end_date"
+                        label="Tanggal Selesai"
+                        wire:model.live="end_date"
+                        required
+                        :error="$errors->first('end_date')" />
                 </div>
 
-                {{-- Total Days Display --}}
                 @if($totalDays > 0)
-                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                    <div class="flex items-center">
-                        <svg class="w-5 h-5 text-blue-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                        <span class="text-sm text-blue-800">
-                            Total durasi: <strong>{{ $totalDays }} hari</strong>
-                        </span>
-                    </div>
-                </div>
+                    <x-ui.alert variant="info" :icon="true">
+                        Total durasi: <strong>{{ $totalDays }} hari</strong>
+                    </x-ui.alert>
                 @endif
 
-                {{-- Reason --}}
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Alasan *</label>
-                    <textarea wire:model="reason" rows="4" 
-                        placeholder="Jelaskan alasan cuti/izin Anda (minimal 10 karakter)"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
-                    @error('reason') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-                    <p class="text-xs text-gray-500 mt-1">{{ strlen($reason) }}/500 karakter</p>
-                </div>
+                <x-ui.textarea 
+                    name="reason"
+                    label="Alasan"
+                    wire:model="reason"
+                    rows="4"
+                    placeholder="Jelaskan alasan cuti/izin Anda (minimal 10 karakter)"
+                    required
+                    :error="$errors->first('reason')"
+                    help="{{ strlen($reason) }}/500 karakter" />
 
                 {{-- Attachment --}}
                 <div>
@@ -142,46 +133,44 @@
                     </div>
                 </div>
 
-                {{-- Info Box --}}
-                <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                    <div class="flex">
-                        <svg class="w-5 h-5 text-yellow-600 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                        <div class="text-sm text-yellow-800">
-                            <p class="font-medium mb-1">Catatan Penting:</p>
-                            <ul class="list-disc list-inside space-y-1">
-                                <li>Pengajuan akan ditinjau oleh admin</li>
-                                <li>Pastikan mengisi alasan dengan jelas</li>
-                                <li>Untuk sakit lebih dari 2 hari, lampirkan surat keterangan dokter</li>
-                                <li>Pengajuan darurat akan diprioritaskan</li>
-                            </ul>
-                        </div>
+                <x-ui.alert variant="warning" :icon="true">
+                    <div>
+                        <p class="font-medium mb-1">Catatan Penting:</p>
+                        <ul class="list-disc list-inside space-y-1 text-sm">
+                            <li>Pengajuan akan ditinjau oleh admin</li>
+                            <li>Pastikan mengisi alasan dengan jelas</li>
+                            <li>Untuk sakit lebih dari 2 hari, lampirkan surat keterangan dokter</li>
+                            <li>Pengajuan darurat akan diprioritaskan</li>
+                        </ul>
                     </div>
-                </div>
+                </x-ui.alert>
 
-                {{-- Actions --}}
                 <div class="flex justify-end space-x-3 pt-4 border-t border-gray-200">
-                    <a href="{{ route('leave.my-requests') }}" 
-                       class="px-6 py-2 bg-gray-200 text-gray-800 font-medium rounded-lg hover:bg-gray-300 transition">
+                    <x-ui.button 
+                        variant="white" 
+                        :href="route('leave.my-requests')">
                         Batal
-                    </a>
-                    <button type="submit" 
-                        wire:loading.attr="disabled"
-                        class="px-6 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition disabled:opacity-50">
+                    </x-ui.button>
+                    <x-ui.button 
+                        type="submit" 
+                        variant="primary"
+                        :loading="false"
+                        wire:loading.attr="disabled">
                         <span wire:loading.remove wire:target="submit">Ajukan Permohonan</span>
                         <span wire:loading wire:target="submit">Mengirim...</span>
-                    </button>
+                    </x-ui.button>
                 </div>
-            </div>
+                </div>
+            </x-ui.card>
         </form>
     </div>
 
-    {{-- Loading Overlay --}}
     <div wire:loading.flex wire:target="submit" class="fixed inset-0 bg-gray-900/50 flex items-center justify-center z-50">
-        <div class="bg-white rounded-lg p-6 shadow-xl">
-            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-            <p class="mt-4 text-gray-700 font-medium">Memproses pengajuan...</p>
-        </div>
+        <x-ui.card padding="true">
+            <div class="text-center">
+                <x-ui.spinner size="lg" class="mx-auto mb-4" />
+                <p class="text-gray-700 font-medium">Memproses pengajuan...</p>
+            </div>
+        </x-ui.card>
     </div>
 </div>
