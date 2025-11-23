@@ -308,10 +308,7 @@ class AvailabilityManager extends Component
         return $times[$session] ?? '';
     }
 
-    public function __invoke()
-    {
-        return $this->render();
-    }
+
 
     public function render()
     {

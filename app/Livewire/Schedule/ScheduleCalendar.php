@@ -67,6 +67,13 @@ class ScheduleCalendar extends Component
         $this->selectedAssignment = null;
     }
 
+    public function resetFilters()
+    {
+        $this->filterUser = '';
+        $this->filterSession = '';
+        $this->search = '';
+    }
+
     public function viewAssignment($assignmentId)
     {
         $this->selectedAssignment = ScheduleAssignment::with(['user', 'schedule'])
@@ -198,10 +205,7 @@ class ScheduleCalendar extends Component
         ]);
     }
 
-    public function __invoke()
-    {
-        return $this->render();
-    }
+
 
     public function render()
     {

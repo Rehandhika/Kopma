@@ -23,14 +23,15 @@ $isButton = !isset($attributes['panel']);
         role="tab"
     >
         @if($icon)
-            <x-ui.icon 
-                :name="$icon" 
+            <span 
                 class="mr-2 w-5 h-5"
                 :class="{
                     'text-indigo-500': activeTab === {{ $index }},
                     'text-gray-400 group-hover:text-gray-500': activeTab !== {{ $index }}
                 }"
-            />
+            >
+                <x-ui.icon :name="$icon" class="w-5 h-5" />
+            </span>
         @endif
         
         <span>{{ $name }}</span>

@@ -11,6 +11,7 @@ class Index extends Component
     use WithPagination;
 
     public $tab = 'my-requests'; // my-requests, received, all
+    public $search = '';
 
     public function cancelRequest($id)
     {

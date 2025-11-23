@@ -56,10 +56,22 @@ class CreateSchedule extends Component
     public $canUndo = false;
     public $canRedo = false;
 
-    protected $rules = [
-        'weekStartDate' => 'required|date',
-        'weekEndDate' => 'required|date|after:weekStartDate',
-        'notes' => 'nullable|string|max:500',
+    protected function rules()
+    {
+        return [
+            'weekStartDate' => 'required|date',
+            'weekEndDate' => 'required|date|after:weekStartDate',
+            'notes' => 'nullable|string|max:500',
+        ];
+    }
+    
+    protected $messages = [
+        'weekStartDate.required' => 'Tanggal mulai harus diisi.',
+        'weekStartDate.date' => 'Format tanggal mulai tidak valid.',
+        'weekEndDate.required' => 'Tanggal selesai harus diisi.',
+        'weekEndDate.date' => 'Format tanggal selesai tidak valid.',
+        'weekEndDate.after' => 'Tanggal selesai harus setelah tanggal mulai.',
+        'notes.max' => 'Catatan maksimal 500 karakter.',
     ];
 
     public function mount()
@@ -69,6 +81,10 @@ class CreateSchedule extends Component
         $this->weekStartDate = $nextMonday->format('Y-m-d');
         $this->weekEndDate = $nextMonday->copy()->addDays(3)->format('Y-m-d');
         
+        // Reset saving state
+        $this->isSaving = false;
+        $this->isLoading = false;
+        
         $this->initializeGrid();
         $this->loadTemplates();
         $this->updateStatistics();
@@ -76,6 +92,15 @@ class CreateSchedule extends Component
         
         // Save initial state to history
         $this->saveToHistory();
+    }
+    
+    /**
+     * Reset saving state (called on error or after action)
+     */
+    public function resetSavingState(): void
+    {
+        $this->isSaving = false;
+        $this->isLoading = false;
     }
 
     /**
@@ -656,12 +681,24 @@ class CreateSchedule extends Component
      */
     public function saveDraft()
     {
-        $this->validate();
+        // Validate form fields
+        try {
+            $this->validate([
+                'weekStartDate' => 'required|date',
+                'weekEndDate' => 'required|date|after:weekStartDate',
+                'notes' => 'nullable|string|max:500',
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            $this->dispatch('alert', type: 'error', message: 'Mohon periksa kembali tanggal yang diisi.');
+            throw $e;
+        }
+        
         $this->isSaving = true;
         
         try {
             // Check if there are any assignments
             if ($this->totalAssignments === 0) {
+                $this->isSaving = false;
                 $this->dispatch('alert', type: 'warning', message: 'Tidak ada assignment untuk disimpan.');
                 return;
             }
@@ -699,22 +736,28 @@ class CreateSchedule extends Component
             // Success notification
             $this->dispatch('alert', type: 'success', message: "Jadwal berhasil disimpan sebagai draft! {$assignmentCount} assignment ditambahkan.");
             
-            // Redirect to schedule list
-            return redirect()->route('schedule.index');
+            // Use Livewire redirect method
+            $this->redirect(route('schedule.index'), navigate: true);
             
         } catch (\Illuminate\Validation\ValidationException $e) {
             DB::rollBack();
-            // Let validation errors show in form
+            $this->isSaving = false;
+            
+            // Show validation error
+            $errorMessages = collect($e->errors())->flatten()->implode(' ');
+            $this->dispatch('alert', type: 'error', message: 'Validasi gagal: ' . $errorMessages);
+            
+            // Re-throw to show field errors
             throw $e;
         } catch (\Exception $e) {
             DB::rollBack();
+            $this->isSaving = false;
+            
             \Illuminate\Support\Facades\Log::error('Failed to save draft', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
             ]);
             $this->dispatch('alert', type: 'error', message: 'Gagal menyimpan jadwal: ' . $e->getMessage());
-        } finally {
-            $this->isSaving = false;
         }
     }
 
@@ -723,10 +766,36 @@ class CreateSchedule extends Component
      */
     public function publish()
     {
-        $this->validate();
+        \Illuminate\Support\Facades\Log::info('Publish method called', [
+            'user_id' => auth()->id(),
+            'weekStartDate' => $this->weekStartDate,
+            'weekEndDate' => $this->weekEndDate,
+            'totalAssignments' => $this->totalAssignments,
+        ]);
+        
+        // Validate form fields
+        try {
+            $this->validate([
+                'weekStartDate' => 'required|date',
+                'weekEndDate' => 'required|date|after:weekStartDate',
+                'notes' => 'nullable|string|max:500',
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            \Illuminate\Support\Facades\Log::error('Validation failed in publish', [
+                'errors' => $e->errors(),
+            ]);
+            $this->dispatch('alert', type: 'error', message: 'Mohon periksa kembali tanggal yang diisi.');
+            throw $e;
+        }
         
         // Validate schedule before publish
         $validation = $this->validateSchedule();
+        
+        \Illuminate\Support\Facades\Log::info('Schedule validation result', [
+            'valid' => $validation['valid'],
+            'errors' => $validation['errors'] ?? [],
+            'warnings' => $validation['warnings'] ?? [],
+        ]);
         
         if (!$validation['valid']) {
             // Show all errors
@@ -749,11 +818,14 @@ class CreateSchedule extends Component
         $this->isSaving = true;
         
         try {
+            \Illuminate\Support\Facades\Log::info('Starting database transaction for publish');
+            
             DB::beginTransaction();
             
             $scheduleService = app(ScheduleService::class);
             
             // Create schedule
+            \Illuminate\Support\Facades\Log::info('Creating schedule');
             $schedule = $scheduleService->createSchedule([
                 'week_start_date' => $this->weekStartDate,
                 'week_end_date' => $this->weekEndDate,
@@ -762,6 +834,8 @@ class CreateSchedule extends Component
             
             // Add assignments
             $assignmentCount = 0;
+            \Illuminate\Support\Facades\Log::info('Adding assignments', ['total' => count($this->assignments)]);
+            
             foreach ($this->assignments as $date => $sessions) {
                 foreach ($sessions as $session => $assignment) {
                     if ($assignment) {
@@ -775,7 +849,10 @@ class CreateSchedule extends Component
                 }
             }
             
+            \Illuminate\Support\Facades\Log::info('Assignments added', ['count' => $assignmentCount]);
+            
             // Publish schedule
+            \Illuminate\Support\Facades\Log::info('Publishing schedule');
             $scheduleService->publishSchedule($schedule);
             
             // Clear history after publish
@@ -784,6 +861,7 @@ class CreateSchedule extends Component
             $this->scheduleId = $schedule->id;
             
             DB::commit();
+            \Illuminate\Support\Facades\Log::info('Transaction committed successfully');
             
             // Log success
             \Illuminate\Support\Facades\Log::info('Schedule published successfully', [
@@ -800,24 +878,39 @@ class CreateSchedule extends Component
             
             $this->dispatch('alert', type: 'success', message: $message);
             
-            // Redirect to schedule list
-            return redirect()->route('schedule.index');
+            // Reset saving state before redirect
+            $this->isSaving = false;
+            
+            // Use Livewire redirect method
+            \Illuminate\Support\Facades\Log::info('Redirecting to schedule index');
+            $this->redirect(route('schedule.index'), navigate: true);
             
         } catch (\Illuminate\Validation\ValidationException $e) {
             DB::rollBack();
-            // Let validation errors show in form
+            $this->isSaving = false;
+            
+            \Illuminate\Support\Facades\Log::error('Validation exception during publish', [
+                'errors' => $e->errors(),
+            ]);
+            
+            // Show validation error
+            $errorMessages = collect($e->errors())->flatten()->implode(' ');
+            $this->dispatch('alert', type: 'error', message: 'Validasi gagal: ' . $errorMessages);
+            
+            // Re-throw to show field errors
             throw $e;
         } catch (\Exception $e) {
             DB::rollBack();
+            $this->isSaving = false;
             
             \Illuminate\Support\Facades\Log::error('Failed to publish schedule', [
                 'error' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
                 'trace' => $e->getTraceAsString(),
             ]);
             
             $this->dispatch('alert', type: 'error', message: 'Gagal publish jadwal: ' . $e->getMessage());
-        } finally {
-            $this->isSaving = false;
         }
     }
 

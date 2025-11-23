@@ -285,10 +285,7 @@ class ScheduleGenerator extends Component
         ];
     }
 
-    public function __invoke()
-    {
-        return $this->render();
-    }
+
 
     public function render()
     {

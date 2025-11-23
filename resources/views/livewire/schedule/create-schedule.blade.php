@@ -347,23 +347,42 @@
     {{-- Actions --}}
     <div class="flex items-center justify-end space-x-3">
         <x-ui.button 
-            wire:click="saveDraft" 
+            wire:click.prevent="saveDraft" 
             variant="secondary"
             icon="save"
-            wire:loading.attr="disabled">
+            :disabled="$isSaving"
+            wire:loading.attr="disabled"
+            wire:target="saveDraft,publish"
+            type="button">
             <span wire:loading.remove wire:target="saveDraft">Save Draft</span>
             <span wire:loading wire:target="saveDraft">Saving...</span>
         </x-ui.button>
         
         <x-ui.button 
-            wire:click="publish" 
+            wire:click.prevent="publish" 
             variant="primary"
             icon="check-circle"
-            wire:loading.attr="disabled">
+            :disabled="$isSaving"
+            wire:loading.attr="disabled"
+            wire:target="saveDraft,publish"
+            type="button">
             <span wire:loading.remove wire:target="publish">Publish Schedule</span>
             <span wire:loading wire:target="publish">Publishing...</span>
         </x-ui.button>
     </div>
+    
+    {{-- Debug Info (Remove in production) --}}
+    @if(config('app.debug'))
+    <div class="mt-4 p-4 bg-gray-100 rounded text-xs">
+        <strong>Debug Info:</strong><br>
+        isSaving: {{ $isSaving ? 'true' : 'false' }}<br>
+        isLoading: {{ $isLoading ? 'true' : 'false' }}<br>
+        totalAssignments: {{ $totalAssignments }}<br>
+        coverageRate: {{ $coverageRate }}%<br>
+        weekStartDate: {{ $weekStartDate }}<br>
+        weekEndDate: {{ $weekEndDate }}
+    </div>
+    @endif
 
     {{-- User Selector Modal --}}
     @if($showUserSelector)
@@ -740,3 +759,29 @@
     </div>
 
 </div>
+
+@push('scripts')
+<script>
+    // Debug Livewire events
+    document.addEventListener('livewire:init', () => {
+        console.log('Livewire initialized for CreateSchedule');
+        
+        Livewire.on('alert', (event) => {
+            console.log('Alert event received:', event);
+        });
+    });
+    
+    // Log button clicks for debugging
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('CreateSchedule page loaded');
+        
+        // Add click listener to debug button clicks
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('[wire\\:click*="publish"]') || e.target.closest('[wire\\:click*="saveDraft"]')) {
+                console.log('Button clicked:', e.target);
+                console.log('Wire click attribute:', e.target.getAttribute('wire:click'));
+            }
+        });
+    });
+</script>
+@endpush

@@ -314,12 +314,13 @@ class ScheduleService
 
             Notification::create([
                 'user_id' => $userId,
-                'type' => 'schedule_published',
+                'type' => 'info', // Changed from 'schedule_published' to valid enum value
                 'title' => 'Jadwal Shift Dipublikasikan',
                 'message' => $message,
                 'data' => json_encode([
                     'schedule_id' => $schedule->id,
                     'assignments_count' => $userAssignments->count(),
+                    'notification_type' => 'schedule_published', // Store actual type in data
                 ]),
                 'read_at' => null,
             ]);
