@@ -72,7 +72,7 @@
                                 <p class="text-sm font-medium text-gray-900 truncate">{{ auth()->user()->name }}</p>
                                 <p class="text-xs text-gray-500 truncate">{{ auth()->user()->nim }}</p>
                             </div>
-                            <form method="POST" action="{{ route('logout') }}" class="ml-3">
+                            <form method="POST" action="{{ route('admin.logout') }}" class="ml-3">
                                 @csrf
                                 <button type="submit" 
                                         class="text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-primary-500 rounded-lg p-1 transition-colors" 

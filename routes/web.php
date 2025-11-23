@@ -6,15 +6,26 @@ use App\Livewire\Dashboard\Index as DashboardIndex;
 
 /*
 |--------------------------------------------------------------------------
-| Public Routes
+| Public Routes (No Authentication Required)
 |--------------------------------------------------------------------------
 */
 
-Route::get('/', function () {
-    return auth()->check() 
-        ? redirect()->route('dashboard') 
-        : redirect()->route('login');
-})->name('home');
+// Public Catalog (Home)
+Route::get('/', \App\Livewire\Public\Catalog::class)->name('home');
+
+// Public Products
+Route::get('/products', \App\Livewire\Public\Catalog::class)->name('public.products');
+
+// Public Product Detail
+Route::get('/products/{slug}', \App\Livewire\Public\ProductDetail::class)->name('public.products.show');
+
+// Public About page
+Route::get('/about', \App\Livewire\Public\About::class)->name('public.about');
+
+// Temporary test route for public layout
+Route::get('/public-test', function () {
+    return view('public.test-layout');
+})->name('public.test');
 
 // Component Demo Routes (for testing - remove in production)
 Route::get('/demo/button', function () {
@@ -97,126 +108,156 @@ Route::get('/alpine-test', function () {
 */
 
 Route::middleware('guest')->group(function () {
-    Route::get('/login', \App\Livewire\Auth\LoginForm::class)->name('login');
+    Route::get('/admin/login', \App\Livewire\Auth\LoginForm::class)->name('login');
 });
 
 /*
 |--------------------------------------------------------------------------
-| Protected Routes (Requires Authentication)
+| Backward Compatibility Redirects
 |--------------------------------------------------------------------------
 */
 
-Route::middleware(['auth'])->group(function () {
-    // Dashboard
-    Route::get('/dashboard', DashboardIndex::class)->name('dashboard');
-    
-    // Logout
-    Route::post('/logout', [LogoutController::class, 'logout'])->name('logout');
-    
-    // Attendance
-    Route::prefix('attendance')->name('attendance.')->group(function () {
-        Route::get('/check-in-out', \App\Livewire\Attendance\CheckInOut::class)->name('check-in-out');
-        Route::get('/', \App\Livewire\Attendance\Index::class)->name('index');
-        Route::get('/history', \App\Livewire\Attendance\History::class)->name('history');
+Route::redirect('/login', '/admin/login');
+Route::redirect('/dashboard', '/admin/dashboard');
+Route::redirect('/attendance', '/admin/attendance');
+Route::redirect('/schedule', '/admin/schedule');
+Route::redirect('/cashier', '/admin/cashier');
+Route::redirect('/stock', '/admin/stock');
+Route::redirect('/purchase', '/admin/purchase');
+Route::redirect('/leave', '/admin/leave');
+Route::redirect('/swap', '/admin/swap');
+Route::redirect('/penalties', '/admin/penalties');
+Route::redirect('/reports', '/admin/reports');
+Route::redirect('/analytics', '/admin/analytics');
+Route::redirect('/users', '/admin/users');
+Route::redirect('/roles', '/admin/roles');
+Route::redirect('/settings', '/admin/settings');
+Route::redirect('/profile', '/admin/profile');
+Route::redirect('/notifications', '/admin/notifications');
+
+/*
+|--------------------------------------------------------------------------
+| Admin Routes (Requires Authentication)
+|--------------------------------------------------------------------------
+*/
+
+Route::prefix('admin')
+    ->middleware(['auth'])
+    ->name('admin.')
+    ->group(function () {
+        // Dashboard
+        Route::get('/dashboard', DashboardIndex::class)->name('dashboard');
+        
+        // Logout
+        Route::post('/logout', [LogoutController::class, 'logout'])->name('logout');
+        
+        // Attendance
+        Route::prefix('attendance')->name('attendance.')->group(function () {
+            Route::get('/check-in-out', \App\Livewire\Attendance\CheckInOut::class)->name('check-in-out');
+            Route::get('/', \App\Livewire\Attendance\Index::class)->name('index');
+            Route::get('/history', \App\Livewire\Attendance\History::class)->name('history');
+        });
+        
+        // Schedule
+        Route::prefix('schedule')->name('schedule.')->group(function () {
+            Route::get('/', \App\Livewire\Schedule\Index::class)->name('index');
+            Route::get('/create', \App\Livewire\Schedule\CreateSchedule::class)->name('create');
+            Route::get('/my-schedule', \App\Livewire\Schedule\MySchedule::class)->name('my-schedule');
+            Route::get('/availability', \App\Livewire\Schedule\AvailabilityManager::class)->name('availability');
+            Route::get('/test-availability', \App\Livewire\Schedule\TestAvailability::class)->name('test-availability');
+            Route::get('/calendar', \App\Livewire\Schedule\ScheduleCalendar::class)->name('calendar');
+            Route::get('/generator', \App\Livewire\Schedule\ScheduleGenerator::class)->name('generator');
+        });
+        
+        // Cashier / POS
+        Route::prefix('cashier')->name('cashier.')->group(function () {
+            Route::get('/pos', \App\Livewire\Cashier\Pos::class)->name('pos');
+            Route::get('/sales', \App\Livewire\Cashier\SalesList::class)->name('sales');
+        });
+        
+        // Products
+        Route::prefix('products')->name('products.')->group(function () {
+            Route::get('/', \App\Livewire\Product\Index::class)->name('index');
+            Route::get('/list', \App\Livewire\Product\ProductList::class)->name('list');
+            Route::get('/create', \App\Livewire\Product\CreateProduct::class)->name('create');
+            Route::get('/{product}/edit', \App\Livewire\Product\EditProduct::class)->name('edit');
+        });
+        
+        // Stock
+        Route::prefix('stock')->name('stock.')->group(function () {
+            Route::get('/', \App\Livewire\Stock\Index::class)->name('index');
+            Route::get('/adjustment', \App\Livewire\Stock\StockAdjustment::class)->name('adjustment');
+        });
+        
+        // Purchase
+        Route::prefix('purchase')->name('purchase.')->group(function () {
+            Route::get('/', \App\Livewire\Purchase\Index::class)->name('index');
+            Route::get('/list', \App\Livewire\Purchase\PurchaseList::class)->name('list');
+        });
+        
+        // Leave Requests
+        Route::prefix('leave')->name('leave.')->group(function () {
+            Route::get('/', \App\Livewire\Leave\Index::class)->name('index');
+            Route::get('/my-requests', \App\Livewire\Leave\MyRequests::class)->name('my-requests');
+            Route::get('/create', \App\Livewire\Leave\CreateRequest::class)->name('create');
+            Route::get('/approvals', \App\Livewire\Leave\PendingApprovals::class)->name('approvals');
+        });
+        
+        // Swap Requests
+        Route::prefix('swap')->name('swap.')->group(function () {
+            Route::get('/', \App\Livewire\Swap\Index::class)->name('index');
+            Route::get('/my-requests', \App\Livewire\Swap\MyRequests::class)->name('my-requests');
+            Route::get('/create', \App\Livewire\Swap\CreateRequest::class)->name('create');
+            Route::get('/approvals', \App\Livewire\Swap\PendingApprovals::class)->name('approvals');
+        });
+        
+        // Penalties
+        Route::prefix('penalties')->name('penalties.')->group(function () {
+            Route::get('/', \App\Livewire\Penalty\Index::class)->name('index');
+            Route::get('/my-penalties', \App\Livewire\Penalty\MyPenalties::class)->name('my-penalties');
+            Route::get('/manage', \App\Livewire\Penalty\ManagePenalties::class)->name('manage');
+        });
+        
+        // Reports
+        Route::prefix('reports')->name('reports.')->group(function () {
+            Route::get('/attendance', \App\Livewire\Report\AttendanceReport::class)->name('attendance');
+            Route::get('/sales', \App\Livewire\Report\SalesReport::class)->name('sales');
+            Route::get('/penalties', \App\Livewire\Report\PenaltyReport::class)->name('penalties');
+        });
+        
+        // Analytics
+        Route::prefix('analytics')->name('analytics.')->group(function () {
+            Route::get('/dashboard', \App\Livewire\Analytics\BIDashboard::class)->name('dashboard');
+        });
+        
+        // Users Management
+        Route::prefix('users')->name('users.')->group(function () {
+            Route::get('/', \App\Livewire\User\Index::class)->name('index');
+            Route::get('/management', \App\Livewire\User\UserManagement::class)->name('management');
+        });
+        
+        // Roles & Permissions
+        Route::prefix('roles')->name('roles.')->group(function () {
+            Route::get('/', \App\Livewire\Role\Index::class)->name('index');
+        });
+        
+        // Settings
+        Route::prefix('settings')->name('settings.')->group(function () {
+            Route::get('/general', \App\Livewire\Settings\General::class)->name('general');
+            Route::get('/system', \App\Livewire\Settings\SystemSettings::class)->name('system');
+            Route::get('/store', \App\Livewire\Admin\Settings\StoreSettings::class)
+                ->middleware('role:Super Admin|Ketua|Wakil Ketua')
+                ->name('store');
+        });
+        
+        // Profile
+        Route::prefix('profile')->name('profile.')->group(function () {
+            Route::get('/edit', \App\Livewire\Profile\Edit::class)->name('edit');
+        });
+        
+        // Notifications
+        Route::prefix('notifications')->name('notifications.')->group(function () {
+            Route::get('/', \App\Livewire\Notification\Index::class)->name('index');
+            Route::get('/my-notifications', \App\Livewire\Notification\MyNotifications::class)->name('my-notifications');
+        });
     });
-    
-    // Schedule
-    Route::prefix('schedule')->name('schedule.')->group(function () {
-        Route::get('/', \App\Livewire\Schedule\Index::class)->name('index');
-        Route::get('/create', \App\Livewire\Schedule\CreateSchedule::class)->name('create');
-        Route::get('/my-schedule', \App\Livewire\Schedule\MySchedule::class)->name('my-schedule');
-        Route::get('/availability', \App\Livewire\Schedule\AvailabilityManager::class)->name('availability');
-        Route::get('/test-availability', \App\Livewire\Schedule\TestAvailability::class)->name('test-availability');
-        Route::get('/calendar', \App\Livewire\Schedule\ScheduleCalendar::class)->name('calendar');
-        Route::get('/generator', \App\Livewire\Schedule\ScheduleGenerator::class)->name('generator');
-    });
-    
-    // Cashier / POS
-    Route::prefix('cashier')->name('cashier.')->group(function () {
-        Route::get('/pos', \App\Livewire\Cashier\Pos::class)->name('pos');
-        Route::get('/sales', \App\Livewire\Cashier\SalesList::class)->name('sales');
-    });
-    
-    // Products
-    Route::prefix('products')->name('products.')->group(function () {
-        Route::get('/', \App\Livewire\Product\Index::class)->name('index');
-        Route::get('/list', \App\Livewire\Product\ProductList::class)->name('list');
-        Route::get('/create', \App\Livewire\Product\CreateProduct::class)->name('create');
-        Route::get('/{product}/edit', \App\Livewire\Product\EditProduct::class)->name('edit');
-    });
-    
-    // Stock
-    Route::prefix('stock')->name('stock.')->group(function () {
-        Route::get('/', \App\Livewire\Stock\Index::class)->name('index');
-        Route::get('/adjustment', \App\Livewire\Stock\StockAdjustment::class)->name('adjustment');
-    });
-    
-    // Purchase
-    Route::prefix('purchase')->name('purchase.')->group(function () {
-        Route::get('/', \App\Livewire\Purchase\Index::class)->name('index');
-        Route::get('/list', \App\Livewire\Purchase\PurchaseList::class)->name('list');
-    });
-    
-    // Leave Requests
-    Route::prefix('leave')->name('leave.')->group(function () {
-        Route::get('/', \App\Livewire\Leave\Index::class)->name('index');
-        Route::get('/my-requests', \App\Livewire\Leave\MyRequests::class)->name('my-requests');
-        Route::get('/create', \App\Livewire\Leave\CreateRequest::class)->name('create');
-        Route::get('/approvals', \App\Livewire\Leave\PendingApprovals::class)->name('approvals');
-    });
-    
-    // Swap Requests
-    Route::prefix('swap')->name('swap.')->group(function () {
-        Route::get('/', \App\Livewire\Swap\Index::class)->name('index');
-        Route::get('/my-requests', \App\Livewire\Swap\MyRequests::class)->name('my-requests');
-        Route::get('/create', \App\Livewire\Swap\CreateRequest::class)->name('create');
-        Route::get('/approvals', \App\Livewire\Swap\PendingApprovals::class)->name('approvals');
-    });
-    
-    // Penalties
-    Route::prefix('penalties')->name('penalties.')->group(function () {
-        Route::get('/', \App\Livewire\Penalty\Index::class)->name('index');
-        Route::get('/my-penalties', \App\Livewire\Penalty\MyPenalties::class)->name('my-penalties');
-        Route::get('/manage', \App\Livewire\Penalty\ManagePenalties::class)->name('manage');
-    });
-    
-    // Reports
-    Route::prefix('reports')->name('reports.')->group(function () {
-        Route::get('/attendance', \App\Livewire\Report\AttendanceReport::class)->name('attendance');
-        Route::get('/sales', \App\Livewire\Report\SalesReport::class)->name('sales');
-        Route::get('/penalties', \App\Livewire\Report\PenaltyReport::class)->name('penalties');
-    });
-    
-    // Analytics
-    Route::prefix('analytics')->name('analytics.')->group(function () {
-        Route::get('/dashboard', \App\Livewire\Analytics\BIDashboard::class)->name('dashboard');
-    });
-    
-    // Users Management
-    Route::prefix('users')->name('users.')->group(function () {
-        Route::get('/', \App\Livewire\User\Index::class)->name('index');
-        Route::get('/management', \App\Livewire\User\UserManagement::class)->name('management');
-    });
-    
-    // Roles & Permissions
-    Route::prefix('roles')->name('roles.')->group(function () {
-        Route::get('/', \App\Livewire\Role\Index::class)->name('index');
-    });
-    
-    // Settings
-    Route::prefix('settings')->name('settings.')->group(function () {
-        Route::get('/general', \App\Livewire\Settings\General::class)->name('general');
-        Route::get('/system', \App\Livewire\Settings\SystemSettings::class)->name('system');
-    });
-    
-    // Profile
-    Route::prefix('profile')->name('profile.')->group(function () {
-        Route::get('/edit', \App\Livewire\Profile\Edit::class)->name('edit');
-    });
-    
-    // Notifications
-    Route::prefix('notifications')->name('notifications.')->group(function () {
-        Route::get('/', \App\Livewire\Notification\Index::class)->name('index');
-        Route::get('/my-notifications', \App\Livewire\Notification\MyNotifications::class)->name('my-notifications');
-    });
-});

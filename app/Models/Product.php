@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\{Model, SoftDeletes};
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Str;
 
 class Product extends Model
 {
@@ -18,15 +19,57 @@ class Product extends Model
         'category',
         'description',
         'status',
+        'slug',
+        'image_url',
+        'is_featured',
+        'is_public',
+        'display_order',
     ];
 
     protected $casts = [
         'price' => 'decimal:2',
         'stock' => 'integer',
         'min_stock' => 'integer',
+        'is_featured' => 'boolean',
+        'is_public' => 'boolean',
+        'display_order' => 'integer',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
+
+    // Boot method for automatic slug generation
+    protected static function boot()
+    {
+        parent::boot();
+        
+        static::creating(function ($product) {
+            if (empty($product->slug)) {
+                $product->slug = Str::slug($product->name);
+                
+                // Ensure slug is unique
+                $originalSlug = $product->slug;
+                $count = 1;
+                while (static::where('slug', $product->slug)->exists()) {
+                    $product->slug = $originalSlug . '-' . $count;
+                    $count++;
+                }
+            }
+        });
+        
+        static::updating(function ($product) {
+            if ($product->isDirty('name') && empty($product->slug)) {
+                $product->slug = Str::slug($product->name);
+                
+                // Ensure slug is unique
+                $originalSlug = $product->slug;
+                $count = 1;
+                while (static::where('slug', $product->slug)->where('id', '!=', $product->id)->exists()) {
+                    $product->slug = $originalSlug . '-' . $count;
+                    $count++;
+                }
+            }
+        });
+    }
 
     // Relationships
     public function saleItems()
@@ -63,6 +106,21 @@ class Product extends Model
     public function scopeInStock($query)
     {
         return $query->where('stock', '>', 0);
+    }
+
+    public function scopePublic($query)
+    {
+        return $query->where('is_public', true);
+    }
+
+    public function scopeFeatured($query)
+    {
+        return $query->where('is_featured', true);
+    }
+
+    public function scopeOrdered($query)
+    {
+        return $query->orderBy('display_order')->orderBy('name');
     }
 
     // Helpers

@@ -69,7 +69,7 @@ class LoginForm extends Component
             ]);
             
             // Redirect to dashboard
-            return redirect()->intended(route('dashboard'));
+            return redirect()->intended(route('admin.dashboard'));
         }
 
         // Increment rate limiter
