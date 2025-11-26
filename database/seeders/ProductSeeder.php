@@ -14,54 +14,92 @@ class ProductSeeder extends Seeder
             return;
         }
 
-        $categories = ['Minuman', 'Makanan', 'ATK', 'Kebutuhan Harian'];
-
         $items = [
-            ['name' => 'Air Mineral 600ml', 'price' => 4000, 'category' => 'Minuman'],
-            ['name' => 'Teh Botol 350ml', 'price' => 6000, 'category' => 'Minuman'],
-            ['name' => 'Kopi Kaleng', 'price' => 8000, 'category' => 'Minuman'],
-            ['name' => 'Mi Instan Goreng', 'price' => 3500, 'category' => 'Makanan'],
-            ['name' => 'Mi Instan Kuah', 'price' => 3500, 'category' => 'Makanan'],
-            ['name' => 'Biskuit Cokelat', 'price' => 7000, 'category' => 'Makanan'],
-            ['name' => 'Roti Tawar', 'price' => 15000, 'category' => 'Makanan'],
-            ['name' => 'Pulpen Biru', 'price' => 4000, 'category' => 'ATK'],
-            ['name' => 'Buku Tulis 38 Lbr', 'price' => 6000, 'category' => 'ATK'],
-            ['name' => 'Sabun Mandi', 'price' => 8000, 'category' => 'Kebutuhan Harian'],
-            ['name' => 'Sampo Sachet', 'price' => 2000, 'category' => 'Kebutuhan Harian'],
+            // Minuman
+            ['name' => 'Air Mineral 600ml', 'price' => 4000, 'category' => 'Minuman', 'stock' => 50],
+            ['name' => 'Teh Botol 350ml', 'price' => 6000, 'category' => 'Minuman', 'stock' => 40],
+            ['name' => 'Kopi Kaleng', 'price' => 8000, 'category' => 'Minuman', 'stock' => 30],
+            ['name' => 'Susu Kotak 200ml', 'price' => 7000, 'category' => 'Minuman', 'stock' => 25],
+            ['name' => 'Jus Buah Kemasan', 'price' => 9000, 'category' => 'Minuman', 'stock' => 20],
+            
+            // Makanan
+            ['name' => 'Mi Instan Goreng', 'price' => 3500, 'category' => 'Makanan', 'stock' => 60],
+            ['name' => 'Mi Instan Kuah', 'price' => 3500, 'category' => 'Makanan', 'stock' => 60],
+            ['name' => 'Biskuit Cokelat', 'price' => 7000, 'category' => 'Makanan', 'stock' => 35],
+            ['name' => 'Roti Tawar', 'price' => 15000, 'category' => 'Makanan', 'stock' => 15],
+            ['name' => 'Keripik Kentang', 'price' => 10000, 'category' => 'Makanan', 'stock' => 25],
+            ['name' => 'Cokelat Batang', 'price' => 12000, 'category' => 'Makanan', 'stock' => 20],
+            ['name' => 'Permen', 'price' => 1000, 'category' => 'Makanan', 'stock' => 100],
+            
+            // ATK
+            ['name' => 'Pulpen Biru', 'price' => 4000, 'category' => 'ATK', 'stock' => 45],
+            ['name' => 'Pulpen Hitam', 'price' => 4000, 'category' => 'ATK', 'stock' => 45],
+            ['name' => 'Pensil 2B', 'price' => 3000, 'category' => 'ATK', 'stock' => 40],
+            ['name' => 'Buku Tulis 38 Lbr', 'price' => 6000, 'category' => 'ATK', 'stock' => 30],
+            ['name' => 'Penghapus', 'price' => 2000, 'category' => 'ATK', 'stock' => 50],
+            ['name' => 'Penggaris 30cm', 'price' => 5000, 'category' => 'ATK', 'stock' => 25],
+            ['name' => 'Spidol Whiteboard', 'price' => 8000, 'category' => 'ATK', 'stock' => 20],
+            
+            // Kebutuhan Harian
+            ['name' => 'Sabun Mandi', 'price' => 8000, 'category' => 'Kebutuhan Harian', 'stock' => 30],
+            ['name' => 'Sampo Sachet', 'price' => 2000, 'category' => 'Kebutuhan Harian', 'stock' => 80],
+            ['name' => 'Pasta Gigi', 'price' => 12000, 'category' => 'Kebutuhan Harian', 'stock' => 20],
+            ['name' => 'Sikat Gigi', 'price' => 10000, 'category' => 'Kebutuhan Harian', 'stock' => 25],
+            ['name' => 'Tisu Pocket', 'price' => 3000, 'category' => 'Kebutuhan Harian', 'stock' => 40],
+            ['name' => 'Masker Medis', 'price' => 15000, 'category' => 'Kebutuhan Harian', 'stock' => 35],
         ];
 
         $now = now();
-        $descriptions = [
-            'Air Mineral 600ml' => 'Air mineral kemasan 600ml, segar dan menyehatkan',
-            'Teh Botol 350ml' => 'Teh botol kemasan 350ml dengan rasa teh asli',
-            'Kopi Kaleng' => 'Kopi kaleng siap minum, praktis dan nikmat',
-            'Mi Instan Goreng' => 'Mi instan goreng dengan berbagai varian rasa',
-            'Mi Instan Kuah' => 'Mi instan kuah dengan kuah yang lezat',
-            'Biskuit Cokelat' => 'Biskuit dengan lapisan cokelat yang manis',
-            'Roti Tawar' => 'Roti tawar segar untuk sarapan',
-            'Pulpen Biru' => 'Pulpen tinta biru untuk menulis',
-            'Buku Tulis 38 Lbr' => 'Buku tulis 38 lembar untuk catatan kuliah',
-            'Sabun Mandi' => 'Sabun mandi dengan wangi yang segar',
-            'Sampo Sachet' => 'Sampo sachet praktis untuk sekali pakai',
-        ];
 
         foreach ($items as $i => $data) {
-            $sku = strtoupper(substr(Str::slug($data['category']), 0, 3)) . '-' . strtoupper(substr(Str::slug($data['name']), 0, 3)) . '-' . $now->format('ymd') . '-' . str_pad((string)($i+1), 3, '0', STR_PAD_LEFT);
+            $sku = strtoupper(substr(Str::slug($data['category']), 0, 3)) . '-' . 
+                   strtoupper(substr(Str::slug($data['name']), 0, 3)) . '-' . 
+                   $now->format('ymd') . '-' . 
+                   str_pad((string)($i+1), 3, '0', STR_PAD_LEFT);
 
             Product::create([
                 'name' => $data['name'],
                 'sku' => $sku,
                 'price' => $data['price'],
-                'stock' => 0, // akan diisi oleh purchase/adjustment seeder
-                'min_stock' => rand(3, 10),
+                'stock' => $data['stock'] ?? 0,
+                'min_stock' => rand(5, 15),
                 'category' => $data['category'],
-                'description' => $descriptions[$data['name']] ?? null,
+                'description' => $this->getDescription($data['name']),
                 'status' => 'active',
-                'is_public' => true,
-                'is_featured' => in_array($i, [0, 3, 7]), // Make some products featured
-                'display_order' => $i,
-                'image_url' => null, // Will be set manually or via admin
             ]);
         }
+    }
+
+    private function getDescription(string $name): string
+    {
+        $descriptions = [
+            'Air Mineral 600ml' => 'Air mineral kemasan 600ml, segar dan menyehatkan',
+            'Teh Botol 350ml' => 'Teh botol kemasan 350ml dengan rasa teh asli',
+            'Kopi Kaleng' => 'Kopi kaleng siap minum, praktis dan nikmat',
+            'Susu Kotak 200ml' => 'Susu kotak UHT 200ml, bergizi tinggi',
+            'Jus Buah Kemasan' => 'Jus buah segar dalam kemasan praktis',
+            'Mi Instan Goreng' => 'Mi instan goreng dengan berbagai varian rasa',
+            'Mi Instan Kuah' => 'Mi instan kuah dengan kuah yang lezat',
+            'Biskuit Cokelat' => 'Biskuit dengan lapisan cokelat yang manis',
+            'Roti Tawar' => 'Roti tawar segar untuk sarapan',
+            'Keripik Kentang' => 'Keripik kentang renyah dengan berbagai rasa',
+            'Cokelat Batang' => 'Cokelat batang premium dengan rasa yang nikmat',
+            'Permen' => 'Permen dengan berbagai varian rasa',
+            'Pulpen Biru' => 'Pulpen tinta biru untuk menulis',
+            'Pulpen Hitam' => 'Pulpen tinta hitam untuk menulis',
+            'Pensil 2B' => 'Pensil 2B untuk menulis dan menggambar',
+            'Buku Tulis 38 Lbr' => 'Buku tulis 38 lembar untuk catatan kuliah',
+            'Penghapus' => 'Penghapus untuk menghapus tulisan pensil',
+            'Penggaris 30cm' => 'Penggaris plastik 30cm untuk mengukur',
+            'Spidol Whiteboard' => 'Spidol untuk menulis di whiteboard',
+            'Sabun Mandi' => 'Sabun mandi dengan wangi yang segar',
+            'Sampo Sachet' => 'Sampo sachet praktis untuk sekali pakai',
+            'Pasta Gigi' => 'Pasta gigi untuk menjaga kesehatan gigi',
+            'Sikat Gigi' => 'Sikat gigi dengan bulu lembut',
+            'Tisu Pocket' => 'Tisu pocket praktis untuk dibawa kemana-mana',
+            'Masker Medis' => 'Masker medis 3 ply untuk perlindungan',
+        ];
+
+        return $descriptions[$name] ?? 'Produk berkualitas untuk kebutuhan sehari-hari';
     }
 }

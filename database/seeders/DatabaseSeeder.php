@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
             ProductSeeder::class,
             PurchaseSeeder::class,
             SaleSeeder::class,
+            ScheduleSeeder::class,
             PenaltyTypeSeeder::class,
             SystemSettingSeeder::class,
             AttendanceSeeder::class,

@@ -13,13 +13,12 @@ return new class extends Migration
     {
         Schema::create('login_histories', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->nullable()->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('cascade');
             $table->string('ip_address', 45);
             $table->text('user_agent')->nullable();
-            $table->string('status', 20)->default('success'); // success, failed, blocked
-            $table->string('failure_reason')->nullable();
             $table->timestamp('logged_in_at');
-            $table->timestamp('logged_out_at')->nullable();
+            $table->enum('status', ['success', 'failed'])->default('success');
+            $table->string('failure_reason')->nullable();
             $table->timestamps();
             
             $table->index(['user_id', 'logged_in_at']);

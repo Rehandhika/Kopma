@@ -102,6 +102,12 @@ $dropdownButtonBaseClasses = 'w-full flex items-center justify-between px-3 py-2
            aria-current="{{ request()->routeIs('admin.schedule.create') ? 'page' : 'false' }}">
             Tambah Jadwal
         </a>
+        <a href="{{ route('admin.schedule.index') }}" 
+           class="{{ $submenuLinkBaseClasses }} {{ request()->routeIs('admin.schedule.edit') || request()->routeIs('admin.schedule.history') ? $submenuLinkActiveClasses : $submenuLinkInactiveClasses }}"
+           role="menuitem"
+           aria-current="{{ request()->routeIs('admin.schedule.edit') || request()->routeIs('admin.schedule.history') ? 'page' : 'false' }}">
+            Kelola Jadwal
+        </a>
     </div>
 </div>
 
@@ -222,14 +228,6 @@ $dropdownButtonBaseClasses = 'w-full flex items-center justify-between px-3 py-2
         </a>
     </div>
 </div>
-
-{{-- Analytics --}}
-<a href="{{ route('admin.analytics.dashboard') }}" 
-   class="{{ $linkBaseClasses }} {{ request()->routeIs('admin.analytics.*') ? $linkActiveClasses : $linkInactiveClasses }}"
-   aria-current="{{ request()->routeIs('admin.analytics.*') ? 'page' : 'false' }}">
-    <x-ui.icon name="chart-bar" class="w-5 h-5 mr-3 flex-shrink-0" />
-    <span>Analytics</span>
-</a>
 
 {{-- Divider --}}
 <div class="border-t border-gray-200 my-2" role="separator"></div>

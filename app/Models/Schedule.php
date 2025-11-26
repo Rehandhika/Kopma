@@ -91,7 +91,7 @@ class Schedule extends Model
     }
 
     /**
-     * Get assignment grid (4 days × 3 sessions)
+     * Get assignment grid (4 days × 3 sessions) - Updated for multi-user slots
      */
     public function getAssignmentGrid(): array
     {
@@ -111,7 +111,8 @@ class Schedule extends Model
             
             for ($session = 1; $session <= 3; $session++) {
                 $key = $dateStr . '_' . $session;
-                $grid[$dateStr][$session] = $assignments->get($key, collect())->first();
+                // Return collection of assignments instead of single assignment
+                $grid[$dateStr][$session] = $assignments->get($key, collect());
             }
         }
 
@@ -119,18 +120,42 @@ class Schedule extends Model
     }
 
     /**
-     * Calculate and update coverage rate
+     * Calculate and update coverage rate - Updated for multi-user slots
+     * Coverage now counts slots with at least 1 user (not total assignments)
      */
     public function calculateCoverage(): float
     {
-        $this->filled_slots = $this->assignments()->count();
+        // Count unique slots that have at least one user
+        $filledSlots = $this->assignments()
+            ->select('date', 'session')
+            ->distinct()
+            ->count();
+        
+        $this->filled_slots = $filledSlots;
         $this->coverage_rate = $this->total_slots > 0 
             ? ($this->filled_slots / $this->total_slots) * 100 
             : 0;
         
         $this->save();
         
+        // Invalidate cache after updating coverage
+        $this->invalidateCache();
+        
         return $this->coverage_rate;
+    }
+
+    /**
+     * Invalidate all caches related to this schedule
+     */
+    public function invalidateCache(): void
+    {
+        \Illuminate\Support\Facades\Cache::forget("schedule_grid_{$this->id}");
+        \Illuminate\Support\Facades\Cache::forget("schedule_conflicts_{$this->id}");
+        \Illuminate\Support\Facades\Cache::forget("schedule_statistics_{$this->id}");
+        
+        \Illuminate\Support\Facades\Log::debug("Schedule cache invalidated", [
+            'schedule_id' => $this->id,
+        ]);
     }
 
     /**
@@ -157,7 +182,7 @@ class Schedule extends Model
     }
 
     /**
-     * Detect conflicts in assignments
+     * Detect conflicts in assignments - Updated for multi-user slots
      */
     public function detectConflicts(): array
     {
@@ -167,18 +192,18 @@ class Schedule extends Model
             'info' => [],
         ];
 
-        // Check for double assignments
-        $doubleAssignments = $this->assignments()
+        // Check for duplicate users in same slot (same user appears multiple times in one slot)
+        $duplicateUsersInSlot = $this->assignments()
             ->select('user_id', 'date', 'session')
             ->groupBy('user_id', 'date', 'session')
             ->havingRaw('COUNT(*) > 1')
             ->get();
 
-        if ($doubleAssignments->isNotEmpty()) {
+        if ($duplicateUsersInSlot->isNotEmpty()) {
             $conflicts['critical'][] = [
-                'type' => 'double_assignment',
-                'message' => 'Terdapat anggota dengan assignment ganda',
-                'count' => $doubleAssignments->count(),
+                'type' => 'duplicate_user_in_slot',
+                'message' => 'Terdapat anggota yang muncul lebih dari sekali dalam slot yang sama',
+                'count' => $duplicateUsersInSlot->count(),
             ];
         }
 
@@ -195,6 +220,25 @@ class Schedule extends Model
                 'message' => 'Terdapat assignment untuk user yang tidak aktif',
                 'count' => $inactiveUsers,
             ];
+        }
+
+        // Check for overstaffed slots (if max_users_per_slot is configured)
+        $maxUsersPerSlot = ScheduleConfiguration::getValue('max_users_per_slot');
+        if ($maxUsersPerSlot !== null) {
+            $overstaffedSlots = $this->assignments()
+                ->select('date', 'session')
+                ->selectRaw('COUNT(*) as user_count')
+                ->groupBy('date', 'session')
+                ->havingRaw('COUNT(*) > ?', [$maxUsersPerSlot])
+                ->get();
+
+            if ($overstaffedSlots->isNotEmpty()) {
+                $conflicts['warning'][] = [
+                    'type' => 'overstaffed_slots',
+                    'message' => 'Terdapat slot dengan jumlah anggota melebihi batas maksimal',
+                    'count' => $overstaffedSlots->count(),
+                ];
+            }
         }
 
         return $conflicts;
@@ -223,6 +267,64 @@ class Schedule extends Model
             'assignments_per_user' => $userCounts->values()->toArray(),
             'assignments_per_session' => $sessionCounts->toArray(),
             'unassigned_slots' => $this->total_slots - $this->filled_slots,
+        ];
+    }
+
+    /**
+     * Get slot statistics for multi-user slots
+     */
+    public function getSlotStatistics(): array
+    {
+        $assignments = $this->assignments()->with('user')->get();
+        
+        // Group by slot (date + session)
+        $slotGroups = $assignments->groupBy(function($assignment) {
+            return $assignment->date->format('Y-m-d') . '_' . $assignment->session;
+        });
+
+        $slotStats = [];
+        $userCounts = [];
+        
+        foreach ($slotGroups as $slotKey => $slotAssignments) {
+            $userCount = $slotAssignments->count();
+            $userCounts[] = $userCount;
+            
+            [$date, $session] = explode('_', $slotKey);
+            
+            $slotStats[] = [
+                'date' => $date,
+                'session' => (int) $session,
+                'user_count' => $userCount,
+                'users' => $slotAssignments->pluck('user.name')->toArray(),
+            ];
+        }
+
+        // Calculate statistics
+        $totalSlots = $this->total_slots;
+        $filledSlots = count($slotGroups);
+        $emptySlots = $totalSlots - $filledSlots;
+        
+        $avgUsersPerSlot = $filledSlots > 0 ? array_sum($userCounts) / $filledSlots : 0;
+        $maxUsersInSlot = !empty($userCounts) ? max($userCounts) : 0;
+        $minUsersInSlot = !empty($userCounts) ? min($userCounts) : 0;
+
+        // Count slots by user count
+        $slotsByUserCount = [];
+        foreach ($userCounts as $count) {
+            $slotsByUserCount[$count] = ($slotsByUserCount[$count] ?? 0) + 1;
+        }
+
+        return [
+            'total_slots' => $totalSlots,
+            'filled_slots' => $filledSlots,
+            'empty_slots' => $emptySlots,
+            'coverage_rate' => $this->coverage_rate,
+            'total_assignments' => $assignments->count(),
+            'avg_users_per_slot' => round($avgUsersPerSlot, 2),
+            'max_users_in_slot' => $maxUsersInSlot,
+            'min_users_in_slot' => $minUsersInSlot,
+            'slots_by_user_count' => $slotsByUserCount,
+            'slot_details' => $slotStats,
         ];
     }
 }

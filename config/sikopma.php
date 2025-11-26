@@ -16,9 +16,8 @@ return [
      * Session time labels
      */
     'sessions' => [
-        1 => '08:00 - 12:00',
-        2 => '12:00 - 16:00',
-        3 => '16:00 - 20:00',
+        1 => '07:30 - 10:20',
+        2 => '10:20 - 12:50, 13:30 - 16:00',
     ],
 
     /**
@@ -26,16 +25,16 @@ return [
      */
     'session_times' => [
         1 => [
-            'start' => '08:00',
-            'end' => '12:00',
+            'start' => '07:30',
+            'end' => '10:20',
         ],
         2 => [
-            'start' => '12:00',
-            'end' => '16:00',
+            'start' => '10:20',
+            'end' => '12:50',
         ],
         3 => [
-            'start' => '16:00',
-            'end' => '20:00',
+            'start' => '13:30',
+            'end' => '16:00',
         ],
     ],
 
@@ -45,15 +44,7 @@ return [
      */
     'late_threshold_minutes' => 15,
 
-    /**
-     * Geofence settings for attendance check-in
-     * Update these coordinates to match your organization's location
-     */
-    'geofence' => [
-        'latitude' => -7.7956,  // Example: Yogyakarta coordinates
-        'longitude' => 110.3695,
-        'radius_meters' => 100,  // Allowed radius in meters
-    ],
+
 
     /**
      * Penalty point thresholds
@@ -69,8 +60,9 @@ return [
      */
     'attendance' => [
         'auto_absent_after_hours' => 2,  // Mark as absent if no check-in after this many hours
-        'require_geolocation' => true,
         'allow_early_checkin_minutes' => 30,  // Allow check-in this many minutes before session start
+        'require_photo' => true,  // Require photo for check-in
+        'max_photo_size_mb' => 5,  // Maximum photo size in MB
     ],
 
     /**

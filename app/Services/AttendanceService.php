@@ -335,12 +335,12 @@ class AttendanceService
     protected function getScheduleStartTime(ScheduleAssignment $schedule): \Carbon\Carbon
     {
         $sessionTimes = [
-            1 => '08:00',
-            2 => '12:00',
-            3 => '16:00',
+            1 => '07:30',
+            2 => '10:20',
+            3 => '13:30',
         ];
 
-        $timeString = $sessionTimes[$schedule->session] ?? '08:00';
+        $timeString = $sessionTimes[$schedule->session] ?? '07:30';
         return $schedule->date->copy()->setTimeFromFormat('H:i', $timeString);
     }
 

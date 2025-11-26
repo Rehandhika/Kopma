@@ -118,37 +118,24 @@ if (!function_exists('calculate_late_minutes')) {
     }
 }
 
-if (!function_exists('is_within_geofence')) {
+if (!function_exists('format_file_size')) {
     /**
-     * Check if coordinates are within allowed geofence
+     * Format file size to human readable format
      *
-     * @param float $latitude
-     * @param float $longitude
-     * @return bool
+     * @param int $bytes
+     * @return string
      */
-    function is_within_geofence(float $latitude, float $longitude): bool
+    function format_file_size(int $bytes): string
     {
-        $allowedLat = config('sikopma.geofence.latitude');
-        $allowedLng = config('sikopma.geofence.longitude');
-        $radius = config('sikopma.geofence.radius_meters', 100);
+        $units = ['B', 'KB', 'MB', 'GB'];
+        $i = 0;
         
-        // Haversine formula to calculate distance
-        $earthRadius = 6371000; // meters
+        while ($bytes >= 1024 && $i < count($units) - 1) {
+            $bytes /= 1024;
+            $i++;
+        }
         
-        $latFrom = deg2rad($allowedLat);
-        $lonFrom = deg2rad($allowedLng);
-        $latTo = deg2rad($latitude);
-        $lonTo = deg2rad($longitude);
-        
-        $latDelta = $latTo - $latFrom;
-        $lonDelta = $lonTo - $lonFrom;
-        
-        $angle = 2 * asin(sqrt(pow(sin($latDelta / 2), 2) +
-            cos($latFrom) * cos($latTo) * pow(sin($lonDelta / 2), 2)));
-        
-        $distance = $angle * $earthRadius;
-        
-        return $distance <= $radius;
+        return round($bytes, 2) . ' ' . $units[$i];
     }
 }
 

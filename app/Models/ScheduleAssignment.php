@@ -20,10 +20,16 @@ class ScheduleAssignment extends Model
         'status',
         'swapped_to_user_id',
         'notes',
+        'edited_by',
+        'edited_at',
+        'edit_reason',
+        'previous_values',
     ];
 
     protected $casts = [
         'date' => 'date',
+        'edited_at' => 'datetime',
+        'previous_values' => 'array',
     ];
 
     // Relationships
@@ -52,6 +58,16 @@ class ScheduleAssignment extends Model
         return $this->hasMany(SwapRequest::class, 'requester_assignment_id');
     }
 
+    public function editHistory()
+    {
+        return $this->hasMany(AssignmentEditHistory::class, 'assignment_id');
+    }
+
+    public function editor()
+    {
+        return $this->belongsTo(User::class, 'edited_by');
+    }
+
     // Scopes
     public function scopeScheduled($query)
     {
@@ -72,6 +88,11 @@ class ScheduleAssignment extends Model
     {
         return $query->where('date', '>=', now()->toDateString())
                      ->where('status', 'scheduled');
+    }
+
+    public function scopeForSlot($query, string $date, int $session)
+    {
+        return $query->where('date', $date)->where('session', $session);
     }
 
     // Helpers
@@ -100,9 +121,9 @@ class ScheduleAssignment extends Model
     public function getSessionLabelAttribute(): string
     {
         $labels = [
-            '1' => '08:00 - 12:00',
-            '2' => '12:00 - 16:00',
-            '3' => '16:00 - 20:00',
+            '1' => '07:30 - 10:20',
+            '2' => '10:20 - 12:50',
+            '3' => '13:30 - 16:00',
         ];
         return $labels[$this->session] ?? '';
     }
@@ -187,5 +208,73 @@ class ScheduleAssignment extends Model
     public function getFormattedSlotAttribute(): string
     {
         return $this->date->locale('id')->isoFormat('dddd, D MMMM Y') . ' - Sesi ' . $this->session;
+    }
+
+    /**
+     * Multi-user slot helper methods
+     */
+    
+    /**
+     * Get other users in the same slot (slotmates)
+     */
+    public function getSlotmates()
+    {
+        return self::where('schedule_id', $this->schedule_id)
+            ->where('date', $this->date)
+            ->where('session', $this->session)
+            ->where('id', '!=', $this->id)
+            ->with('user')
+            ->get();
+    }
+
+    /**
+     * Get count of users in this slot
+     */
+    public function getSlotUserCount(): int
+    {
+        return self::where('schedule_id', $this->schedule_id)
+            ->where('date', $this->date)
+            ->where('session', $this->session)
+            ->count();
+    }
+
+    /**
+     * Check if this is the only user in the slot
+     */
+    public function isOnlyUserInSlot(): bool
+    {
+        return $this->getSlotUserCount() === 1;
+    }
+
+    /**
+     * Check if there are other users in the slot
+     */
+    public function hasSlotmates(): bool
+    {
+        return $this->getSlotUserCount() > 1;
+    }
+
+    /**
+     * Check if assignment has been edited
+     */
+    public function hasBeenEdited(): bool
+    {
+        return !is_null($this->edited_by) && !is_null($this->edited_at);
+    }
+
+    /**
+     * Get count of edits
+     */
+    public function getEditCount(): int
+    {
+        return $this->editHistory()->count();
+    }
+
+    /**
+     * Get last edit record
+     */
+    public function getLastEdit(): ?AssignmentEditHistory
+    {
+        return $this->editHistory()->latest()->first();
     }
 }

@@ -178,6 +178,9 @@ class ScheduleService
                 'published_by' => auth()->id(),
             ]);
 
+            // Invalidate cache after publishing
+            $schedule->invalidateCache();
+
             // Send notifications to assigned users
             $this->sendScheduleNotifications($schedule);
 

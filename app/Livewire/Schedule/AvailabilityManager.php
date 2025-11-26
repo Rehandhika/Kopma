@@ -230,6 +230,9 @@ class AvailabilityManager extends Component
 
             AvailabilityDetail::insert($details);
 
+            // Invalidate user availability cache
+            $this->invalidateUserAvailabilityCache(auth()->id(), $this->weekStart->format('Y-m-d'));
+
             DB::commit();
 
             $message = $this->status === 'submitted' 
@@ -243,6 +246,28 @@ class AvailabilityManager extends Component
             DB::rollBack();
             $this->dispatch('alert', type: 'error', message: 'Gagal menyimpan ketersediaan: ' . $e->getMessage());
         }
+    }
+
+    /**
+     * Invalidate user availability cache
+     */
+    protected function invalidateUserAvailabilityCache(int $userId, string $weekStart): void
+    {
+        $cacheKey = "user_availability_{$userId}_{$weekStart}";
+        \Illuminate\Support\Facades\Cache::forget($cacheKey);
+
+        // Also invalidate schedule users cache for any schedules in this week
+        $schedules = \App\Models\Schedule::where('week_start_date', $weekStart)->get();
+        foreach ($schedules as $schedule) {
+            $scheduleUsersCacheKey = "schedule_users_{$schedule->id}_{$weekStart}";
+            \Illuminate\Support\Facades\Cache::forget($scheduleUsersCacheKey);
+        }
+
+        \Illuminate\Support\Facades\Log::debug("User availability cache invalidated", [
+            'user_id' => $userId,
+            'week_start' => $weekStart,
+            'cache_key' => $cacheKey,
+        ]);
     }
 
     public function getTotalAvailableSessions()

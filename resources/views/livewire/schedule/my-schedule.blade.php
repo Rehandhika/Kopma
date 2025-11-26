@@ -94,9 +94,9 @@
                                         @endif
                                     </div>
                                     @if(!$day['isPast'])
-                                    <x-ui.button href="{{ route('swap.create') }}" variant="ghost" size="sm" class="flex-shrink-0">
+                                    <button wire:click="requestSwap({{ $assignment->id }})" class="text-blue-600 hover:text-blue-800 text-sm flex-shrink-0">
                                         Tukar
-                                    </x-ui.button>
+                                    </button>
                                     @endif
                                 </div>
                             </div>

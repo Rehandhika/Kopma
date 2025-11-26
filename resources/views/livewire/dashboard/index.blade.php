@@ -117,7 +117,7 @@
                         <div class="ml-3 flex-1">
                             <h4 class="text-sm font-medium text-blue-900">Sesi {{ $userStats['todaySchedule']->session }}</h4>
                             <p class="text-sm text-blue-700 mt-1">{{ $userStats['todaySchedule']->date->format('d M Y') }}</p>
-                            <a href="{{ route('attendance.check-in-out') }}" class="inline-flex items-center mt-3 text-sm font-medium text-blue-600 hover:text-blue-800">
+                            <a href="{{ route('admin.attendance.check-in-out') }}" class="inline-flex items-center mt-3 text-sm font-medium text-blue-600 hover:text-blue-800">
                                 Check-in Sekarang
                                 <x-ui.icon name="chevron-right" class="ml-1 w-4 h-4" />
                             </a>

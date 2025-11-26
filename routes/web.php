@@ -128,7 +128,6 @@ Route::redirect('/leave', '/admin/leave');
 Route::redirect('/swap', '/admin/swap');
 Route::redirect('/penalties', '/admin/penalties');
 Route::redirect('/reports', '/admin/reports');
-Route::redirect('/analytics', '/admin/analytics');
 Route::redirect('/users', '/admin/users');
 Route::redirect('/roles', '/admin/roles');
 Route::redirect('/settings', '/admin/settings');
@@ -167,6 +166,8 @@ Route::prefix('admin')
             Route::get('/test-availability', \App\Livewire\Schedule\TestAvailability::class)->name('test-availability');
             Route::get('/calendar', \App\Livewire\Schedule\ScheduleCalendar::class)->name('calendar');
             Route::get('/generator', \App\Livewire\Schedule\ScheduleGenerator::class)->name('generator');
+            Route::get('/{schedule}/edit', \App\Livewire\Schedule\EditSchedule::class)->name('edit');
+            Route::get('/{schedule}/history', \App\Livewire\Schedule\EditHistory::class)->name('history');
         });
         
         // Cashier / POS
@@ -225,11 +226,7 @@ Route::prefix('admin')
             Route::get('/penalties', \App\Livewire\Report\PenaltyReport::class)->name('penalties');
         });
         
-        // Analytics
-        Route::prefix('analytics')->name('analytics.')->group(function () {
-            Route::get('/dashboard', \App\Livewire\Analytics\BIDashboard::class)->name('dashboard');
-        });
-        
+
         // Users Management
         Route::prefix('users')->name('users.')->group(function () {
             Route::get('/', \App\Livewire\User\Index::class)->name('index');

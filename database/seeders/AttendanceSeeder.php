@@ -29,9 +29,9 @@ class AttendanceSeeder extends Seeder
                 if ($roll <= 70) {
                     // present or late
                     $late = rand(0, 10) < 2; // ~20% late among presents
-                    $checkIn = $late ? '08:20:00' : '08:00:00';
-                    $checkOut = '12:00:00';
-                    $hours = 4.0 - ($late ? 0.33 : 0);
+                    $checkIn = $late ? '07:50:00' : '07:30:00';
+                    $checkOut = '10:20:00';
+                    $hours = 2.83 - ($late ? 0.33 : 0);
                     $status = $late ? 'late' : 'present';
 
                     Attendance::firstOrCreate(

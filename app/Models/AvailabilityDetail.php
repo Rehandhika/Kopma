@@ -68,9 +68,9 @@ class AvailabilityDetail extends Model
     public function getSessionLabelAttribute(): string
     {
         return match($this->session) {
-            '1' => '08:00 - 12:00',
-            '2' => '13:00 - 17:00',
-            '3' => '17:00 - 21:00',
+            '1' => '07:30 - 10:20',
+            '2' => '10:20 - 12:50',
+            '3' => '13:30 - 16:00',
             default => 'Unknown',
         };
     }

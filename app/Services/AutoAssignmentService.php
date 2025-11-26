@@ -90,9 +90,9 @@ class AutoAssignmentService
         $startDate = Carbon::parse($schedule->week_start_date);
 
         $sessionTimes = [
-            1 => ['start' => '08:00:00', 'end' => '12:00:00'],
-            2 => ['start' => '13:00:00', 'end' => '17:00:00'],
-            3 => ['start' => '17:00:00', 'end' => '21:00:00'],
+            1 => ['start' => '07:30:00', 'end' => '10:20:00'],
+            2 => ['start' => '10:20:00', 'end' => '12:50:00'],
+            3 => ['start' => '13:30:00', 'end' => '16:00:00'],
         ];
 
         for ($day = 0; $day < 4; $day++) {

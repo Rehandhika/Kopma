@@ -1,6 +1,119 @@
 # 📝 SIKOPMA - Changelog
 
-All notable changes to the SIKOPMA authentication system.
+All notable changes to the SIKOPMA system.
+
+---
+
+## [2.1.0] - 2025-11-24
+
+### 🔥 MAJOR CHANGES
+
+#### Updated - Session Times System-Wide
+- **REASON:** Synchronize session times across entire system
+- **OLD TIMES:**
+  - Sesi 1: 08:00 - 10:00 / 08:00 - 12:00
+  - Sesi 2: 10:00 - 12:00 / 12:00 - 16:00 / 13:00 - 17:00
+  - Sesi 3: 13:00 - 15:00 / 16:00 - 20:00 / 17:00 - 21:00
+- **NEW TIMES:**
+  - Sesi 1: 07:30 - 10:20 (2h 50m)
+  - Sesi 2: 10:20 - 12:50 (2h 30m)
+  - Sesi 3: 13:30 - 16:00 (2h 30m)
+
+### ✅ Changed
+
+#### Configuration Files (2 files)
+- `config/sikopma.php` - Updated session times and labels
+- `config/schedule.php` - Updated session configuration
+
+#### Database Seeders (4 files)
+- `database/seeders/SystemSettingSeeder.php` - Updated session time settings
+- `database/seeders/ScheduleSeeder.php` - Updated default schedule times
+- `database/seeders/AttendanceSeeder.php` - Updated sample attendance times
+- `database/seeders/StoreSettingSeeder.php` - Updated store operating hours
+
+#### Services (3 files)
+- `app/Services/AttendanceService.php` - Updated session start times
+- `app/Services/AutoAssignmentService.php` - Updated session time ranges
+- `app/Services/ScheduleEditService.php` - Updated session times for assignments
+
+#### Livewire Components (1 file)
+- `app/Livewire/Schedule/EditSchedule.php` - Updated getSessionTime method
+
+### 🆕 Added
+
+#### New Artisan Command
+- `app/Console/Commands/UpdateSessionTimes.php`
+  - Command: `php artisan schedule:update-session-times`
+  - Features: Dry-run mode, force mode, automatic backup
+  - Updates system settings and schedule assignments
+
+#### New SQL Migration Script
+- `database/migrations/update_session_times.sql`
+  - Direct SQL updates for system_settings and schedule_assignments
+  - Includes verification queries
+
+#### New Documentation (4 files)
+- `WAKTU_SESI_UPDATE.md` - Technical documentation
+- `PANDUAN_UPDATE_WAKTU_SESI.md` - Complete implementation guide
+- `SUMMARY_PERUBAHAN_WAKTU_SESI.md` - Detailed change summary
+- `QUICK_REFERENCE_WAKTU_SESI.md` - Quick reference guide
+
+### 📊 Impact
+
+#### Affected Features
+- ✅ Schedule Generation - New schedules use new times
+- ✅ Schedule Editing - Edit operations use new times
+- ✅ Attendance Check-in - Late calculation uses new times
+- ✅ Notifications - Display new times
+- ✅ Reports - Show new times
+
+#### Database Changes
+- System Settings: 6 records updated
+- Schedule Assignments: All records updated to new times
+- Attendance Records: Not affected (historical data preserved)
+
+### 🔧 Migration Steps
+
+1. **Update Code** (✅ Complete)
+   - All files updated with new times
+   - No syntax errors
+
+2. **Update Database** (✅ Complete)
+   ```bash
+   php artisan schedule:update-session-times --force
+   ```
+   - System Settings: 6 records updated
+   - Schedule Assignments: 54 records updated
+
+3. **Fix Model Accessors** (✅ Complete)
+   - Fixed `ScheduleAssignment::getSessionLabelAttribute()`
+   - Fixed `AvailabilityDetail::getSessionLabelAttribute()`
+
+4. **Clear Cache** (✅ Complete)
+   ```bash
+   php artisan cache:clear
+   php artisan config:clear
+   php artisan view:clear
+   ```
+
+5. **Fix Timezone Issue** (✅ Complete)
+   - Changed timezone from UTC to Asia/Jakarta
+   - Fixed check-in showing "4 hours from now" when already in session time
+   - Root cause: Server time was UTC while users are in WIB (UTC+7)
+
+6. **Testing** (⏳ Pending User Test)
+   - Test schedule generation
+   - Test attendance check-in
+   - Test schedule editing
+
+### 🔄 Rollback Plan
+
+If issues occur, rollback available via:
+- SQL script to restore old times
+- Config file revert
+- Cache clear
+
+See `PANDUAN_UPDATE_WAKTU_SESI.md` for details.
 
 ---
 
