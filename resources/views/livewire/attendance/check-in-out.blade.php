@@ -218,35 +218,6 @@
                 </x-ui.card>
             </x-layout.grid>
 
-            {{-- Notes Section --}}
-            <x-layout.form-section title="Catatan">
-                <x-ui.textarea
-                    name="notes"
-                    placeholder="Tambahkan catatan jika diperlukan (opsional)..."
-                    rows="3"
-                    wire:model="notes"
-                    :disabled="!$currentAttendance"
-                />
-                @error('notes')
-                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                @enderror
-                
-                @if($currentAttendance)
-                    <div class="mt-2">
-                        <x-ui.button 
-                            variant="white" 
-                            wire:click="updateNotes"
-                        >
-                            <span wire:loading.remove wire:target="updateNotes">Simpan Catatan</span>
-                            <span wire:loading wire:target="updateNotes">
-                                <x-ui.icon name="arrow-path" class="w-4 h-4 inline animate-spin mr-2" />
-                                Menyimpan...
-                            </span>
-                        </x-ui.button>
-                    </div>
-                @endif
-            </x-layout.form-section>
-
         @else
             <x-layout.empty-state
                 icon="calendar"

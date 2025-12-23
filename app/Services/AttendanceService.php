@@ -48,7 +48,7 @@ class AttendanceService
                 throw new BusinessException('Jadwal tidak sesuai dengan user.', 'UNAUTHORIZED_SCHEDULE');
             }
 
-            // Check if already checked in
+            // Check if already checked in for this schedule
             $existing = Attendance::where('user_id', $userId)
                 ->where('schedule_assignment_id', $scheduleAssignmentId)
                 ->first();

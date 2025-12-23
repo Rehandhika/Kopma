@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Services\ThumbnailService;
 
 class Attendance extends Model
 {
@@ -42,6 +43,23 @@ class Attendance extends Model
         }
 
         return \Storage::url($this->check_in_photo);
+    }
+
+    /**
+     * Get optimized WebP thumbnail URL for check-in photo
+     * Used in admin list views for faster loading
+     */
+    public function getCheckInPhotoThumbnailAttribute(): ?string
+    {
+        if (!$this->check_in_photo) {
+            return null;
+        }
+
+        try {
+            return ThumbnailService::getThumbnailUrl($this->check_in_photo, 80, 80);
+        } catch (\Exception $e) {
+            return $this->check_in_photo_url;
+        }
     }
 
     public function user()

@@ -110,6 +110,16 @@ class Index extends Component
             return;
         }
 
+        // Check if already checked in for this schedule
+        $existingAttendance = Attendance::where('user_id', auth()->id())
+            ->where('schedule_assignment_id', $this->currentSchedule->id)
+            ->first();
+
+        if ($existingAttendance) {
+            $this->dispatch('alert', type: 'error', message: 'Anda sudah check-in untuk jadwal ini');
+            return;
+        }
+
         $now = Carbon::now();
         $scheduleStart = Carbon::parse($this->currentSchedule->time_start);
         $lateThreshold = 15; // minutes
@@ -119,6 +129,7 @@ class Index extends Component
         Attendance::create([
             'user_id' => auth()->id(),
             'schedule_assignment_id' => $this->currentSchedule->id,
+            'date' => today(),
             'check_in' => $now,
             'status' => $status,
             'location_lat' => $this->latitude,

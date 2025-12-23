@@ -18,21 +18,18 @@ class CheckInOut extends Component
     public $currentAttendance;
     public $checkInTime;
     public $checkOutTime;
-    public $notes = '';
     public $checkInPhoto;
     public $scheduleStatus; // 'active', 'upcoming', 'past'
     public $showPhotoPreview = false;
 
     protected $rules = [
         'checkInPhoto' => 'required|image|max:5120', // 5MB max
-        'notes' => 'nullable|string|max:500',
     ];
 
     protected $messages = [
         'checkInPhoto.required' => 'Foto bukti check-in wajib diunggah.',
         'checkInPhoto.image' => 'File harus berupa gambar (jpg, jpeg, png).',
         'checkInPhoto.max' => 'Ukuran foto maksimal 5MB.',
-        'notes.max' => 'Catatan maksimal 500 karakter.',
     ];
 
     public function mount()
@@ -119,7 +116,6 @@ class CheckInOut extends Component
             if ($this->currentAttendance) {
                 $this->checkInTime = $this->currentAttendance->check_in?->format('H:i');
                 $this->checkOutTime = $this->currentAttendance->check_out?->format('H:i');
-                $this->notes = $this->currentAttendance->notes ?? '';
             }
         } else {
             $this->scheduleStatus = null;
@@ -169,7 +165,6 @@ class CheckInOut extends Component
                 'date' => today(),
                 'check_in' => $now,
                 'check_in_photo' => $photoPath,
-                'notes' => $this->notes,
                 'status' => $this->determineAttendanceStatus($now),
             ]);
 
@@ -230,7 +225,6 @@ class CheckInOut extends Component
             $this->currentAttendance->update([
                 'check_out' => $now,
                 'work_hours' => $workingHours,
-                'notes' => $this->notes,
             ]);
 
             $this->checkOutTime = $now->format('H:i');
@@ -254,27 +248,6 @@ class CheckInOut extends Component
                 'user_id' => auth()->id(),
                 'attendance_id' => $this->currentAttendance?->id,
             ]);
-        }
-    }
-
-    /**
-     * Update notes
-     */
-    public function updateNotes()
-    {
-        try {
-            $this->validate([
-                'notes' => 'nullable|string|max:500',
-            ]);
-
-            if ($this->currentAttendance) {
-                $this->currentAttendance->update(['notes' => $this->notes]);
-                session()->flash('success', 'Catatan berhasil diperbarui.');
-            } else {
-                throw new \Exception('Belum ada data absensi.');
-            }
-        } catch (\Exception $e) {
-            session()->flash('error', $e->getMessage());
         }
     }
 
