@@ -150,7 +150,7 @@
                             </div>
                         </div>
                     @endforeach
-                    <a href="{{ route('notifications') }}" class="block text-center text-sm text-indigo-600 hover:text-indigo-800 font-medium mt-4">
+                    <a href="{{ route('admin.notifications.index') }}" class="block text-center text-sm text-indigo-600 hover:text-indigo-800 font-medium mt-4">
                         Lihat Semua Notifikasi →
                     </a>
                 </div>

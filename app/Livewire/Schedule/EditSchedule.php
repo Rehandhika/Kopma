@@ -120,14 +120,14 @@ class EditSchedule extends Component
     public string $reason = '';
 
     /**
-     * Show conflicts panel
+     * Show conflicts panel (hidden by default for performance)
      */
-    public bool $showConflicts = true;
+    public bool $showConflicts = false;
 
     /**
-     * Show statistics panel
+     * Show statistics panel (hidden by default for performance)
      */
-    public bool $showStatistics = true;
+    public bool $showStatistics = false;
 
     /**
      * Schedule statistics
@@ -174,11 +174,8 @@ class EditSchedule extends Component
         $this->affectedUsers = collect();
         $this->availableUsers = collect();
 
-        // Load initial data
+        // Load initial data - simplified for performance
         $this->loadAssignments();
-        $this->loadAvailableUsers();
-        $this->detectConflicts();
-        $this->calculateStatistics();
 
         Log::info("EditSchedule component mounted", [
             'schedule_id' => $schedule->id,
@@ -188,18 +185,35 @@ class EditSchedule extends Component
     }
 
     /**
-     * Load assignments grouped by slot - Optimized without caching
+     * Lazy load data after component renders
+     */
+    public function loadData(): void
+    {
+        // Load users only when needed
+        if ($this->availableUsers->isEmpty()) {
+            $this->loadAvailableUsers();
+        }
+    }
+
+    /**
+     * Load assignments grouped by slot - Optimized for performance
      */
     public function loadAssignments(): void
     {
         $this->assignments = [];
 
-        // Get all assignments for this schedule - optimized query
+        // Single optimized query with minimal data
         $allAssignments = ScheduleAssignment::where('schedule_id', $this->schedule->id)
-            ->with(['user:id,name,photo,status'])
-            ->select('id', 'user_id', 'date', 'session', 'status', 'edited_by', 'edited_at', 'edit_reason')
-            ->orderBy('date')
-            ->orderBy('session')
+            ->join('users', 'schedule_assignments.user_id', '=', 'users.id')
+            ->select([
+                'schedule_assignments.id',
+                'schedule_assignments.user_id',
+                'schedule_assignments.date',
+                'schedule_assignments.session',
+                'users.name as user_name'
+            ])
+            ->orderBy('schedule_assignments.date')
+            ->orderBy('schedule_assignments.session')
             ->get();
 
         // Group by date and session
@@ -218,13 +232,7 @@ class EditSchedule extends Component
             $this->assignments[$date][$session][] = [
                 'id' => $assignment->id,
                 'user_id' => $assignment->user_id,
-                'user_name' => $assignment->user->name ?? 'Unknown',
-                'user_photo' => $assignment->user->photo ?? null,
-                'user_status' => $assignment->user->status ?? 'unknown',
-                'status' => $assignment->status,
-                'edited_by' => $assignment->edited_by,
-                'edited_at' => $assignment->edited_at?->format('Y-m-d H:i:s'),
-                'edit_reason' => $assignment->edit_reason,
+                'user_name' => $assignment->user_name,
             ];
         }
 
@@ -233,32 +241,25 @@ class EditSchedule extends Component
     }
 
     /**
-     * Load available users for assignment
+     * Load available users for assignment - Optimized with limit
      */
     public function loadAvailableUsers(): void
     {
         $query = User::where('status', 'active')
-            ->select('id', 'name', 'photo', 'status', 'email')
+            ->select('id', 'name')
             ->orderBy('name');
 
         // Apply search filter if provided
         if (!empty($this->searchTerm)) {
-            $query->where(function ($q) {
-                $q->where('name', 'like', '%' . $this->searchTerm . '%')
-                    ->orWhere('email', 'like', '%' . $this->searchTerm . '%');
-            });
+            $query->where('name', 'like', '%' . $this->searchTerm . '%');
         }
 
-        $this->availableUsers = $query->get();
-
-        Log::debug("Available users loaded", [
-            'count' => $this->availableUsers->count(),
-            'search_term' => $this->searchTerm,
-        ]);
+        // Limit results for performance
+        $this->availableUsers = $query->limit(50)->get();
     }
 
     /**
-     * Add user to a slot
+     * Add user to a slot - Optimized
      */
     public function addUserToSlot(string $date, int $session, int $userId, ?string $reason = null): void
     {
@@ -273,95 +274,45 @@ class EditSchedule extends Component
             );
 
             // Track change for undo
-            $this->trackChange('add_user', [
-                'assignment_id' => $assignment->id,
-                'date' => $date,
-                'session' => $session,
-                'user_id' => $userId,
-                'reason' => $reason ?? $this->reason,
-            ]);
+            $this->changes[] = ['action' => 'add_user', 'id' => $assignment->id];
 
             // Mark as having unsaved changes
             $this->hasUnsavedChanges = true;
 
-            // Refresh data
-            $this->refreshData();
+            // Refresh assignments only
+            $this->loadAssignments();
 
-            // Show success message
-            $this->dispatch('notify', message: 'User berhasil ditambahkan ke slot.');
-
-            Log::info("User added to slot via component", [
-                'schedule_id' => $this->schedule->id,
-                'date' => $date,
-                'session' => $session,
-                'user_id' => $userId,
-            ]);
+            // Close modal and show success
+            $this->closeUserSelector();
+            $this->dispatch('notify', type: 'success', message: 'User ditambahkan.');
 
         } catch (\Exception $e) {
-            $this->dispatch('notify', [
-                'type' => 'error',
-                'message' => 'Gagal menambahkan user: ' . $e->getMessage(),
-            ]);
-
-            Log::error("Failed to add user to slot", [
-                'error' => $e->getMessage(),
-                'date' => $date,
-                'session' => $session,
-                'user_id' => $userId,
-            ]);
+            $this->dispatch('notify', type: 'error', message: 'Gagal: ' . $e->getMessage());
         }
     }
 
     /**
-     * Remove user from slot
+     * Remove user from slot - Optimized
      */
     public function removeUserFromSlot(int $assignmentId, ?string $reason = null): void
     {
         try {
             $assignment = ScheduleAssignment::findOrFail($assignmentId);
 
-            // Store data for undo
-            $assignmentData = [
-                'assignment_id' => $assignmentId,
-                'date' => $assignment->date->format('Y-m-d'),
-                'session' => $assignment->session,
-                'user_id' => $assignment->user_id,
-                'reason' => $reason ?? $this->reason,
-            ];
-
             // Use service to remove user
-            $this->editService->removeUserFromSlot(
-                $assignment,
-                $reason ?? $this->reason
-            );
+            $this->editService->removeUserFromSlot($assignment, $reason ?? 'Removed');
 
-            // Track change for undo
-            $this->trackChange('remove_user', $assignmentData);
-
-            // Mark as having unsaved changes
+            // Track change
+            $this->changes[] = ['action' => 'remove_user', 'id' => $assignmentId];
             $this->hasUnsavedChanges = true;
 
-            // Refresh data
-            $this->refreshData();
+            // Refresh assignments only
+            $this->loadAssignments();
 
-            // Show success message
-            $this->dispatch('notify', message: 'User berhasil dihapus dari slot.');
-
-            Log::info("User removed from slot via component", [
-                'schedule_id' => $this->schedule->id,
-                'assignment_id' => $assignmentId,
-            ]);
+            $this->dispatch('notify', type: 'success', message: 'User dihapus.');
 
         } catch (\Exception $e) {
-            $this->dispatch('notify', [
-                'type' => 'error',
-                'message' => 'Gagal menghapus user: ' . $e->getMessage(),
-            ]);
-
-            Log::error("Failed to remove user from slot", [
-                'error' => $e->getMessage(),
-                'assignment_id' => $assignmentId,
-            ]);
+            $this->dispatch('notify', type: 'error', message: 'Gagal: ' . $e->getMessage());
         }
     }
 
@@ -400,10 +351,7 @@ class EditSchedule extends Component
             $this->refreshData();
 
             // Show success message
-            $this->dispatch('notify', [
-                'type' => 'success',
-                'message' => 'User berhasil diperbarui.',
-            ]);
+            $this->dispatch('notify', type: 'success', message: 'User berhasil diperbarui.');
 
             Log::info("User updated in slot via component", [
                 'schedule_id' => $this->schedule->id,
@@ -412,10 +360,7 @@ class EditSchedule extends Component
             ]);
 
         } catch (\Exception $e) {
-            $this->dispatch('notify', [
-                'type' => 'error',
-                'message' => 'Gagal memperbarui user: ' . $e->getMessage(),
-            ]);
+            $this->dispatch('notify', type: 'error', message: 'Gagal memperbarui user: ' . $e->getMessage());
 
             Log::error("Failed to update user in slot", [
                 'error' => $e->getMessage(),
@@ -457,10 +402,7 @@ class EditSchedule extends Component
             $this->refreshData();
 
             // Show success message
-            $this->dispatch('notify', [
-                'type' => 'success',
-                'message' => 'Slot berhasil dikosongkan.',
-            ]);
+            $this->dispatch('notify', type: 'success', message: 'Slot berhasil dikosongkan.');
 
             Log::info("Slot cleared via component", [
                 'schedule_id' => $this->schedule->id,
@@ -469,10 +411,7 @@ class EditSchedule extends Component
             ]);
 
         } catch (\Exception $e) {
-            $this->dispatch('notify', [
-                'type' => 'error',
-                'message' => 'Gagal mengosongkan slot: ' . $e->getMessage(),
-            ]);
+            $this->dispatch('notify', type: 'error', message: 'Gagal mengosongkan slot: ' . $e->getMessage());
 
             Log::error("Failed to clear slot", [
                 'error' => $e->getMessage(),
@@ -511,10 +450,7 @@ class EditSchedule extends Component
             $this->refreshData();
 
             // Show success message
-            $this->dispatch('notify', [
-                'type' => 'success',
-                'message' => count($userIds) . ' user berhasil ditambahkan ke slot.',
-            ]);
+            $this->dispatch('notify', type: 'success', message: count($userIds) . ' user berhasil ditambahkan ke slot.');
 
             Log::info("Bulk users added to slot via component", [
                 'schedule_id' => $this->schedule->id,
@@ -524,10 +460,7 @@ class EditSchedule extends Component
             ]);
 
         } catch (\Exception $e) {
-            $this->dispatch('notify', [
-                'type' => 'error',
-                'message' => 'Gagal menambahkan users: ' . $e->getMessage(),
-            ]);
+            $this->dispatch('notify', type: 'error', message: 'Gagal menambahkan users: ' . $e->getMessage());
 
             Log::error("Failed to bulk add users to slot", [
                 'error' => $e->getMessage(),
@@ -690,7 +623,7 @@ class EditSchedule extends Component
             $this->refreshData();
 
             // Show success message
-            $this->dispatch('notify', message: 'Perubahan berhasil disimpan.');
+            $this->dispatch('notify', type: 'success', message: 'Perubahan berhasil disimpan.');
 
             Log::info("Schedule changes saved", [
                 'schedule_id' => $this->schedule->id,
@@ -700,10 +633,7 @@ class EditSchedule extends Component
         } catch (\Exception $e) {
             DB::rollBack();
 
-            $this->dispatch('notify', [
-                'type' => 'error',
-                'message' => 'Gagal menyimpan perubahan: ' . $e->getMessage(),
-            ]);
+            $this->dispatch('notify', type: 'error', message: 'Gagal menyimpan perubahan: ' . $e->getMessage());
 
             Log::error("Failed to save schedule changes", [
                 'schedule_id' => $this->schedule->id,
@@ -729,10 +659,7 @@ class EditSchedule extends Component
             $this->refreshData();
 
             // Show success message
-            $this->dispatch('notify', [
-                'type' => 'info',
-                'message' => 'Perubahan dibatalkan. Data dimuat ulang dari database.',
-            ]);
+            $this->dispatch('notify', type: 'info', message: 'Perubahan dibatalkan. Data dimuat ulang dari database.');
 
             Log::info("Schedule changes discarded", [
                 'schedule_id' => $this->schedule->id,
@@ -740,10 +667,7 @@ class EditSchedule extends Component
             ]);
 
         } catch (\Exception $e) {
-            $this->dispatch('notify', [
-                'type' => 'error',
-                'message' => 'Gagal membatalkan perubahan: ' . $e->getMessage(),
-            ]);
+            $this->dispatch('notify', type: 'error', message: 'Gagal membatalkan perubahan: ' . $e->getMessage());
 
             Log::error("Failed to discard schedule changes", [
                 'schedule_id' => $this->schedule->id,
@@ -761,10 +685,7 @@ class EditSchedule extends Component
     public function undoLastChange(): void
     {
         if (empty($this->changes)) {
-            $this->dispatch('notify', [
-                'type' => 'warning',
-                'message' => 'Tidak ada perubahan yang dapat dibatalkan.',
-            ]);
+            $this->dispatch('notify', type: 'warning', message: 'Tidak ada perubahan yang dapat dibatalkan.');
             return;
         }
 
@@ -772,10 +693,7 @@ class EditSchedule extends Component
         $lastChange = array_pop($this->changes);
 
         // Show info message
-        $this->dispatch('notify', [
-            'type' => 'info',
-            'message' => 'Perubahan terakhir dihapus dari tracking. Reload data untuk melihat state terbaru.',
-        ]);
+        $this->dispatch('notify', type: 'info', message: 'Perubahan terakhir dihapus dari tracking. Reload data untuk melihat state terbaru.');
 
         Log::info("Last change undone from tracking", [
             'schedule_id' => $this->schedule->id,
@@ -794,12 +712,8 @@ class EditSchedule extends Component
      */
     public function refreshData(): void
     {
+        // Only reload assignments - other data loaded on demand
         $this->loadAssignments();
-        $this->loadAvailableUsers();
-        $this->detectConflicts();
-        $this->calculateStatistics();
-
-        $this->dispatch('data-refreshed');
     }
 
     /**
@@ -819,11 +733,12 @@ class EditSchedule extends Component
     }
 
     /**
-     * Check if slot is full (at capacity)
+     * Check if slot is full (at capacity) - Optimized
      */
     public function isSlotFull(string $date, int $session): bool
     {
-        return $this->editService->isSlotFull($this->schedule, $date, $session);
+        $count = count($this->assignments[$date][$session] ?? []);
+        return $count >= $this->maxUsersPerSlot;
     }
 
     /**
@@ -831,7 +746,7 @@ class EditSchedule extends Component
      */
     public function isSlotEmpty(string $date, int $session): bool
     {
-        return $this->getSlotUserCount($date, $session) === 0;
+        return empty($this->assignments[$date][$session]);
     }
 
     /**
@@ -922,7 +837,7 @@ class EditSchedule extends Component
     }
 
     /**
-     * Get slot status (for color coding)
+     * Get slot status (for color coding) - Simplified without edited status
      */
     public function getSlotStatus(string $date, int $session): string
     {
@@ -948,13 +863,6 @@ class EditSchedule extends Component
         $overstaffedThreshold = $this->configService->get('overstaffed_threshold', 3);
         if ($userCount > $overstaffedThreshold) {
             return 'overstaffed'; // Yellow/Orange
-        }
-
-        // Check if edited
-        $assignments = $this->getSlotAssignments($date, $session);
-        $hasEdited = collect($assignments)->contains(fn($a) => !empty($a['edited_at']));
-        if ($hasEdited) {
-            return 'edited'; // Blue
         }
 
         // Normal state

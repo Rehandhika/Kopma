@@ -13,13 +13,13 @@ class AuthFlowTest extends TestCase
 
     public function test_guest_is_redirected_to_login_when_accessing_protected_route(): void
     {
-        $this->get('/dashboard')
-            ->assertRedirect('/login');
+        $this->get('/admin/dashboard')
+            ->assertRedirect('/admin/login');
     }
 
     public function test_login_page_loads(): void
     {
-        $this->get('/login')->assertOk();
+        $this->get('/admin/login')->assertOk();
     }
 
     public function test_authenticated_user_can_access_dashboard(): void
@@ -27,12 +27,13 @@ class AuthFlowTest extends TestCase
         $user = User::create([
             'name' => 'Member User',
             'nim' => 'NIM0001',
+            'email' => 'member@test.com',
             'password' => Hash::make('password'),
             'status' => 'active',
         ]);
 
         $this->actingAs($user)
-            ->get('/dashboard')
+            ->get('/admin/dashboard')
             ->assertOk();
     }
 }

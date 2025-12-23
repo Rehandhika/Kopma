@@ -1234,7 +1234,10 @@ class ScheduleEditService
      */
     protected function invalidateScheduleCache(Schedule $schedule): void
     {
-        Cache::tags(['schedules', "schedule_{$schedule->id}"])->flush();
+        // Use simple cache forget instead of tags (file cache doesn't support tagging)
+        Cache::forget("schedule_{$schedule->id}");
+        Cache::forget("schedule_assignments_{$schedule->id}");
+        Cache::forget("schedule_statistics_{$schedule->id}");
         
         Log::debug("Schedule cache invalidated", [
             'schedule_id' => $schedule->id,

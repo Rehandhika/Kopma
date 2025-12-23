@@ -78,35 +78,26 @@ $dropdownButtonBaseClasses = 'w-full flex items-center justify-between px-3 py-2
          id="schedule-submenu"
          class="ml-8 mt-1 space-y-1"
          role="menu">
+        {{-- Kelola Jadwal: Menu utama untuk admin (lihat, buat, edit, hapus jadwal) --}}
         <a href="{{ route('admin.schedule.index') }}" 
-           class="{{ $submenuLinkBaseClasses }} {{ request()->routeIs('admin.schedule.index') ? $submenuLinkActiveClasses : $submenuLinkInactiveClasses }}"
+           class="{{ $submenuLinkBaseClasses }} {{ request()->routeIs('admin.schedule.index') || request()->routeIs('admin.schedule.create') || request()->routeIs('admin.schedule.edit') || request()->routeIs('admin.schedule.history') ? $submenuLinkActiveClasses : $submenuLinkInactiveClasses }}"
            role="menuitem"
-           aria-current="{{ request()->routeIs('admin.schedule.index') ? 'page' : 'false' }}">
-            Kalender Jadwal
+           aria-current="{{ request()->routeIs('admin.schedule.index') || request()->routeIs('admin.schedule.create') || request()->routeIs('admin.schedule.edit') || request()->routeIs('admin.schedule.history') ? 'page' : 'false' }}">
+            Kelola Jadwal
         </a>
+        {{-- Jadwal Saya: Untuk semua user melihat jadwal pribadi --}}
         <a href="{{ route('admin.schedule.my-schedule') }}" 
            class="{{ $submenuLinkBaseClasses }} {{ request()->routeIs('admin.schedule.my-schedule') ? $submenuLinkActiveClasses : $submenuLinkInactiveClasses }}"
            role="menuitem"
            aria-current="{{ request()->routeIs('admin.schedule.my-schedule') ? 'page' : 'false' }}">
             Jadwal Saya
         </a>
+        {{-- Ketersediaan: Untuk semua user input ketersediaan mingguan --}}
         <a href="{{ route('admin.schedule.availability') }}" 
            class="{{ $submenuLinkBaseClasses }} {{ request()->routeIs('admin.schedule.availability') ? $submenuLinkActiveClasses : $submenuLinkInactiveClasses }}"
            role="menuitem"
            aria-current="{{ request()->routeIs('admin.schedule.availability') ? 'page' : 'false' }}">
             Ketersediaan
-        </a>
-        <a href="{{ route('admin.schedule.create') }}" 
-           class="{{ $submenuLinkBaseClasses }} {{ request()->routeIs('admin.schedule.create') ? $submenuLinkActiveClasses : $submenuLinkInactiveClasses }}"
-           role="menuitem"
-           aria-current="{{ request()->routeIs('admin.schedule.create') ? 'page' : 'false' }}">
-            Tambah Jadwal
-        </a>
-        <a href="{{ route('admin.schedule.index') }}" 
-           class="{{ $submenuLinkBaseClasses }} {{ request()->routeIs('admin.schedule.edit') || request()->routeIs('admin.schedule.history') ? $submenuLinkActiveClasses : $submenuLinkInactiveClasses }}"
-           role="menuitem"
-           aria-current="{{ request()->routeIs('admin.schedule.edit') || request()->routeIs('admin.schedule.history') ? 'page' : 'false' }}">
-            Kelola Jadwal
         </a>
     </div>
 </div>
