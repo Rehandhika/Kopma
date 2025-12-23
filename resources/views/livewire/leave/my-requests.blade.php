@@ -18,7 +18,7 @@
             <x-ui.button 
                 variant="primary" 
                 icon="plus"
-                :href="route('leave.create')">
+                :href="route('admin.leave.create')">
                 Ajukan Baru
             </x-ui.button>
         </x-slot:actions>

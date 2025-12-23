@@ -4,7 +4,7 @@ namespace App\Livewire\Purchase;
 
 use Livewire\Component;
 use Livewire\WithPagination;
-use App\Models\PurchaseOrder;
+use App\Models\Purchase;
 
 class Index extends Component
 {
@@ -15,13 +15,11 @@ class Index extends Component
 
     public function approvePurchase($id)
     {
-        $purchase = PurchaseOrder::find($id);
+        $purchase = Purchase::find($id);
         
-        if ($purchase && $purchase->status === 'pending') {
+        if ($purchase && $purchase->payment_status === 'unpaid') {
             $purchase->update([
-                'status' => 'approved',
-                'approved_by' => auth()->id(),
-                'approved_at' => now(),
+                'payment_status' => 'paid',
             ]);
             
             $this->dispatch('alert', type: 'success', message: 'Purchase order disetujui');
@@ -30,19 +28,19 @@ class Index extends Component
 
     public function render()
     {
-        $purchases = PurchaseOrder::query()
-            ->when($this->search, fn($q) => $q->where('po_number', 'like', '%' . $this->search . '%')
-                ->orWhereHas('supplier', fn($q) => $q->where('name', 'like', '%' . $this->search . '%')))
-            ->when($this->statusFilter, fn($q) => $q->where('status', $this->statusFilter))
-            ->with(['supplier', 'createdBy'])
+        $purchases = Purchase::query()
+            ->when($this->search, fn($q) => $q->where('invoice_number', 'like', '%' . $this->search . '%')
+                ->orWhere('supplier_name', 'like', '%' . $this->search . '%'))
+            ->when($this->statusFilter, fn($q) => $q->where('payment_status', $this->statusFilter))
+            ->with(['user', 'items'])
             ->orderBy('created_at', 'desc')
             ->paginate(15);
 
         $stats = [
-            'total' => PurchaseOrder::count(),
-            'pending' => PurchaseOrder::where('status', 'pending')->count(),
-            'approved' => PurchaseOrder::where('status', 'approved')->count(),
-            'received' => PurchaseOrder::where('status', 'received')->count(),
+            'total' => Purchase::count(),
+            'pending' => Purchase::where('payment_status', 'unpaid')->count(),
+            'approved' => Purchase::where('payment_status', 'partial')->count(),
+            'received' => Purchase::where('payment_status', 'paid')->count(),
         ];
 
         return view('livewire.purchase.index', [

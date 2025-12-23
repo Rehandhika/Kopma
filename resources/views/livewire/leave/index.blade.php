@@ -6,7 +6,7 @@
             <x-ui.button 
                 variant="primary" 
                 icon="plus"
-                :href="route('leave.create')">
+                :href="route('admin.leave.create')">
                 Ajukan Cuti
             </x-ui.button>
         </x-slot:actions>

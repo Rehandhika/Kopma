@@ -188,10 +188,11 @@ Route::prefix('admin')
             Route::get('/{product}/edit', \App\Livewire\Product\EditProduct::class)->name('edit');
         });
         
-        // Stock
+        // Stock - Unified single page management
         Route::prefix('stock')->name('stock.')->group(function () {
-            Route::get('/', \App\Livewire\Stock\Index::class)->name('index');
-            Route::get('/adjustment', \App\Livewire\Stock\StockAdjustment::class)->name('adjustment');
+            Route::get('/', \App\Livewire\Stock\StockManager::class)->name('index');
+            // Legacy routes redirect to new unified page
+            Route::redirect('/adjustment', '/admin/stock?activeTab=history')->name('adjustment');
         });
         
         // Purchase

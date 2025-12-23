@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\{Model, SoftDeletes};
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Str;
+use App\Services\ProductImageService;
 
 class Product extends Model
 {
@@ -14,13 +15,15 @@ class Product extends Model
         'name',
         'sku',
         'price',
+        'cost_price',
         'stock',
         'min_stock',
         'category',
         'description',
         'status',
         'slug',
-        'image_url',
+        'image',
+        'image_url', // Keep for backward compatibility
         'is_featured',
         'is_public',
         'display_order',
@@ -28,6 +31,7 @@ class Product extends Model
 
     protected $casts = [
         'price' => 'decimal:2',
+        'cost_price' => 'decimal:2',
         'stock' => 'integer',
         'min_stock' => 'integer',
         'is_featured' => 'boolean',
@@ -36,6 +40,8 @@ class Product extends Model
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
+
+    protected $appends = ['image_thumbnail_url', 'image_medium_url', 'profit_margin', 'profit_per_unit'];
 
     // Boot method for automatic slug generation
     protected static function boot()
@@ -152,5 +158,63 @@ class Product extends Model
     public function increaseStock(int $quantity): void
     {
         $this->increment('stock', $quantity);
+    }
+
+    // Image Accessors
+    public function getImageThumbnailUrlAttribute(): ?string
+    {
+        return app(ProductImageService::class)->getThumbnailUrl($this->image);
+    }
+
+    public function getImageMediumUrlAttribute(): ?string
+    {
+        return app(ProductImageService::class)->getUrl($this->image, 'medium');
+    }
+
+    public function getImageLargeUrlAttribute(): ?string
+    {
+        return app(ProductImageService::class)->getUrl($this->image, 'large');
+    }
+
+    public function getImageOriginalUrlAttribute(): ?string
+    {
+        if (empty($this->image)) {
+            return null;
+        }
+        return \Illuminate\Support\Facades\Storage::disk('public')->url($this->image);
+    }
+
+    public function hasImage(): bool
+    {
+        return !empty($this->image);
+    }
+
+    // Profit Calculations
+    public function getProfitPerUnitAttribute(): float
+    {
+        return (float) $this->price - (float) $this->cost_price;
+    }
+
+    public function getProfitMarginAttribute(): float
+    {
+        if ($this->price <= 0) {
+            return 0;
+        }
+        return round((($this->price - $this->cost_price) / $this->price) * 100, 2);
+    }
+
+    public function getTotalStockValueAttribute(): float
+    {
+        return (float) $this->stock * (float) $this->price;
+    }
+
+    public function getTotalStockCostAttribute(): float
+    {
+        return (float) $this->stock * (float) $this->cost_price;
+    }
+
+    public function getPotentialProfitAttribute(): float
+    {
+        return $this->total_stock_value - $this->total_stock_cost;
     }
 }

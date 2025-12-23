@@ -148,7 +148,7 @@
                 <div class="flex justify-end space-x-3 pt-4 border-t border-gray-200">
                     <x-ui.button 
                         variant="white" 
-                        :href="route('leave.my-requests')">
+                        :href="route('admin.leave.my-requests')">
                         Batal
                     </x-ui.button>
                     <x-ui.button 

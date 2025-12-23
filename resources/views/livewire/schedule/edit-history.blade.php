@@ -8,7 +8,7 @@
                     Minggu: {{ $schedule->week_start_date->format('d M Y') }} - {{ $schedule->week_end_date->format('d M Y') }}
                 </p>
             </div>
-            <a href="{{ route('schedule.edit', $schedule) }}" class="btn btn-secondary">
+            <a href="{{ route('admin.schedule.edit', $schedule) }}" class="btn btn-secondary">
                 <i class="fas fa-arrow-left mr-2"></i>
                 Kembali ke Edit
             </a>

@@ -76,8 +76,8 @@
                 wire:model.live="typeFilter"
             >
                 <option value="all">Semua Jenis</option>
-                <option value="addition">Penambahan</option>
-                <option value="reduction">Pengurangan</option>
+                <option value="in">Penambahan</option>
+                <option value="out">Pengurangan</option>
             </x-ui.select>
             <x-ui.select 
                 label="Produk"
@@ -110,19 +110,19 @@
                 </x-data.table-cell>
                 <x-data.table-cell class="text-center">
                     <x-ui.badge 
-                        :variant="$adjustment->type === 'addition' ? 'success' : 'danger'"
+                        :variant="$adjustment->type === 'in' ? 'success' : 'danger'"
                         size="sm"
                     >
-                        {{ $adjustment->type === 'addition' ? 'Penambahan' : 'Pengurangan' }}
+                        {{ $adjustment->type === 'in' ? 'Penambahan' : 'Pengurangan' }}
                     </x-ui.badge>
                 </x-data.table-cell>
                 <x-data.table-cell class="text-center">
                     <span @class([
                         'font-bold text-lg',
-                        'text-success-600' => $adjustment->type === 'addition',
-                        'text-danger-600' => $adjustment->type === 'reduction',
+                        'text-success-600' => $adjustment->type === 'in',
+                        'text-danger-600' => $adjustment->type === 'out',
                     ])>
-                        {{ $adjustment->type === 'addition' ? '+' : '-' }}{{ $adjustment->quantity }}
+                        {{ $adjustment->type === 'in' ? '+' : '-' }}{{ $adjustment->quantity }}
                     </span>
                 </x-data.table-cell>
                 <x-data.table-cell class="text-center">
@@ -196,8 +196,8 @@
                     <x-layout.grid cols="2" gap="3">
                         <x-ui.button 
                             type="button" 
-                            wire:click="$set('type', 'addition')"
-                            :variant="$type === 'addition' ? 'success' : 'outline'"
+                            wire:click="$set('type', 'in')"
+                            :variant="$type === 'in' ? 'success' : 'outline'"
                             class="w-full justify-center"
                         >
                             <x-ui.icon name="arrow-up" class="w-5 h-5 mr-1" />
@@ -205,8 +205,8 @@
                         </x-ui.button>
                         <x-ui.button 
                             type="button" 
-                            wire:click="$set('type', 'reduction')"
-                            :variant="$type === 'reduction' ? 'danger' : 'outline'"
+                            wire:click="$set('type', 'out')"
+                            :variant="$type === 'out' ? 'danger' : 'outline'"
                             class="w-full justify-center"
                         >
                             <x-ui.icon name="arrow-down" class="w-5 h-5 mr-1" />

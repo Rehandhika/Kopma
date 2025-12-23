@@ -16,37 +16,37 @@ class ProductSeeder extends Seeder
 
         $items = [
             // Minuman
-            ['name' => 'Air Mineral 600ml', 'price' => 4000, 'category' => 'Minuman', 'stock' => 50],
-            ['name' => 'Teh Botol 350ml', 'price' => 6000, 'category' => 'Minuman', 'stock' => 40],
-            ['name' => 'Kopi Kaleng', 'price' => 8000, 'category' => 'Minuman', 'stock' => 30],
-            ['name' => 'Susu Kotak 200ml', 'price' => 7000, 'category' => 'Minuman', 'stock' => 25],
-            ['name' => 'Jus Buah Kemasan', 'price' => 9000, 'category' => 'Minuman', 'stock' => 20],
+            ['name' => 'Air Mineral 600ml', 'price' => 4000, 'cost_price' => 2500, 'category' => 'Minuman', 'stock' => 50],
+            ['name' => 'Teh Botol 350ml', 'price' => 6000, 'cost_price' => 4000, 'category' => 'Minuman', 'stock' => 40],
+            ['name' => 'Kopi Kaleng', 'price' => 8000, 'cost_price' => 5500, 'category' => 'Minuman', 'stock' => 30],
+            ['name' => 'Susu Kotak 200ml', 'price' => 7000, 'cost_price' => 5000, 'category' => 'Minuman', 'stock' => 25],
+            ['name' => 'Jus Buah Kemasan', 'price' => 9000, 'cost_price' => 6500, 'category' => 'Minuman', 'stock' => 20],
             
             // Makanan
-            ['name' => 'Mi Instan Goreng', 'price' => 3500, 'category' => 'Makanan', 'stock' => 60],
-            ['name' => 'Mi Instan Kuah', 'price' => 3500, 'category' => 'Makanan', 'stock' => 60],
-            ['name' => 'Biskuit Cokelat', 'price' => 7000, 'category' => 'Makanan', 'stock' => 35],
-            ['name' => 'Roti Tawar', 'price' => 15000, 'category' => 'Makanan', 'stock' => 15],
-            ['name' => 'Keripik Kentang', 'price' => 10000, 'category' => 'Makanan', 'stock' => 25],
-            ['name' => 'Cokelat Batang', 'price' => 12000, 'category' => 'Makanan', 'stock' => 20],
-            ['name' => 'Permen', 'price' => 1000, 'category' => 'Makanan', 'stock' => 100],
+            ['name' => 'Mi Instan Goreng', 'price' => 3500, 'cost_price' => 2800, 'category' => 'Makanan', 'stock' => 60],
+            ['name' => 'Mi Instan Kuah', 'price' => 3500, 'cost_price' => 2800, 'category' => 'Makanan', 'stock' => 60],
+            ['name' => 'Biskuit Cokelat', 'price' => 7000, 'cost_price' => 5000, 'category' => 'Makanan', 'stock' => 35],
+            ['name' => 'Roti Tawar', 'price' => 15000, 'cost_price' => 11000, 'category' => 'Makanan', 'stock' => 15],
+            ['name' => 'Keripik Kentang', 'price' => 10000, 'cost_price' => 7500, 'category' => 'Makanan', 'stock' => 25],
+            ['name' => 'Cokelat Batang', 'price' => 12000, 'cost_price' => 9000, 'category' => 'Makanan', 'stock' => 20],
+            ['name' => 'Permen', 'price' => 1000, 'cost_price' => 700, 'category' => 'Makanan', 'stock' => 100],
             
             // ATK
-            ['name' => 'Pulpen Biru', 'price' => 4000, 'category' => 'ATK', 'stock' => 45],
-            ['name' => 'Pulpen Hitam', 'price' => 4000, 'category' => 'ATK', 'stock' => 45],
-            ['name' => 'Pensil 2B', 'price' => 3000, 'category' => 'ATK', 'stock' => 40],
-            ['name' => 'Buku Tulis 38 Lbr', 'price' => 6000, 'category' => 'ATK', 'stock' => 30],
-            ['name' => 'Penghapus', 'price' => 2000, 'category' => 'ATK', 'stock' => 50],
-            ['name' => 'Penggaris 30cm', 'price' => 5000, 'category' => 'ATK', 'stock' => 25],
-            ['name' => 'Spidol Whiteboard', 'price' => 8000, 'category' => 'ATK', 'stock' => 20],
+            ['name' => 'Pulpen Biru', 'price' => 4000, 'cost_price' => 2500, 'category' => 'ATK', 'stock' => 45],
+            ['name' => 'Pulpen Hitam', 'price' => 4000, 'cost_price' => 2500, 'category' => 'ATK', 'stock' => 45],
+            ['name' => 'Pensil 2B', 'price' => 3000, 'cost_price' => 2000, 'category' => 'ATK', 'stock' => 40],
+            ['name' => 'Buku Tulis 38 Lbr', 'price' => 6000, 'cost_price' => 4000, 'category' => 'ATK', 'stock' => 30],
+            ['name' => 'Penghapus', 'price' => 2000, 'cost_price' => 1200, 'category' => 'ATK', 'stock' => 50],
+            ['name' => 'Penggaris 30cm', 'price' => 5000, 'cost_price' => 3000, 'category' => 'ATK', 'stock' => 25],
+            ['name' => 'Spidol Whiteboard', 'price' => 8000, 'cost_price' => 5500, 'category' => 'ATK', 'stock' => 20],
             
             // Kebutuhan Harian
-            ['name' => 'Sabun Mandi', 'price' => 8000, 'category' => 'Kebutuhan Harian', 'stock' => 30],
-            ['name' => 'Sampo Sachet', 'price' => 2000, 'category' => 'Kebutuhan Harian', 'stock' => 80],
-            ['name' => 'Pasta Gigi', 'price' => 12000, 'category' => 'Kebutuhan Harian', 'stock' => 20],
-            ['name' => 'Sikat Gigi', 'price' => 10000, 'category' => 'Kebutuhan Harian', 'stock' => 25],
-            ['name' => 'Tisu Pocket', 'price' => 3000, 'category' => 'Kebutuhan Harian', 'stock' => 40],
-            ['name' => 'Masker Medis', 'price' => 15000, 'category' => 'Kebutuhan Harian', 'stock' => 35],
+            ['name' => 'Sabun Mandi', 'price' => 8000, 'cost_price' => 5500, 'category' => 'Kebutuhan Harian', 'stock' => 30],
+            ['name' => 'Sampo Sachet', 'price' => 2000, 'cost_price' => 1400, 'category' => 'Kebutuhan Harian', 'stock' => 80],
+            ['name' => 'Pasta Gigi', 'price' => 12000, 'cost_price' => 9000, 'category' => 'Kebutuhan Harian', 'stock' => 20],
+            ['name' => 'Sikat Gigi', 'price' => 10000, 'cost_price' => 7000, 'category' => 'Kebutuhan Harian', 'stock' => 25],
+            ['name' => 'Tisu Pocket', 'price' => 3000, 'cost_price' => 2000, 'category' => 'Kebutuhan Harian', 'stock' => 40],
+            ['name' => 'Masker Medis', 'price' => 15000, 'cost_price' => 10000, 'category' => 'Kebutuhan Harian', 'stock' => 35],
         ];
 
         $now = now();
@@ -61,6 +61,7 @@ class ProductSeeder extends Seeder
                 'name' => $data['name'],
                 'sku' => $sku,
                 'price' => $data['price'],
+                'cost_price' => $data['cost_price'] ?? round($data['price'] * 0.7),
                 'stock' => $data['stock'] ?? 0,
                 'min_stock' => rand(5, 15),
                 'category' => $data['category'],

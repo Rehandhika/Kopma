@@ -23,8 +23,15 @@
             {{-- Left Column: Visuals (5 cols) --}}
             <div class="lg:col-span-5 space-y-4 lg:space-y-6">
                 <div class="aspect-square bg-slate-800 rounded-2xl lg:rounded-3xl overflow-hidden border border-white/10 relative group shadow-2xl shadow-black/50">
-                    @if($product->image_url)
-                        <img src="{{ $product->image_url }}" alt="{{ $product->name }}" class="w-full h-full object-cover" fetchpriority="high" />
+                    @if($product->hasImage())
+                        <img 
+                            src="{{ $product->image_large_url }}" 
+                            alt="{{ $product->name }}" 
+                            class="w-full h-full object-cover" 
+                            fetchpriority="high"
+                            decoding="async"
+                            onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'w-full h-full flex items-center justify-center text-slate-600\'><i class=\'fas fa-image text-5xl opacity-30\'></i></div>';"
+                        />
                     @else
                         <div class="w-full h-full flex items-center justify-center text-slate-600">
                             <i class="fas fa-image text-5xl opacity-30"></i>

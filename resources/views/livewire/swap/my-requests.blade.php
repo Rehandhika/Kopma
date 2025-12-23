@@ -13,7 +13,7 @@
             <x-slot:action>
                 <x-ui.button 
                     variant="primary" 
-                    :href="route('swap.create')" 
+                    :href="route('admin.swap.create')" 
                     icon="arrow-path">
                     Buat Permintaan Tukar Shift
                 </x-ui.button>

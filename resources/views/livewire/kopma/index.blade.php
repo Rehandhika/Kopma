@@ -17,7 +17,7 @@
                 Platform terintegrasi untuk mengelola kegiatan operasional Kopma dengan sistem absensi, penjadwalan, kasir, dan pelaporan yang modern.
             </p>
             <div class="mt-6 flex flex-wrap gap-3">
-                <a href="{{ route('dashboard') }}" class="inline-flex items-center px-5 py-2.5 bg-white text-indigo-700 font-semibold rounded-lg hover:bg-indigo-50 transition-colors">
+                <a href="{{ route('admin.dashboard') }}" class="inline-flex items-center px-5 py-2.5 bg-white text-indigo-700 font-semibold rounded-lg hover:bg-indigo-50 transition-colors">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"></path>
                     </svg>
@@ -126,7 +126,7 @@
             </div>
             <h3 class="text-lg font-semibold text-gray-900 mb-2">Manajemen Jadwal</h3>
             <p class="text-gray-600 text-sm mb-4">Generate jadwal otomatis berdasarkan ketersediaan anggota.</p>
-            <a href="{{ route('schedule.calendar') }}" class="text-purple-600 hover:text-purple-700 text-sm font-medium inline-flex items-center">
+            <a href="{{ route('admin.schedule.calendar') }}" class="text-purple-600 hover:text-purple-700 text-sm font-medium inline-flex items-center">
                 Lihat Detail
                 <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
@@ -142,7 +142,7 @@
             </div>
             <h3 class="text-lg font-semibold text-gray-900 mb-2">Sistem Kasir</h3>
             <p class="text-gray-600 text-sm mb-4">Point of Sale modern dengan manajemen inventory lengkap.</p>
-            <a href="{{ route('cashier.transactions') }}" class="text-emerald-600 hover:text-emerald-700 text-sm font-medium inline-flex items-center">
+            <a href="{{ route('admin.cashier.pos') }}" class="text-emerald-600 hover:text-emerald-700 text-sm font-medium inline-flex items-center">
                 Lihat Detail
                 <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
@@ -158,7 +158,7 @@
             </div>
             <h3 class="text-lg font-semibold text-gray-900 mb-2">Tukar Shift</h3>
             <p class="text-gray-600 text-sm mb-4">Sistem permintaan tukar shift dengan approval workflow.</p>
-            <a href="{{ route('swap.create') }}" class="text-cyan-600 hover:text-cyan-700 text-sm font-medium inline-flex items-center">
+            <a href="{{ route('admin.swap.create') }}" class="text-cyan-600 hover:text-cyan-700 text-sm font-medium inline-flex items-center">
                 Lihat Detail
                 <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
@@ -174,7 +174,7 @@
             </div>
             <h3 class="text-lg font-semibold text-gray-900 mb-2">Sistem Penalti</h3>
             <p class="text-gray-600 text-sm mb-4">Tracking penalti dengan sistem poin dan history lengkap.</p>
-            <a href="{{ route('penalty.my-penalties') }}" class="text-red-600 hover:text-red-700 text-sm font-medium inline-flex items-center">
+            <a href="{{ route('admin.penalties.my-penalties') }}" class="text-red-600 hover:text-red-700 text-sm font-medium inline-flex items-center">
                 Lihat Detail
                 <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
@@ -190,7 +190,7 @@
             </div>
             <h3 class="text-lg font-semibold text-gray-900 mb-2">Laporan & Analitik</h3>
             <p class="text-gray-600 text-sm mb-4">Dashboard analitik lengkap dengan export PDF dan Excel.</p>
-            <a href="{{ route('reports.attendance') }}" class="text-indigo-600 hover:text-indigo-700 text-sm font-medium inline-flex items-center">
+            <a href="{{ route('admin.reports.attendance') }}" class="text-indigo-600 hover:text-indigo-700 text-sm font-medium inline-flex items-center">
                 Lihat Detail
                 <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>

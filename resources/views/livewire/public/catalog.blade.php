@@ -99,8 +99,15 @@
                         
                         {{-- Image Area --}}
                         <div class="aspect-square relative overflow-hidden bg-slate-800">
-                            @if($product->image_url)
-                                <img src="{{ $product->image_url }}" alt="{{ $product->name }}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-90 group-hover:opacity-100" loading="lazy">
+                            @if($product->hasImage())
+                                <img 
+                                    src="{{ $product->image_medium_url }}" 
+                                    alt="{{ $product->name }}" 
+                                    class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-90 group-hover:opacity-100" 
+                                    loading="lazy"
+                                    decoding="async"
+                                    onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'w-full h-full flex items-center justify-center text-slate-600 bg-slate-800/50\'><i class=\'fas fa-cube text-4xl opacity-50\'></i></div>';"
+                                >
                             @else
                                 <div class="w-full h-full flex items-center justify-center text-slate-600 bg-slate-800/50">
                                     <i class="fas fa-cube text-4xl opacity-50"></i>

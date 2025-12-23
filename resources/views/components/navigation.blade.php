@@ -137,21 +137,38 @@ $dropdownButtonBaseClasses = 'w-full flex items-center justify-between px-3 py-2
     </div>
 </div>
 
-{{-- Products --}}
-<a href="{{ route('admin.products.index') }}" 
-   class="{{ $linkBaseClasses }} {{ request()->routeIs('admin.products.*') ? $linkActiveClasses : $linkInactiveClasses }}"
-   aria-current="{{ request()->routeIs('admin.products.*') ? 'page' : 'false' }}">
-    <x-ui.icon name="shopping-cart" class="w-5 h-5 mr-3 flex-shrink-0" />
-    <span>Produk</span>
-</a>
-
-{{-- Stock --}}
-<a href="{{ route('admin.stock.index') }}" 
-   class="{{ $linkBaseClasses }} {{ request()->routeIs('admin.stock.*') ? $linkActiveClasses : $linkInactiveClasses }}"
-   aria-current="{{ request()->routeIs('admin.stock.*') ? 'page' : 'false' }}">
-    <x-ui.icon name="inbox" class="w-5 h-5 mr-3 flex-shrink-0" />
-    <span>Stok</span>
-</a>
+{{-- Inventaris (Produk & Stok) --}}
+<div x-data="{ open: {{ request()->routeIs('admin.products.*') || request()->routeIs('admin.stock.*') ? 'true' : 'false' }} }">
+    <button @click="open = !open" 
+            type="button"
+            class="{{ $dropdownButtonBaseClasses }} {{ request()->routeIs('admin.products.*') || request()->routeIs('admin.stock.*') ? $linkActiveClasses : $linkInactiveClasses }}"
+            aria-expanded="{{ request()->routeIs('admin.products.*') || request()->routeIs('admin.stock.*') ? 'true' : 'false' }}"
+            aria-controls="inventory-submenu">
+        <div class="flex items-center min-w-0">
+            <x-ui.icon name="cube" class="w-5 h-5 mr-3 flex-shrink-0" />
+            <span>Inventaris</span>
+        </div>
+        <x-ui.icon name="chevron-down" class="w-4 h-4 ml-2 flex-shrink-0 transition-transform duration-200" ::class="{ 'rotate-180': open }" />
+    </button>
+    <div x-show="open" 
+         x-collapse 
+         id="inventory-submenu"
+         class="ml-8 mt-1 space-y-1"
+         role="menu">
+        <a href="{{ route('admin.products.index') }}" 
+           class="{{ $submenuLinkBaseClasses }} {{ request()->routeIs('admin.products.*') ? $submenuLinkActiveClasses : $submenuLinkInactiveClasses }}"
+           role="menuitem"
+           aria-current="{{ request()->routeIs('admin.products.*') ? 'page' : 'false' }}">
+            Daftar Produk
+        </a>
+        <a href="{{ route('admin.stock.index') }}" 
+           class="{{ $submenuLinkBaseClasses }} {{ request()->routeIs('admin.stock.*') ? $submenuLinkActiveClasses : $submenuLinkInactiveClasses }}"
+           role="menuitem"
+           aria-current="{{ request()->routeIs('admin.stock.*') ? 'page' : 'false' }}">
+            Manajemen Stok
+        </a>
+    </div>
+</div>
 
 {{-- Leave Requests --}}
 <div x-data="{ open: {{ request()->routeIs('admin.leave.*') ? 'true' : 'false' }} }">

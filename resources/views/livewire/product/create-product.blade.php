@@ -1,80 +1,178 @@
 <div class="max-w-4xl mx-auto">
-    <div class="flex items-center justify-between mb-6">
-        <h2 class="text-2xl font-bold text-gray-900">Tambah Produk Baru</h2>
-        <a href="{{ route('products.index') }}" class="btn btn-secondary">
-            Kembali
-        </a>
-    </div>
+    <x-layout.page-header 
+        title="Tambah Produk Baru"
+        description="Isi informasi produk untuk ditambahkan ke inventori"
+    >
+        <x-slot:actions>
+            <x-ui.button 
+                variant="white" 
+                :href="route('admin.products.index')"
+                icon="arrow-left"
+            >
+                Kembali
+            </x-ui.button>
+        </x-slot:actions>
+    </x-layout.page-header>
 
-    <div class="bg-white rounded-lg shadow p-6">
-        <form wire:submit="save" class="space-y-6">
-            <!-- Basic Info -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Nama Produk</label>
-                    <input type="text" wire:model="name" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
-                    @error('name') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">SKU / Kode Barang</label>
-                    <input type="text" wire:model="sku" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
-                    @error('sku') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Kategori</label>
-                    <input type="text" wire:model="category" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" placeholder="Contoh: Makanan, Minuman">
-                    @error('category') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
-                    <select wire:model="status" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
-                        <option value="active">Aktif</option>
-                        <option value="inactive">Tidak Aktif</option>
-                    </select>
-                    @error('status') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-                </div>
+    <form wire:submit="save" class="space-y-6">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {{-- Left Column - Image --}}
+            <div class="lg:col-span-1">
+                <x-ui.card padding="true">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">Gambar Produk</h3>
+                    
+                    <x-ui.image-upload 
+                        name="image"
+                        label=""
+                        :preview="$imagePreview"
+                        :error="$errors->first('image')"
+                        hint="Gambar akan dioptimasi otomatis untuk performa terbaik"
+                    />
+                </x-ui.card>
             </div>
 
-            <!-- Pricing & Stock -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Harga Jual (Rp)</label>
-                    <input type="number" wire:model="price" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
-                    @error('price') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-                </div>
+            {{-- Right Column - Form Fields --}}
+            <div class="lg:col-span-2 space-y-6">
+                {{-- Basic Info --}}
+                <x-ui.card padding="true">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">Informasi Dasar</h3>
+                    
+                    <div class="space-y-4">
+                        <x-ui.input 
+                            label="Nama Produk"
+                            wire:model="name"
+                            placeholder="Masukkan nama produk"
+                            required
+                            :error="$errors->first('name')"
+                        />
 
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Stok Awal</label>
-                    <input type="number" wire:model="stock" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
-                    @error('stock') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-                </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <x-ui.input 
+                                label="SKU / Kode Barang"
+                                wire:model="sku"
+                                placeholder="Opsional, akan digenerate otomatis"
+                                :error="$errors->first('sku')"
+                            />
 
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Minimal Stok</label>
-                    <input type="number" wire:model="min_stock" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
-                    @error('min_stock') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                            <x-ui.input 
+                                label="Kategori"
+                                wire:model="category"
+                                placeholder="Contoh: Makanan, Minuman"
+                                :error="$errors->first('category')"
+                            />
+                        </div>
+
+                        <x-ui.textarea 
+                            label="Deskripsi"
+                            wire:model="description"
+                            rows="3"
+                            placeholder="Deskripsi singkat produk (opsional)"
+                            :error="$errors->first('description')"
+                        />
+                    </div>
+                </x-ui.card>
+
+                {{-- Pricing & Stock --}}
+                <x-ui.card padding="true">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">Harga & Stok</h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <x-ui.input 
+                            type="number"
+                            label="Harga Beli / Modal (Rp)"
+                            wire:model.live="cost_price"
+                            min="0"
+                            step="100"
+                            required
+                            :error="$errors->first('cost_price')"
+                            hint="Harga pembelian dari supplier"
+                        />
+
+                        <x-ui.input 
+                            type="number"
+                            label="Harga Jual (Rp)"
+                            wire:model.live="price"
+                            min="0"
+                            step="100"
+                            required
+                            :error="$errors->first('price')"
+                        />
+                    </div>
+
+                    {{-- Profit Preview --}}
+                    @if($cost_price && $price && $price > 0)
+                        @php
+                            $profit = $price - $cost_price;
+                            $margin = round(($profit / $price) * 100, 1);
+                        @endphp
+                        <div class="p-3 rounded-lg mb-4 {{ $profit > 0 ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200' }}">
+                            <div class="flex items-center justify-between text-sm">
+                                <span class="{{ $profit > 0 ? 'text-green-700' : 'text-red-700' }}">
+                                    <strong>Keuntungan per unit:</strong> 
+                                    Rp {{ number_format($profit, 0, ',', '.') }}
+                                </span>
+                                <span class="{{ $profit > 0 ? 'text-green-600' : 'text-red-600' }} font-semibold">
+                                    {{ $margin }}% margin
+                                </span>
+                            </div>
+                        </div>
+                    @endif
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <x-ui.input 
+                            type="number"
+                            label="Stok Awal"
+                            wire:model="stock"
+                            min="0"
+                            required
+                            :error="$errors->first('stock')"
+                        />
+
+                        <x-ui.input 
+                            type="number"
+                            label="Minimal Stok"
+                            wire:model="min_stock"
+                            min="0"
+                            required
+                            :error="$errors->first('min_stock')"
+                            hint="Alert jika stok di bawah nilai ini"
+                        />
+                    </div>
+                </x-ui.card>
+
+                {{-- Status --}}
+                <x-ui.card padding="true">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">Status</h3>
+                    
+                    <x-ui.select 
+                        label="Status Produk"
+                        wire:model="status"
+                        :error="$errors->first('status')"
+                    >
+                        <option value="active">Aktif - Dapat dijual</option>
+                        <option value="inactive">Tidak Aktif - Tidak ditampilkan</option>
+                    </x-ui.select>
+                </x-ui.card>
+
+                {{-- Actions --}}
+                <div class="flex justify-end space-x-3">
+                    <x-ui.button 
+                        type="button"
+                        variant="white" 
+                        :href="route('admin.products.index')"
+                    >
+                        Batal
+                    </x-ui.button>
+                    <x-ui.button 
+                        type="submit" 
+                        variant="primary"
+                        wire:loading.attr="disabled"
+                    >
+                        <span wire:loading.remove wire:target="save">Simpan Produk</span>
+                        <span wire:loading wire:target="save">Menyimpan...</span>
+                    </x-ui.button>
                 </div>
             </div>
-
-            <!-- Description -->
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Deskripsi</label>
-                <textarea wire:model="description" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"></textarea>
-                @error('description') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-            </div>
-
-            <!-- Actions -->
-            <div class="flex justify-end space-x-3 pt-6 border-t">
-                <a href="{{ route('products.index') }}" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
-                    Batal
-                </a>
-                <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-                    Simpan Produk
-                </button>
-            </div>
-        </form>
-    </div>
+        </div>
+    </form>
 </div>

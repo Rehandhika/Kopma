@@ -25,7 +25,7 @@ class ProductDetail extends Component
         $this->product = \Illuminate\Support\Facades\Cache::remember($cacheKey, 300, function () use ($slug) {
             return Product::select([
                     'id', 'name', 'slug', 'sku', 'price', 'stock', 'min_stock', 
-                    'category', 'description', 'image_url', 'is_featured', 'status', 'is_public'
+                    'category', 'description', 'image', 'is_featured', 'status', 'is_public'
                 ])
                 ->where('slug', $slug)
                 ->where('is_public', true)

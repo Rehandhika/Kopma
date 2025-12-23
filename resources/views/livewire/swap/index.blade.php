@@ -4,7 +4,7 @@
         <x-slot:actions>
             <x-ui.button 
                 variant="primary" 
-                :href="route('swap.create')" 
+                :href="route('admin.swap.create')" 
                 icon="plus">
                 Buat Permintaan
             </x-ui.button>

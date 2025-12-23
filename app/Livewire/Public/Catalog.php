@@ -39,7 +39,7 @@ class Catalog extends Component
             return Product::query()
                 ->select([
                     'id', 'name', 'slug', 'price', 'stock', 'min_stock', 
-                    'category', 'image_url', 'is_featured', 'status', 'is_public', 'display_order'
+                    'category', 'image', 'is_featured', 'status', 'is_public', 'display_order'
                 ])
                 ->public()
                 ->active()

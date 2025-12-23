@@ -119,8 +119,8 @@ class ProductList extends Component
             $this->resetForm();
 
             // If this component is accessed via create/edit routes, navigate back to list
-            if (request()->routeIs('products.create') || request()->routeIs('products.edit')) {
-                return $this->redirectRoute('products.list', navigate: true);
+            if (request()->routeIs('admin.products.create') || request()->routeIs('admin.products.edit')) {
+                return $this->redirectRoute('admin.products.list', navigate: true);
             }
         } catch (\Exception $e) {
             $this->dispatch('alert', type: 'error', message: $e->getMessage());
