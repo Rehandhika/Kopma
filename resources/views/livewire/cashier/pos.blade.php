@@ -78,28 +78,9 @@
             <!-- Summary & Payment -->
             @if(!empty($cart))
                 <div class="border-t border-gray-200 p-4 space-y-4">
-                    <!-- Discount -->
-                    <x-ui.input 
-                        type="number" 
-                        wire:model.live="memberDiscount" 
-                        label="Diskon Anggota (%)" 
-                        min="0" 
-                        max="100"
-                    />
-
                     <!-- Totals -->
                     <div class="space-y-2">
-                        <div class="flex justify-between text-sm">
-                            <span class="text-gray-600">Subtotal</span>
-                            <span class="font-medium">Rp {{ number_format($subtotal, 0, ',', '.') }}</span>
-                        </div>
-                        @if($discount > 0)
-                            <div class="flex justify-between text-sm">
-                                <span class="text-gray-600">Diskon</span>
-                                <span class="font-medium text-danger-600">- Rp {{ number_format($discount, 0, ',', '.') }}</span>
-                            </div>
-                        @endif
-                        <div class="flex justify-between text-lg font-bold border-t pt-2">
+                        <div class="flex justify-between text-lg font-bold">
                             <span>Total</span>
                             <span class="text-primary-600">Rp {{ number_format($total, 0, ',', '.') }}</span>
                         </div>

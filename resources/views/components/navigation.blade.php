@@ -103,12 +103,39 @@ $dropdownButtonBaseClasses = 'w-full flex items-center justify-between px-3 py-2
 </div>
 
 {{-- Cashier / POS --}}
-<a href="{{ route('admin.cashier.pos') }}" 
-   class="{{ $linkBaseClasses }} {{ request()->routeIs('admin.cashier.*') ? $linkActiveClasses : $linkInactiveClasses }}"
-   aria-current="{{ request()->routeIs('admin.cashier.*') ? 'page' : 'false' }}">
-    <x-ui.icon name="currency-dollar" class="w-5 h-5 mr-3 flex-shrink-0" />
-    <span>Kasir / POS</span>
-</a>
+<div x-data="{ open: {{ request()->routeIs('admin.cashier.*') ? 'true' : 'false' }} }">
+    <button @click="open = !open" 
+            type="button"
+            class="{{ $dropdownButtonBaseClasses }} {{ request()->routeIs('admin.cashier.*') ? $linkActiveClasses : $linkInactiveClasses }}"
+            aria-expanded="{{ request()->routeIs('admin.cashier.*') ? 'true' : 'false' }}"
+            aria-controls="cashier-submenu">
+        <div class="flex items-center min-w-0">
+            <x-ui.icon name="currency-dollar" class="w-5 h-5 mr-3 flex-shrink-0" />
+            <span>Kasir / POS</span>
+        </div>
+        <x-ui.icon name="chevron-down" class="w-4 h-4 ml-2 flex-shrink-0 transition-transform duration-200" ::class="{ 'rotate-180': open }" />
+    </button>
+    <div x-show="open" 
+         x-collapse 
+         id="cashier-submenu"
+         class="ml-8 mt-1 space-y-1"
+         role="menu">
+        <a href="{{ route('admin.cashier.pos') }}" 
+           class="{{ $submenuLinkBaseClasses }} {{ request()->routeIs('admin.cashier.pos') ? $submenuLinkActiveClasses : $submenuLinkInactiveClasses }}"
+           role="menuitem"
+           aria-current="{{ request()->routeIs('admin.cashier.pos') ? 'page' : 'false' }}">
+            POS Kasir
+        </a>
+        @if(auth()->user()->hasAnyRole(['Super Admin', 'Ketua', 'Wakil Ketua']))
+        <a href="{{ route('admin.cashier.pos-entry') }}" 
+           class="{{ $submenuLinkBaseClasses }} {{ request()->routeIs('admin.cashier.pos-entry') ? $submenuLinkActiveClasses : $submenuLinkInactiveClasses }}"
+           role="menuitem"
+           aria-current="{{ request()->routeIs('admin.cashier.pos-entry') ? 'page' : 'false' }}">
+            Entry Transaksi
+        </a>
+        @endif
+    </div>
+</div>
 
 {{-- Products --}}
 <a href="{{ route('admin.products.index') }}" 

@@ -173,7 +173,11 @@ Route::prefix('admin')
         // Cashier / POS
         Route::prefix('cashier')->name('cashier.')->group(function () {
             Route::get('/pos', \App\Livewire\Cashier\Pos::class)->name('pos');
-            Route::get('/sales', \App\Livewire\Cashier\SalesList::class)->name('sales');
+            
+            // POS Entry - restricted to admin roles only (Requirements 10.1, 10.2)
+            Route::get('/pos-entry', \App\Livewire\Cashier\PosEntry::class)
+                ->middleware('role:Super Admin|Ketua|Wakil Ketua')
+                ->name('pos-entry');
         });
         
         // Products

@@ -17,7 +17,6 @@ class Pos extends Component
     public $cart = [];
     public $paymentMethod = 'cash';
     public $paymentAmount = 0;
-    public $memberDiscount = 0;
 
     /**
      * Add product to cart
@@ -112,20 +111,19 @@ class Pos extends Component
             return;
         }
 
-        $subtotal = collect($this->cart)->sum(fn($item) => $item['price'] * $item['quantity']);
-        $discount = $subtotal * ($this->memberDiscount / 100);
-        $total = $subtotal - $discount;
+        $total = collect($this->cart)->sum(fn($item) => $item['price'] * $item['quantity']);
 
         if ($this->paymentAmount < $total) {
             $this->dispatch('alert', type: 'error', message: 'Pembayaran kurang');
             return;
         }
 
-        DB::transaction(function () use ($subtotal, $discount, $total) {
+        DB::transaction(function () use ($total) {
             $sale = Sale::create([
                 'cashier_id' => auth()->id(),
-                'discount' => $discount,
-                'total' => $total,
+                'invoice_number' => Sale::generateInvoiceNumber(),
+                'date' => now()->toDateString(),
+                'total_amount' => $total,
                 'payment_method' => $this->paymentMethod,
                 'payment_amount' => $this->paymentAmount,
                 'change_amount' => $this->paymentAmount - $total,
@@ -137,6 +135,7 @@ class Pos extends Component
                 SaleItem::create([
                     'sale_id' => $sale->id,
                     'product_id' => $item['product_id'],
+                    'product_name' => $item['name'],
                     'quantity' => $item['quantity'],
                     'price' => $item['price'],
                     'subtotal' => $item['price'] * $item['quantity'],
@@ -153,7 +152,7 @@ class Pos extends Component
         });
 
         $this->dispatch('alert', type: 'success', message: 'Transaksi berhasil');
-        $this->reset(['cart', 'paymentAmount', 'memberDiscount', 'search']);
+        $this->reset(['cart', 'paymentAmount', 'search']);
     }
 
     /**
@@ -170,14 +169,10 @@ class Pos extends Component
             ->limit(20)
             ->get();
 
-        $subtotal = collect($this->cart)->sum(fn($item) => $item['price'] * $item['quantity']);
-        $discount = $subtotal * ($this->memberDiscount / 100);
-        $total = $subtotal - $discount;
+        $total = collect($this->cart)->sum(fn($item) => $item['price'] * $item['quantity']);
 
         return view('livewire.cashier.pos', [
             'products' => $products,
-            'subtotal' => $subtotal,
-            'discount' => $discount,
             'total' => $total,
             'change' => max(0, $this->paymentAmount - $total),
         ])->layout('layouts.app')->title('Point of Sale');
