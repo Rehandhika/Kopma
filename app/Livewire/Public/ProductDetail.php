@@ -19,10 +19,18 @@ class ProductDetail extends Component
      */
     public function mount(string $slug): void
     {
-        // Query product by slug with public visibility check
-        $this->product = Product::where('slug', $slug)
-            ->where('is_public', true)
-            ->firstOrFail();
+        // Query product by slug with public visibility check, optimized with caching and select
+        $cacheKey = "product:detail:slug:{$slug}";
+
+        $this->product = \Illuminate\Support\Facades\Cache::remember($cacheKey, 300, function () use ($slug) {
+            return Product::select([
+                    'id', 'name', 'slug', 'sku', 'price', 'stock', 'min_stock', 
+                    'category', 'description', 'image_url', 'is_featured', 'status', 'is_public'
+                ])
+                ->where('slug', $slug)
+                ->where('is_public', true)
+                ->firstOrFail();
+        });
     }
 
     #[Layout('layouts.public')]

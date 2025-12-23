@@ -17,14 +17,14 @@
     </div>
 
     {{-- Content --}}
-    <div class="max-w-7xl mx-auto px-4 py-10">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+    <div class="max-w-7xl mx-auto px-4 py-6 lg:py-10">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10">
             
             {{-- Left Column: Visuals (5 cols) --}}
-            <div class="lg:col-span-5 space-y-6">
-                <div class="aspect-square bg-slate-800 rounded-3xl overflow-hidden border border-white/10 relative group shadow-2xl shadow-black/50">
+            <div class="lg:col-span-5 space-y-4 lg:space-y-6">
+                <div class="aspect-square bg-slate-800 rounded-2xl lg:rounded-3xl overflow-hidden border border-white/10 relative group shadow-2xl shadow-black/50">
                     @if($product->image_url)
-                        <img src="{{ $product->image_url }}" alt="{{ $product->name }}" class="w-full h-full object-cover" />
+                        <img src="{{ $product->image_url }}" alt="{{ $product->name }}" class="w-full h-full object-cover" fetchpriority="high" />
                     @else
                         <div class="w-full h-full flex items-center justify-center text-slate-600">
                             <i class="fas fa-image text-5xl opacity-30"></i>
@@ -39,33 +39,11 @@
                         </div>
                     @endif
                 </div>
-
-                {{-- Trust Badges --}}
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="bg-slate-900/40 p-4 rounded-xl border border-white/5 flex items-center space-x-3">
-                        <div class="w-10 h-10 rounded-full bg-indigo-500/10 flex items-center justify-center text-indigo-400">
-                            <i class="fas fa-shield-alt"></i>
-                        </div>
-                        <div>
-                            <p class="text-xs text-slate-400">Produk Resmi</p>
-                            <p class="text-sm font-medium text-slate-200">Terjamin</p>
-                        </div>
-                    </div>
-                    <div class="bg-slate-900/40 p-4 rounded-xl border border-white/5 flex items-center space-x-3">
-                        <div class="w-10 h-10 rounded-full bg-green-500/10 flex items-center justify-center text-green-400">
-                            <i class="fas fa-tag"></i>
-                        </div>
-                        <div>
-                            <p class="text-xs text-slate-400">Harga Terbaik</p>
-                            <p class="text-sm font-medium text-slate-200">Mahasiswa</p>
-                        </div>
-                    </div>
-                </div>
             </div>
 
             {{-- Right Column: Info & Actions (7 cols) --}}
             <div class="lg:col-span-7">
-                <div class="bg-slate-900/60 backdrop-blur-xl border border-white/10 rounded-3xl p-6 lg:p-8 shadow-xl relative overflow-hidden">
+                <div class="bg-slate-900/60 backdrop-blur-xl border border-white/10 rounded-2xl lg:rounded-3xl p-5 lg:p-8 shadow-xl relative overflow-hidden">
                     
                     {{-- Decorative Blur --}}
                     <div class="absolute top-0 right-0 w-64 h-64 bg-indigo-500/10 rounded-full blur-[80px] -z-10"></div>
@@ -83,24 +61,24 @@
                     </div>
 
                     {{-- Title --}}
-                    <h1 class="text-3xl lg:text-4xl font-bold text-white mb-6 leading-tight">{{ $product->name }}</h1>
+                    <h1 class="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-6 leading-tight">{{ $product->name }}</h1>
 
                     {{-- Price Section (Highlight) --}}
-                    <div class="bg-slate-950/50 rounded-2xl p-6 border border-white/5 mb-8 flex items-center justify-between">
+                    <div class="bg-slate-950/50 rounded-2xl p-5 lg:p-6 border border-white/5 mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-0">
                         <div>
                             <p class="text-sm text-slate-400 mb-1">Harga Satuan</p>
-                            <div class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400">
+                            <div class="text-3xl lg:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400">
                                 Rp {{ number_format($product->price, 0, ',', '.') }}
                             </div>
                         </div>
-                        <div class="text-right">
+                        <div class="text-left sm:text-right pt-4 sm:pt-0 border-t sm:border-t-0 border-white/5">
                             <p class="text-sm text-slate-400 mb-2">Status Stok</p>
                             @if($product->isOutOfStock())
-                                <span class="px-3 py-1 bg-red-500/20 text-red-400 text-sm font-medium rounded-lg border border-red-500/20">Habis ({{ $product->stock }})</span>
+                                <span class="inline-block px-3 py-1 bg-red-500/20 text-red-400 text-sm font-medium rounded-lg border border-red-500/20">Habis ({{ $product->stock }})</span>
                             @elseif($product->isLowStock())
-                                <span class="px-3 py-1 bg-orange-500/20 text-orange-400 text-sm font-medium rounded-lg border border-orange-500/20">Sisa {{ $product->stock }}</span>
+                                <span class="inline-block px-3 py-1 bg-orange-500/20 text-orange-400 text-sm font-medium rounded-lg border border-orange-500/20">Sisa {{ $product->stock }}</span>
                             @else
-                                <span class="px-3 py-1 bg-green-500/20 text-green-400 text-sm font-medium rounded-lg border border-green-500/20">Tersedia ({{ $product->stock }})</span>
+                                <span class="inline-block px-3 py-1 bg-green-500/20 text-green-400 text-sm font-medium rounded-lg border border-green-500/20">Tersedia ({{ $product->stock }})</span>
                             @endif
                         </div>
                     </div>
@@ -137,9 +115,9 @@
         </div>
 
         {{-- Footer Info --}}
-        <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="mt-8 lg:mt-12 grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6">
             <!-- Reuse glass card style -->
-            <div class="bg-slate-900/40 border border-white/5 rounded-2xl p-6 text-center">
+            <div class="bg-slate-900/40 border border-white/5 rounded-2xl p-5 lg:p-6 text-center">
                 <i class="fas fa-clock text-indigo-500 text-2xl mb-3"></i>
                 <h4 class="text-white font-medium mb-1">Jam Operasional</h4>
                 <p class="text-sm text-slate-400">Senin - Kamis, 08:00 - 16:00</p>

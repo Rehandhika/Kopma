@@ -37,6 +37,10 @@ class Catalog extends Component
         
         $products = Cache::remember($cacheKey, 300, function () {
             return Product::query()
+                ->select([
+                    'id', 'name', 'slug', 'price', 'stock', 'min_stock', 
+                    'category', 'image_url', 'is_featured', 'status', 'is_public', 'display_order'
+                ])
                 ->public()
                 ->active()
                 ->when($this->search, function ($query) {

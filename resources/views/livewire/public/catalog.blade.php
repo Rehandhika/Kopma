@@ -19,7 +19,7 @@
         </div>
 
         {{-- Search & Filter Bar (Glass Panel) --}}
-        <div class="bg-slate-900/60 backdrop-blur-md border border-white/10 rounded-2xl p-4 mb-10 shadow-xl">
+        <div class="relative z-40 bg-slate-900/60 backdrop-blur-md border border-white/10 rounded-2xl p-4 mb-10 shadow-xl">
             <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
                 {{-- Search Input --}}
                 <div class="md:col-span-8 relative">
@@ -28,28 +28,64 @@
                     </div>
                     <input 
                         type="text" 
-                        wire:model.live.debounce.300ms="search"
+                        wire:model.live="search"
                         placeholder="Cari produk (nama, SKU)..."
                         class="w-full pl-11 pr-4 py-3 bg-slate-950/50 border border-white/10 rounded-xl focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 text-white placeholder-slate-600 transition-all"
                     >
                 </div>
 
-                {{-- Category Filter --}}
-                <div class="md:col-span-4 relative">
-                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                        <i class="fas fa-filter text-slate-500"></i>
-                    </div>
-                    <select 
-                        wire:model.live="category"
-                        class="w-full pl-11 pr-10 py-3 bg-slate-950/50 border border-white/10 rounded-xl focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 text-white appearance-none cursor-pointer transition-all"
+                {{-- Category Filter (Custom Alpine Dropdown) --}}
+                <div class="md:col-span-4 relative" x-data="{ open: false }">
+                    <button 
+                        @click="open = !open" 
+                        @click.away="open = false"
+                        type="button"
+                        class="w-full flex items-center justify-between pl-3 pr-4 py-2.5 bg-slate-950/50 border border-white/10 rounded-xl focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 text-left transition-all hover:bg-slate-900/80 group h-[52px]"
                     >
-                        <option value="" class="bg-slate-900 text-slate-300">Semua Kategori</option>
-                        @foreach($categories as $cat)
-                            <option value="{{ $cat }}" class="bg-slate-900 text-white">{{ $cat }}</option>
-                        @endforeach
-                    </select>
-                    <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
-                        <i class="fas fa-chevron-down text-slate-500 text-xs"></i>
+                        <div class="flex items-center gap-3 overflow-hidden">
+                            <div class="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center text-indigo-400 group-hover:bg-indigo-500 group-hover:text-white transition-colors shrink-0">
+                                <i class="fas fa-filter text-xs"></i>
+                            </div>
+                            <span class="text-slate-300 font-medium truncate block">
+                                {{ $category ?: 'Semua Kategori' }}
+                            </span>
+                        </div>
+                        <i class="fas fa-chevron-down text-slate-500 text-xs transition-transform duration-300 shrink-0 ml-2" :class="{ 'rotate-180': open }"></i>
+                    </button>
+
+                    {{-- Dropdown Menu --}}
+                    <div 
+                        x-show="open" 
+                        x-transition:enter="transition ease-out duration-200"
+                        x-transition:enter-start="opacity-0 translate-y-2 scale-95"
+                        x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+                        x-transition:leave="transition ease-in duration-150"
+                        x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+                        x-transition:leave-end="opacity-0 translate-y-2 scale-95"
+                        class="absolute top-full mt-2 right-0 left-0 bg-slate-900/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl z-[60] overflow-hidden ring-1 ring-white/5"
+                        style="display: none;"
+                    >
+                        <div class="p-1 max-h-80 overflow-y-auto custom-scrollbar">
+                            <button 
+                                @click="$wire.set('category', ''); open = false"
+                                type="button"
+                                class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm transition-colors {{ $category == '' ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:bg-white/5 hover:text-white' }}"
+                            >
+                                <span>Semua Kategori</span>
+                                @if($category == '') <i class="fas fa-check text-xs"></i> @endif
+                            </button>
+                            
+                            @foreach($categories as $cat)
+                                <button 
+                                    @click="$wire.set('category', '{{ $cat }}'); open = false"
+                                    type="button"
+                                    class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm transition-colors {{ $category == $cat ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:bg-white/5 hover:text-white' }}"
+                                >
+                                    <span>{{ $cat }}</span>
+                                    @if($category == $cat) <i class="fas fa-check text-xs"></i> @endif
+                                </button>
+                            @endforeach
+                        </div>
                     </div>
                 </div>
             </div>
