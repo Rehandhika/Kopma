@@ -95,7 +95,7 @@
         @if($products->count() > 0)
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
                 @foreach($products as $product)
-                    <div class="group relative bg-slate-900/40 border border-white/5 rounded-2xl overflow-hidden backdrop-blur-sm transition-all duration-300 hover:bg-slate-800/60 hover:border-indigo-500/30 hover:shadow-[0_0_20px_rgba(99,102,241,0.15)] hover:-translate-y-1">
+                    <div wire:key="product-{{ $product->id }}" class="group relative bg-slate-900/40 border border-white/5 rounded-2xl overflow-hidden backdrop-blur-sm transition-all duration-300 hover:bg-slate-800/60 hover:border-indigo-500/30 hover:shadow-[0_0_20px_rgba(99,102,241,0.15)] hover:-translate-y-1">
                         
                         {{-- Image Area --}}
                         <div class="aspect-square relative overflow-hidden bg-slate-800">
@@ -148,7 +148,9 @@
                                         Rp {{ number_format($product->price, 0, ',', '.') }}
                                     </span>
                                 </div>
-                                <a href="{{ route('public.products.show', $product->slug) }}" class="w-8 h-8 flex items-center justify-center rounded-full bg-white/5 hover:bg-indigo-600 text-slate-400 hover:text-white transition-all border border-white/10">
+                                <a href="{{ route('public.products.show', $product->slug) }}" 
+                                   wire:navigate.hover
+                                   class="w-8 h-8 flex items-center justify-center rounded-full bg-white/5 hover:bg-indigo-600 text-slate-400 hover:text-white transition-all border border-white/10">
                                     <i class="fas fa-arrow-right text-xs"></i>
                                 </a>
                             </div>

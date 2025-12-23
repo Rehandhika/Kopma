@@ -95,6 +95,7 @@
                         </div>
 
                         <a href="{{ route('home') }}" 
+                           wire:navigate
                            class="flex items-center justify-center w-full py-3 px-6 bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white font-medium rounded-xl border border-white/10 transition-all">
                             <i class="fas fa-arrow-left mr-2"></i>
                             Kembali ke Katalog

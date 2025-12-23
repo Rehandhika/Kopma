@@ -72,7 +72,24 @@ class About extends Component
 
     public function render()
     {
-        return view('livewire.public.about')
-            ->layout('layouts.public');
+        $storeSetting = \Illuminate\Support\Facades\Cache::remember('store_settings:about', 3600, function () {
+            return \App\Models\StoreSetting::first();
+        });
+
+        // Static operating days array (could also be from config, but this is fast enough)
+        $operatingDays = [
+            ['name' => 'Senin', 'open' => '08:00', 'close' => '16:00', 'is_open' => true],
+            ['name' => 'Selasa', 'open' => '08:00', 'close' => '16:00', 'is_open' => true],
+            ['name' => 'Rabu', 'open' => '08:00', 'close' => '16:00', 'is_open' => true],
+            ['name' => 'Kamis', 'open' => '08:00', 'close' => '16:00', 'is_open' => true],
+            ['name' => 'Jumat', 'open' => '-', 'close' => '-', 'is_open' => false],
+            ['name' => 'Sabtu', 'open' => '-', 'close' => '-', 'is_open' => false],
+            ['name' => 'Minggu', 'open' => '-', 'close' => '-', 'is_open' => false],
+        ];
+
+        return view('livewire.public.about', [
+            'storeSetting' => $storeSetting,
+            'operatingDays' => $operatingDays
+        ])->layout('layouts.public');
     }
 }

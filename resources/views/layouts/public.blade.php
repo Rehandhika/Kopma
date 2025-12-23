@@ -9,6 +9,13 @@
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
+    <link rel="dns-prefetch" href="https://fonts.bunny.net">
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com/ajax/libs">
+    
+    <!-- Preload Critical Assets -->
+    <link rel="preload" href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600,700" as="style">
+    {{-- Assuming standard Vite output structure, can be optimized further with @vite directive logic --}}
+    
     <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600,700" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
@@ -63,7 +70,7 @@
                 <nav class="glass-nav rounded-2xl px-4 md:px-6 py-3 md:py-4 flex items-center justify-between transition-all duration-300 hover:border-white/10 hover:shadow-[0_0_20px_rgba(99,102,241,0.15)] relative">
                     
                     <!-- Left: Brand / Logo -->
-                    <a href="{{ route('home') }}" class="flex items-center gap-3 group z-10 w-1/3">
+                    <a href="{{ route('home') }}" class="flex items-center gap-3 group z-10 w-1/3" wire:navigate>
                         <div class="relative w-10 h-10 flex items-center justify-center">
                             <div class="absolute inset-0 bg-gradient-to-tr from-indigo-600 to-purple-600 rounded-xl rotate-3 transition-transform group-hover:rotate-6"></div>
                             <div class="absolute inset-0 bg-slate-950 rounded-xl rotate-3 scale-[0.9]"></div>
@@ -84,10 +91,12 @@
                     <div class="hidden md:flex items-center justify-end gap-6 w-1/3 z-10">
                         <div class="flex items-center gap-6">
                             <a href="{{ route('home') }}" 
+                               wire:navigate
                                class="nav-link-glow text-sm font-medium transition-colors {{ request()->routeIs('home') ? 'text-white' : 'text-slate-400 hover:text-white' }}">
                                 Katalog
                             </a>
                             <a href="{{ route('public.about') }}" 
+                               wire:navigate
                                class="nav-link-glow text-sm font-medium transition-colors {{ request()->routeIs('public.about') ? 'text-white' : 'text-slate-400 hover:text-white' }}">
                                 Tentang
                             </a>
@@ -95,6 +104,7 @@
                         
                         <!-- Login Button -->
                         <a href="{{ route('login') }}" 
+                           wire:navigate
                            class="relative group px-5 py-2 rounded-xl overflow-hidden">
                             <div class="absolute inset-0 bg-indigo-600/20 group-hover:bg-indigo-600/30 transition-colors"></div>
                             <div class="absolute inset-0 border border-indigo-500/30 rounded-xl"></div>
@@ -124,9 +134,9 @@
                      class="absolute top-full left-0 right-0 mt-2 px-4 md:hidden z-40"
                      style="display: none;">
                     <div class="glass-nav rounded-2xl p-4 flex flex-col gap-2">
-                        <a href="{{ route('home') }}" class="p-3 rounded-xl bg-white/5 text-slate-200 font-medium hover:bg-white/10">Katalog</a>
-                        <a href="{{ route('public.about') }}" class="p-3 rounded-xl bg-white/5 text-slate-200 font-medium hover:bg-white/10">Tentang</a>
-                        <a href="{{ route('login') }}" class="p-3 rounded-xl bg-indigo-600 text-white font-medium text-center shadow-lg shadow-indigo-500/20">Login System</a>
+                        <a href="{{ route('home') }}" wire:navigate class="p-3 rounded-xl bg-white/5 text-slate-200 font-medium hover:bg-white/10">Katalog</a>
+                        <a href="{{ route('public.about') }}" wire:navigate class="p-3 rounded-xl bg-white/5 text-slate-200 font-medium hover:bg-white/10">Tentang</a>
+                        <a href="{{ route('login') }}" wire:navigate class="p-3 rounded-xl bg-indigo-600 text-white font-medium text-center shadow-lg shadow-indigo-500/20">Login System</a>
                     </div>
                 </div>
             </div>
