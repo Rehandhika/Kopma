@@ -249,6 +249,9 @@ Route::prefix('admin')
             Route::get('/store', \App\Livewire\Admin\Settings\StoreSettings::class)
                 ->middleware('role:Super Admin|Ketua|Wakil Ketua')
                 ->name('store');
+            Route::get('/banners', \App\Livewire\Admin\BannerManagement::class)
+                ->middleware('role:Super Admin|Ketua')
+                ->name('banners');
         });
         
         // Profile

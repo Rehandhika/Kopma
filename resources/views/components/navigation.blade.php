@@ -304,6 +304,14 @@ $dropdownButtonBaseClasses = 'w-full flex items-center justify-between px-3 py-2
             Pengaturan Toko
         </a>
         @endif
+        @if(auth()->user()->hasAnyRole(['Super Admin', 'Ketua']))
+        <a href="{{ route('admin.settings.banners') }}" 
+           class="{{ $submenuLinkBaseClasses }} {{ request()->routeIs('admin.settings.banners') ? $submenuLinkActiveClasses : $submenuLinkInactiveClasses }}"
+           role="menuitem"
+           aria-current="{{ request()->routeIs('admin.settings.banners') ? 'page' : 'false' }}">
+            Kelola Banner
+        </a>
+        @endif
     </div>
 </div>
 

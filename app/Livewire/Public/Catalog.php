@@ -3,6 +3,7 @@
 namespace App\Livewire\Public;
 
 use App\Models\Product;
+use App\Models\Banner;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\Cache;
@@ -63,9 +64,18 @@ class Catalog extends Component
                 ->values();
         });
 
+        // Cache banner query for performance (5 minutes)
+        $banners = Cache::remember('banners:active', 300, function () {
+            return Banner::query()
+                ->active()
+                ->ordered()
+                ->get();
+        });
+
         return view('livewire.public.catalog', [
             'products' => $products,
             'categories' => $categories,
+            'banners' => $banners,
         ])->layout('layouts.public');
     }
 }
