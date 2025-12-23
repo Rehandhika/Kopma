@@ -15,42 +15,10 @@ class Index extends Component
 {
     use WithPagination;
 
-    public string $filterStatus = '';
-    public string $filterMonth = '';
-    public string $filterYear = '';
-    public string $search = '';
-    
-    // Member availability
+    // Member availability modal
     public bool $showMemberModal = false;
     public ?array $selectedMemberAvailability = null;
     public ?string $selectedMemberName = null;
-
-    protected $queryString = [
-        'filterStatus' => ['except' => ''],
-        'filterMonth' => ['except' => ''],
-        'filterYear' => ['except' => ''],
-        'search' => ['except' => ''],
-    ];
-
-    public function updatingSearch()
-    {
-        $this->resetPage();
-    }
-
-    public function updatingFilterStatus()
-    {
-        $this->resetPage();
-    }
-
-    public function updatingFilterMonth()
-    {
-        $this->resetPage();
-    }
-
-    public function updatingFilterYear()
-    {
-        $this->resetPage();
-    }
 
     #[Computed]
     public function currentWeekStart(): Carbon
@@ -197,12 +165,7 @@ class Index extends Component
     public function render()
     {
         $schedules = Schedule::query()
-            ->with(['assignments'])
             ->withCount('assignments')
-            ->when($this->filterStatus, fn($q) => $q->where('status', $this->filterStatus))
-            ->when($this->filterMonth, fn($q) => $q->whereMonth('week_start_date', $this->filterMonth))
-            ->when($this->filterYear, fn($q) => $q->whereYear('week_start_date', $this->filterYear))
-            ->when($this->search, fn($q) => $q->where('notes', 'like', "%{$this->search}%"))
             ->latest('week_start_date')
             ->paginate(10);
 
