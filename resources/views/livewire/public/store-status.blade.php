@@ -3,156 +3,107 @@
          isOpen: @entangle('isOpen'),
          showDetails: false 
      }"
-     class="inline-flex items-center">
+     class="relative z-50">
     
-    <!-- Status Badge -->
-    <div class="relative inline-flex items-center">
-        <!-- Animated Badge -->
+    <!-- HUD Status Badge (Central Focus) -->
+    <div class="group relative flex flex-col items-center justify-center cursor-pointer"
+         @click="showDetails = !showDetails">
+        
+        <!-- Outer Glow Ring (Animated) -->
+        <div class="absolute -inset-1 rounded-full opacity-40 blur-md transition-all duration-1000 animate-pulse"
+             :class="isOpen ? 'bg-green-500' : 'bg-red-600'"></div>
+        
+        <!-- Main Pill -->
         <div :class="{
-                'bg-success-100 text-success-800 border-success-300': isOpen,
-                'bg-danger-100 text-danger-800 border-danger-300': !isOpen
+                'bg-slate-900/90 border-green-500/50 text-green-400': isOpen,
+                'bg-slate-900/90 border-red-500/50 text-red-400': !isOpen
              }"
-             class="inline-flex items-center px-3 py-1.5 rounded-full border-2 font-semibold text-sm transition-all duration-300 cursor-pointer hover:shadow-md"
-             @click="showDetails = !showDetails"
-             role="button"
-             tabindex="0"
-             @keydown.enter="showDetails = !showDetails"
-             @keydown.space.prevent="showDetails = !showDetails"
-             :aria-expanded="showDetails"
-             aria-label="Status koperasi">
+             class="relative flex items-center gap-3 px-6 py-2 rounded-full border shadow-[0_0_15px_rgba(0,0,0,0.5)] backdrop-blur-xl transition-all hover:scale-105 active:scale-95">
             
-            <!-- Pulse Animation (only when open) -->
-            <span x-show="isOpen" 
-                  class="absolute -left-1 -top-1 flex h-3 w-3"
-                  x-transition:enter="transition ease-out duration-300"
-                  x-transition:enter-start="opacity-0 scale-0"
-                  x-transition:enter-end="opacity-100 scale-100">
-                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-success-400 opacity-75"></span>
-                <span class="relative inline-flex rounded-full h-3 w-3 bg-success-500"></span>
-            </span>
+            <!-- Icon with Status Indicator -->
+            <div class="relative flex items-center justify-center w-4 h-4">
+                <span x-show="isOpen" class="absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75 animate-ping"></span>
+                <i :class="isOpen ? 'fa-store' : 'fa-lock'" class="fas relative z-10 text-sm"></i>
+            </div>
             
-            <!-- Status Icon -->
-            <i :class="{
-                'fa-store text-success-600': isOpen,
-                'fa-store-slash text-danger-600': !isOpen
-               }"
-               class="fas mr-2 transition-all duration-300"
-               x-transition:enter="transition ease-out duration-300"
-               x-transition:enter-start="opacity-0 scale-50"
-               x-transition:enter-end="opacity-100 scale-100"></i>
-            
-            <!-- Status Text -->
-            <span x-text="isOpen ? 'BUKA' : 'TUTUP'" 
-                  class="font-bold tracking-wide"
-                  x-transition:enter="transition ease-out duration-300"
-                  x-transition:enter-start="opacity-0"
-                  x-transition:enter-end="opacity-100"></span>
-            
-            <!-- Dropdown Arrow -->
-            <i class="fas fa-chevron-down ml-2 text-xs transition-transform duration-200"
+            <!-- Text Label -->
+            <div class="flex flex-col items-start leading-none">
+                <span class="text-[9px] uppercase tracking-widest text-slate-500 font-bold mb-0.5">Status</span>
+                <span x-text="isOpen ? 'OPEN NOW' : 'CLOSED'" 
+                      class="font-mono text-xs font-bold tracking-widest glow-text"
+                      :class="isOpen ? 'text-green-300 drop-shadow-[0_0_5px_rgba(74,222,128,0.5)]' : 'text-red-400 drop-shadow-[0_0_5px_rgba(248,113,113,0.5)]'">
+                </span>
+            </div>
+
+            <!-- Chevron -->
+            <i class="fas fa-chevron-down text-[10px] opacity-50 transition-transform duration-300"
                :class="{ 'rotate-180': showDetails }"></i>
         </div>
     </div>
 
-    <!-- Details Dropdown -->
+    <!-- HUD Detail Panel (Centered Floating) -->
     <div x-show="showDetails"
-         x-transition:enter="transition ease-out duration-200"
-         x-transition:enter-start="opacity-0 transform scale-95"
-         x-transition:enter-end="opacity-100 transform scale-100"
-         x-transition:leave="transition ease-in duration-150"
-         x-transition:leave-start="opacity-100 transform scale-100"
-         x-transition:leave-end="opacity-0 transform scale-95"
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0 -translate-y-4 scale-90"
+         x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+         x-transition:leave-end="opacity-0 -translate-y-4 scale-90"
          @click.away="showDetails = false"
-         class="absolute top-full mt-2 right-0 w-80 bg-white rounded-lg shadow-xl border border-gray-200 z-50 overflow-hidden"
-         style="display: none;"
-         role="region"
-         aria-label="Detail status koperasi">
+         class="absolute top-full mt-4 left-1/2 -translate-x-1/2 w-80 bg-slate-900/95 backdrop-blur-2xl border border-white/10 rounded-2xl shadow-[0_0_50px_rgba(0,0,0,0.7)] overflow-hidden ring-1 ring-white/5 z-[60]"
+         style="display: none;">
         
-        <!-- Header -->
-        <div :class="{
-                'bg-gradient-to-r from-success-500 to-success-600': isOpen,
-                'bg-gradient-to-r from-danger-500 to-danger-600': !isOpen
-             }"
-             class="px-4 py-3 text-white">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center space-x-2">
-                    <i :class="{
-                        'fa-store': isOpen,
-                        'fa-store-slash': !isOpen
-                       }"
-                       class="fas text-lg"></i>
-                    <span class="font-bold text-lg" x-text="isOpen ? 'Koperasi Buka' : 'Koperasi Tutup'"></span>
-                </div>
-                <button @click="showDetails = false" 
-                        type="button"
-                        class="text-white hover:text-gray-200 transition-colors focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-success-600 rounded-lg p-1"
-                        aria-label="Tutup detail">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-        </div>
+        <!-- Header Strip -->
+        <div class="h-1 w-full" :class="isOpen ? 'bg-green-500 shadow-[0_0_10px_#22c55e]' : 'bg-red-500 shadow-[0_0_10px_#ef4444]'"></div>
 
         <!-- Content -->
-        <div class="p-4 space-y-3">
-            <!-- Status Reason -->
-            <div class="flex items-start space-x-3">
-                <div class="flex-shrink-0 mt-0.5">
-                    <i class="fas fa-info-circle text-primary-500"></i>
-                </div>
-                <div class="flex-1 min-w-0">
-                    <p class="text-sm font-medium text-gray-700">Status</p>
-                    <p class="text-sm text-gray-600 mt-0.5">{{ $reason }}</p>
-                </div>
+        <div class="p-6 space-y-5">
+            <!-- Main Status Text -->
+            <div class="text-center">
+                <h3 class="text-white font-bold text-lg mb-1" x-text="isOpen ? 'KOPERASI BUKA' : 'KOPERASI TUTUP'"></h3>
+                <p class="text-xs text-slate-400 font-mono" x-text="isOpen ? 'Silakan datang bertransaksi' : 'Kami sedang tidak beroperasi'"></p>
             </div>
 
-            <!-- Attendees (only when open) -->
-            @if($isOpen && count($attendees) > 0)
-                <div class="flex items-start space-x-3 pt-2 border-t border-gray-100"
-                     x-show="isOpen"
-                     x-transition:enter="transition ease-out duration-300 delay-100"
-                     x-transition:enter-start="opacity-0 transform translate-y-2"
-                     x-transition:enter-end="opacity-100 transform translate-y-0">
-                    <div class="flex-shrink-0 mt-0.5">
-                        <i class="fas fa-users text-primary-500"></i>
+            <!-- Info Grid -->
+            <div class="grid grid-cols-1 gap-3 bg-white/5 p-4 rounded-xl border border-white/5">
+                <div class="flex items-start gap-3">
+                    <div class="mt-1"><i class="fas fa-info-circle text-indigo-400 text-xs"></i></div>
+                    <div>
+                        <p class="text-[10px] uppercase tracking-wider text-slate-500 font-bold">Keterangan</p>
+                        <p class="text-sm text-slate-200 leading-snug">{{ $reason }}</p>
                     </div>
-                    <div class="flex-1 min-w-0">
-                        <p class="text-sm font-medium text-gray-700">Pengurus Bertugas</p>
-                        <div class="mt-1.5 space-y-1">
-                            @foreach($attendees as $attendee)
-                                <div class="flex items-center space-x-2">
-                                    <div class="w-2 h-2 bg-success-500 rounded-full animate-pulse"></div>
-                                    <span class="text-sm text-gray-600">{{ $attendee }}</span>
-                                </div>
-                            @endforeach
+                </div>
+
+                @if(!$isOpen && $nextOpenTime)
+                    <div class="flex items-start gap-3 pt-3 border-t border-white/5">
+                        <div class="mt-1"><i class="fas fa-clock text-indigo-400 text-xs"></i></div>
+                        <div>
+                            <p class="text-[10px] uppercase tracking-wider text-slate-500 font-bold">Buka Kembali</p>
+                            <p class="text-sm text-slate-200">{{ $nextOpenTime }}</p>
                         </div>
                     </div>
-                </div>
-            @endif
-
-            <!-- Next Open Time (only when closed) -->
-            @if(!$isOpen && $nextOpenTime)
-                <div class="flex items-start space-x-3 pt-2 border-t border-gray-100"
-                     x-show="!isOpen"
-                     x-transition:enter="transition ease-out duration-300 delay-100"
-                     x-transition:enter-start="opacity-0 transform translate-y-2"
-                     x-transition:enter-end="opacity-100 transform translate-y-0">
-                    <div class="flex-shrink-0 mt-0.5">
-                        <i class="fas fa-clock text-primary-500"></i>
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <p class="text-sm font-medium text-gray-700">Buka Berikutnya</p>
-                        <p class="text-sm text-gray-600 mt-0.5">{{ $nextOpenTime }}</p>
-                    </div>
-                </div>
-            @endif
-
-            <!-- Last Updated -->
-            <div class="pt-2 border-t border-gray-100">
-                <p class="text-xs text-gray-500 text-center">
-                    <i class="fas fa-sync-alt mr-1"></i>
-                    Diperbarui otomatis setiap 10 detik
-                </p>
+                @endif
             </div>
+
+            <!-- Attendees (If Open) -->
+            @if($isOpen && count($attendees) > 0)
+                <div>
+                    <p class="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-3 text-center">Petugas Jaga</p>
+                    <div class="flex flex-wrap justify-center gap-2">
+                        @foreach($attendees as $attendee)
+                            <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-green-500/10 border border-green-500/20 text-xs text-green-300">
+                                <div class="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></div>
+                                {{ $attendee }}
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
+        </div>
+        
+        <!-- Footer -->
+        <div class="py-2 text-center border-t border-white/5 bg-black/20">
+            <p class="text-[10px] text-slate-600 font-mono">LIVE SYSTEM STATUS</p>
         </div>
     </div>
 </div>

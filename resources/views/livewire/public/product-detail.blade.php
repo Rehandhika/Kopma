@@ -1,224 +1,158 @@
-<div>
-    {{-- Breadcrumb --}}
-    <div class="bg-gray-100 py-4">
+<div class="pb-20">
+    {{-- Breadcrumb (Minimal) --}}
+    <div class="border-b border-white/5 bg-slate-900/30 backdrop-blur-sm py-4">
         <div class="max-w-7xl mx-auto px-4">
-            <nav class="flex items-center space-x-2 text-sm">
-                <a href="{{ route('home') }}" class="text-gray-600 hover:text-blue-600 transition-colors">
-                    <i class="fas fa-home"></i> Katalog
+            <nav class="flex items-center space-x-3 text-sm">
+                <a href="{{ route('home') }}" class="text-slate-500 hover:text-indigo-400 transition-colors">
+                    <i class="fas fa-home"></i>
                 </a>
-                <span class="text-gray-400">/</span>
+                <span class="text-slate-700">/</span>
                 @if($product->category)
-                    <span class="text-gray-600">{{ $product->category }}</span>
-                    <span class="text-gray-400">/</span>
+                    <span class="text-slate-500">{{ $product->category }}</span>
+                    <span class="text-slate-700">/</span>
                 @endif
-                <span class="text-gray-900 font-medium">{{ $product->name }}</span>
+                <span class="text-slate-200 font-medium truncate max-w-[200px]">{{ $product->name }}</span>
             </nav>
         </div>
     </div>
 
-    {{-- Product Detail Section --}}
-    <div class="max-w-7xl mx-auto px-4 py-8">
-        <div class="bg-white rounded-lg shadow-lg overflow-hidden">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 p-6 lg:p-8">
-                {{-- Product Image --}}
-                <div class="space-y-4">
-                    <div class="aspect-square bg-gray-100 rounded-lg overflow-hidden relative">
-                        @if($product->image_url)
-                            <img 
-                                src="{{ $product->image_url }}" 
-                                alt="{{ $product->name }}"
-                                class="w-full h-full object-cover"
-                            >
-                        @else
-                            <div class="w-full h-full flex items-center justify-center text-gray-400">
-                                <svg class="w-32 h-32" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                                </svg>
-                            </div>
-                        @endif
-
-                        {{-- Featured Badge --}}
-                        @if($product->is_featured)
-                            <div class="absolute top-4 right-4 bg-yellow-400 text-yellow-900 px-3 py-2 rounded-full text-sm font-semibold shadow-lg">
-                                <i class="fas fa-star"></i> Produk Unggulan
-                            </div>
-                        @endif
-                    </div>
-
-                    {{-- Additional Info Cards --}}
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="bg-blue-50 rounded-lg p-4 text-center">
-                            <i class="fas fa-shield-alt text-blue-600 text-2xl mb-2"></i>
-                            <p class="text-sm font-medium text-blue-900">Produk Resmi</p>
-                            <p class="text-xs text-blue-700">Koperasi Mahasiswa</p>
+    {{-- Content --}}
+    <div class="max-w-7xl mx-auto px-4 py-10">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+            
+            {{-- Left Column: Visuals (5 cols) --}}
+            <div class="lg:col-span-5 space-y-6">
+                <div class="aspect-square bg-slate-800 rounded-3xl overflow-hidden border border-white/10 relative group shadow-2xl shadow-black/50">
+                    @if($product->image_url)
+                        <img src="{{ $product->image_url }}" alt="{{ $product->name }}" class="w-full h-full object-cover" />
+                    @else
+                        <div class="w-full h-full flex items-center justify-center text-slate-600">
+                            <i class="fas fa-image text-5xl opacity-30"></i>
                         </div>
-                        <div class="bg-green-50 rounded-lg p-4 text-center">
-                            <i class="fas fa-tags text-green-600 text-2xl mb-2"></i>
-                            <p class="text-sm font-medium text-green-900">Harga Terjangkau</p>
-                            <p class="text-xs text-green-700">Khusus Mahasiswa</p>
-                        </div>
-                    </div>
-                </div>
+                    @endif
 
-                {{-- Product Information --}}
-                <div class="space-y-6">
-                    {{-- Category Badge --}}
-                    @if($product->category)
-                        <div>
-                            <span class="inline-block px-3 py-1 bg-gray-100 text-gray-700 text-sm font-medium rounded-full">
-                                <i class="fas fa-tag"></i> {{ $product->category }}
+                    @if($product->is_featured)
+                        <div class="absolute top-4 left-4">
+                            <span class="inline-flex items-center px-3 py-1 rounded-full bg-yellow-500/20 border border-yellow-500/30 text-yellow-300 text-xs font-bold uppercase tracking-wider backdrop-blur-md">
+                                <i class="fas fa-star mr-1.5"></i> Unggulan
                             </span>
                         </div>
                     @endif
+                </div>
 
-                    {{-- Product Name --}}
-                    <div>
-                        <h1 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-2">
-                            {{ $product->name }}
-                        </h1>
+                {{-- Trust Badges --}}
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-slate-900/40 p-4 rounded-xl border border-white/5 flex items-center space-x-3">
+                        <div class="w-10 h-10 rounded-full bg-indigo-500/10 flex items-center justify-center text-indigo-400">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs text-slate-400">Produk Resmi</p>
+                            <p class="text-sm font-medium text-slate-200">Terjamin</p>
+                        </div>
+                    </div>
+                    <div class="bg-slate-900/40 p-4 rounded-xl border border-white/5 flex items-center space-x-3">
+                        <div class="w-10 h-10 rounded-full bg-green-500/10 flex items-center justify-center text-green-400">
+                            <i class="fas fa-tag"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs text-slate-400">Harga Terbaik</p>
+                            <p class="text-sm font-medium text-slate-200">Mahasiswa</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Right Column: Info & Actions (7 cols) --}}
+            <div class="lg:col-span-7">
+                <div class="bg-slate-900/60 backdrop-blur-xl border border-white/10 rounded-3xl p-6 lg:p-8 shadow-xl relative overflow-hidden">
+                    
+                    {{-- Decorative Blur --}}
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-indigo-500/10 rounded-full blur-[80px] -z-10"></div>
+
+                    {{-- Category & SKU --}}
+                    <div class="flex items-center justify-between mb-4">
+                        @if($product->category)
+                            <span class="px-3 py-1 bg-white/5 text-indigo-300 text-xs font-semibold rounded-full border border-white/10">
+                                {{ $product->category }}
+                            </span>
+                        @endif
                         @if($product->sku)
-                            <p class="text-sm text-gray-500">
-                                SKU: <span class="font-mono">{{ $product->sku }}</span>
-                            </p>
+                            <span class="text-xs font-mono text-slate-500">SKU: {{ $product->sku }}</span>
                         @endif
                     </div>
 
-                    {{-- Price --}}
-                    <div class="bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg p-6 border-2 border-blue-200">
-                        <p class="text-sm text-gray-600 mb-1">Harga</p>
-                        <p class="text-4xl font-bold text-blue-600">
-                            Rp {{ number_format($product->price, 0, ',', '.') }}
-                        </p>
-                    </div>
+                    {{-- Title --}}
+                    <h1 class="text-3xl lg:text-4xl font-bold text-white mb-6 leading-tight">{{ $product->name }}</h1>
 
-                    {{-- Stock Availability --}}
-                    <div class="border-t border-b border-gray-200 py-4">
-                        <div class="flex items-center justify-between">
-                            <span class="text-gray-700 font-medium">Ketersediaan Stok</span>
-                            <div class="flex items-center space-x-2">
-                                @if($product->isOutOfStock())
-                                    <span class="flex items-center space-x-2 bg-red-100 text-red-800 px-4 py-2 rounded-lg font-semibold">
-                                        <i class="fas fa-times-circle"></i>
-                                        <span>Stok Habis</span>
-                                    </span>
-                                @elseif($product->isLowStock())
-                                    <span class="flex items-center space-x-2 bg-orange-100 text-orange-800 px-4 py-2 rounded-lg font-semibold">
-                                        <i class="fas fa-exclamation-triangle"></i>
-                                        <span>Stok Terbatas ({{ $product->stock }} unit)</span>
-                                    </span>
-                                @else
-                                    <span class="flex items-center space-x-2 bg-green-100 text-green-800 px-4 py-2 rounded-lg font-semibold">
-                                        <i class="fas fa-check-circle"></i>
-                                        <span>Tersedia ({{ $product->stock }} unit)</span>
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
-                    </div>
-
-                    {{-- Product Description --}}
-                    @if($product->description)
+                    {{-- Price Section (Highlight) --}}
+                    <div class="bg-slate-950/50 rounded-2xl p-6 border border-white/5 mb-8 flex items-center justify-between">
                         <div>
-                            <h2 class="text-xl font-semibold text-gray-900 mb-3">
-                                <i class="fas fa-info-circle text-blue-600"></i> Deskripsi Produk
-                            </h2>
-                            <div class="prose prose-sm max-w-none text-gray-700 leading-relaxed">
-                                <p>{{ $product->description }}</p>
+                            <p class="text-sm text-slate-400 mb-1">Harga Satuan</p>
+                            <div class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400">
+                                Rp {{ number_format($product->price, 0, ',', '.') }}
                             </div>
                         </div>
-                    @endif
-
-                    {{-- Product Status --}}
-                    <div class="bg-gray-50 rounded-lg p-4">
-                        <div class="flex items-center justify-between">
-                            <span class="text-sm text-gray-600">Status Produk</span>
-                            @if($product->isActive())
-                                <span class="flex items-center space-x-1 text-green-600 font-medium">
-                                    <i class="fas fa-circle text-xs"></i>
-                                    <span>Aktif</span>
-                                </span>
+                        <div class="text-right">
+                            <p class="text-sm text-slate-400 mb-2">Status Stok</p>
+                            @if($product->isOutOfStock())
+                                <span class="px-3 py-1 bg-red-500/20 text-red-400 text-sm font-medium rounded-lg border border-red-500/20">Habis ({{ $product->stock }})</span>
+                            @elseif($product->isLowStock())
+                                <span class="px-3 py-1 bg-orange-500/20 text-orange-400 text-sm font-medium rounded-lg border border-orange-500/20">Sisa {{ $product->stock }}</span>
                             @else
-                                <span class="flex items-center space-x-1 text-gray-500 font-medium">
-                                    <i class="fas fa-circle text-xs"></i>
-                                    <span>Tidak Aktif</span>
-                                </span>
+                                <span class="px-3 py-1 bg-green-500/20 text-green-400 text-sm font-medium rounded-lg border border-green-500/20">Tersedia ({{ $product->stock }})</span>
                             @endif
                         </div>
                     </div>
 
-                    {{-- Call to Action --}}
-                    <div class="space-y-3 pt-4">
-                        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                            <div class="flex items-start space-x-3">
-                                <i class="fas fa-info-circle text-blue-600 text-xl mt-1"></i>
-                                <div>
-                                    <p class="text-sm font-medium text-blue-900 mb-1">
-                                        Cara Membeli
-                                    </p>
-                                    <p class="text-sm text-blue-700 leading-relaxed">
-                                        Untuk membeli produk ini, silakan kunjungi koperasi kami pada jam operasional 
-                                        (Senin-Kamis, 08:00-16:00) atau hubungi kami melalui WhatsApp.
-                                    </p>
-                                </div>
-                            </div>
+                    {{-- Actions --}}
+                    <div class="space-y-4 mb-8">
+                        {{-- WhatsApp Button Removed as requested --}}
+                        
+                        <div class="bg-indigo-900/20 border border-indigo-500/20 rounded-xl p-4 flex items-start space-x-3">
+                            <i class="fas fa-info-circle text-indigo-400 mt-0.5"></i>
+                            <p class="text-sm text-indigo-200/80 leading-relaxed">
+                                Pembelian dilakukan secara langsung di Koperasi. Silakan kunjungi kami pada jam operasional.
+                            </p>
                         </div>
 
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                            <a 
-                                href="https://wa.me/{{ preg_replace('/[^0-9]/', '', config('sikopma.contact_whatsapp', '6281234567890')) }}?text=Halo,%20saya%20tertarik%20dengan%20produk%20{{ urlencode($product->name) }}" 
-                                target="_blank"
-                                class="flex items-center justify-center space-x-2 px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition-colors shadow-md"
-                            >
-                                <i class="fab fa-whatsapp text-xl"></i>
-                                <span>Hubungi via WhatsApp</span>
-                            </a>
-                            
-                            <a 
-                                href="{{ route('home') }}"
-                                class="flex items-center justify-center space-x-2 px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-lg transition-colors"
-                            >
-                                <i class="fas fa-arrow-left"></i>
-                                <span>Kembali ke Katalog</span>
-                            </a>
-                        </div>
+                        <a href="{{ route('home') }}" 
+                           class="flex items-center justify-center w-full py-3 px-6 bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white font-medium rounded-xl border border-white/10 transition-all">
+                            <i class="fas fa-arrow-left mr-2"></i>
+                            Kembali ke Katalog
+                        </a>
                     </div>
+
+                    {{-- Description --}}
+                    @if($product->description)
+                        <div class="border-t border-white/5 pt-6">
+                            <h3 class="text-lg font-semibold text-white mb-3">Deskripsi</h3>
+                            <div class="prose prose-invert prose-sm max-w-none text-slate-300">
+                                <p>{{ $product->description }}</p>
+                            </div>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
 
-        {{-- Additional Information Section --}}
-        <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="bg-white rounded-lg shadow-md p-6 text-center">
-                <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <i class="fas fa-clock text-blue-600 text-2xl"></i>
-                </div>
-                <h3 class="text-lg font-semibold text-gray-900 mb-2">Jam Operasional</h3>
-                <p class="text-sm text-gray-600">
-                    Senin - Kamis<br>
-                    08:00 - 16:00 WIB
-                </p>
+        {{-- Footer Info --}}
+        <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Reuse glass card style -->
+            <div class="bg-slate-900/40 border border-white/5 rounded-2xl p-6 text-center">
+                <i class="fas fa-clock text-indigo-500 text-2xl mb-3"></i>
+                <h4 class="text-white font-medium mb-1">Jam Operasional</h4>
+                <p class="text-sm text-slate-400">Senin - Kamis, 08:00 - 16:00</p>
             </div>
-
-            <div class="bg-white rounded-lg shadow-md p-6 text-center">
-                <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <i class="fas fa-map-marker-alt text-green-600 text-2xl"></i>
-                </div>
-                <h3 class="text-lg font-semibold text-gray-900 mb-2">Lokasi Koperasi</h3>
-                <p class="text-sm text-gray-600">
-                    Kampus Universitas<br>
-                    Yogyakarta
-                </p>
+            <div class="bg-slate-900/40 border border-white/5 rounded-2xl p-6 text-center">
+                <i class="fas fa-map-marker-alt text-indigo-500 text-2xl mb-3"></i>
+                <h4 class="text-white font-medium mb-1">Lokasi</h4>
+                <p class="text-sm text-slate-400">Kampus Universitas, Yogyakarta</p>
             </div>
-
-            <div class="bg-white rounded-lg shadow-md p-6 text-center">
-                <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <i class="fas fa-headset text-purple-600 text-2xl"></i>
-                </div>
-                <h3 class="text-lg font-semibold text-gray-900 mb-2">Butuh Bantuan?</h3>
-                <p class="text-sm text-gray-600">
-                    Hubungi kami untuk<br>
-                    informasi lebih lanjut
-                </p>
+            <div class="bg-slate-900/40 border border-white/5 rounded-2xl p-6 text-center">
+                <i class="fas fa-headset text-indigo-500 text-2xl mb-3"></i>
+                <h4 class="text-white font-medium mb-1">Bantuan</h4>
+                <p class="text-sm text-slate-400">Hubungi admin via WhatsApp</p>
             </div>
         </div>
     </div>
