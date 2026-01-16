@@ -13,6 +13,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { api } from '@/react/lib/api'
+import OrganizationSection from '@/react/components/OrganizationSection'
 import PublicLayout from '@/react/components/PublicLayout'
 
 const DAYS = [
@@ -298,6 +299,10 @@ export default function AboutPage({ initialData }) {
                         </div>
                     </CardContent>
                 </Card>
+
+                <div className="mt-16">
+                    <OrganizationSection />
+                </div>
             </div>
         </PublicLayout>
     )
