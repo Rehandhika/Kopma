@@ -61,11 +61,11 @@ $dropdownButtonBaseClasses = 'w-full flex items-center justify-between px-3 py-2
 </div>
 
 {{-- Schedule --}}
-<div x-data="{ open: {{ request()->routeIs('admin.schedule.*') ? 'true' : 'false' }} }">
+<div x-data="{ open: {{ request()->routeIs('admin.schedule.*') || request()->routeIs('admin.leave.*') || request()->routeIs('admin.swap.*') ? 'true' : 'false' }} }">
     <button @click="open = !open" 
             type="button"
-            class="{{ $dropdownButtonBaseClasses }} {{ request()->routeIs('admin.schedule.*') ? $linkActiveClasses : $linkInactiveClasses }}"
-            aria-expanded="{{ request()->routeIs('admin.schedule.*') ? 'true' : 'false' }}"
+            class="{{ $dropdownButtonBaseClasses }} {{ request()->routeIs('admin.schedule.*') || request()->routeIs('admin.leave.*') || request()->routeIs('admin.swap.*') ? $linkActiveClasses : $linkInactiveClasses }}"
+            aria-expanded="{{ request()->routeIs('admin.schedule.*') || request()->routeIs('admin.leave.*') || request()->routeIs('admin.swap.*') ? 'true' : 'false' }}"
             aria-controls="schedule-submenu">
         <div class="flex items-center min-w-0">
             <x-ui.icon name="calendar" class="w-5 h-5 mr-3 flex-shrink-0" />
@@ -78,26 +78,35 @@ $dropdownButtonBaseClasses = 'w-full flex items-center justify-between px-3 py-2
          id="schedule-submenu"
          class="ml-8 mt-1 space-y-1"
          role="menu">
-        {{-- Kelola Jadwal: Menu utama untuk admin (lihat, buat, edit, hapus jadwal) --}}
+        {{-- Kelola Jadwal --}}
         <a href="{{ route('admin.schedule.index') }}" 
            class="{{ $submenuLinkBaseClasses }} {{ request()->routeIs('admin.schedule.index') || request()->routeIs('admin.schedule.create') || request()->routeIs('admin.schedule.edit') || request()->routeIs('admin.schedule.history') ? $submenuLinkActiveClasses : $submenuLinkInactiveClasses }}"
-           role="menuitem"
-           aria-current="{{ request()->routeIs('admin.schedule.index') || request()->routeIs('admin.schedule.create') || request()->routeIs('admin.schedule.edit') || request()->routeIs('admin.schedule.history') ? 'page' : 'false' }}">
+           role="menuitem">
             Kelola Jadwal
         </a>
-        {{-- Jadwal Saya: Untuk semua user melihat jadwal pribadi --}}
+        {{-- Jadwal Saya --}}
         <a href="{{ route('admin.schedule.my-schedule') }}" 
            class="{{ $submenuLinkBaseClasses }} {{ request()->routeIs('admin.schedule.my-schedule') ? $submenuLinkActiveClasses : $submenuLinkInactiveClasses }}"
-           role="menuitem"
-           aria-current="{{ request()->routeIs('admin.schedule.my-schedule') ? 'page' : 'false' }}">
+           role="menuitem">
             Jadwal Saya
         </a>
-        {{-- Ketersediaan: Untuk semua user input ketersediaan mingguan --}}
+        {{-- Ketersediaan --}}
         <a href="{{ route('admin.schedule.availability') }}" 
            class="{{ $submenuLinkBaseClasses }} {{ request()->routeIs('admin.schedule.availability') ? $submenuLinkActiveClasses : $submenuLinkInactiveClasses }}"
-           role="menuitem"
-           aria-current="{{ request()->routeIs('admin.schedule.availability') ? 'page' : 'false' }}">
+           role="menuitem">
             Ketersediaan
+        </a>
+        {{-- Izin/Cuti --}}
+        <a href="{{ route('admin.leave.index') }}" 
+           class="{{ $submenuLinkBaseClasses }} {{ request()->routeIs('admin.leave.*') ? $submenuLinkActiveClasses : $submenuLinkInactiveClasses }}"
+           role="menuitem">
+            Izin/Cuti
+        </a>
+        {{-- Perubahan Jadwal --}}
+        <a href="{{ route('admin.swap.index') }}" 
+           class="{{ $submenuLinkBaseClasses }} {{ request()->routeIs('admin.swap.*') ? $submenuLinkActiveClasses : $submenuLinkInactiveClasses }}"
+           role="menuitem">
+            Perubahan Jadwal
         </a>
     </div>
 </div>
@@ -169,53 +178,6 @@ $dropdownButtonBaseClasses = 'w-full flex items-center justify-between px-3 py-2
         </a>
     </div>
 </div>
-
-{{-- Leave Requests --}}
-<div x-data="{ open: {{ request()->routeIs('admin.leave.*') ? 'true' : 'false' }} }">
-    <button @click="open = !open" 
-            type="button"
-            class="{{ $dropdownButtonBaseClasses }} {{ request()->routeIs('admin.leave.*') ? $linkActiveClasses : $linkInactiveClasses }}"
-            aria-expanded="{{ request()->routeIs('admin.leave.*') ? 'true' : 'false' }}"
-            aria-controls="leave-submenu">
-        <div class="flex items-center min-w-0">
-            <x-ui.icon name="document-text" class="w-5 h-5 mr-3 flex-shrink-0" />
-            <span>Izin/Cuti</span>
-        </div>
-        <x-ui.icon name="chevron-down" class="w-4 h-4 ml-2 flex-shrink-0 transition-transform duration-200" ::class="{ 'rotate-180': open }" />
-    </button>
-    <div x-show="open" 
-         x-collapse 
-         id="leave-submenu"
-         class="ml-8 mt-1 space-y-1"
-         role="menu">
-        <a href="{{ route('admin.leave.my-requests') }}" 
-           class="{{ $submenuLinkBaseClasses }} {{ request()->routeIs('admin.leave.my-requests') ? $submenuLinkActiveClasses : $submenuLinkInactiveClasses }}"
-           role="menuitem"
-           aria-current="{{ request()->routeIs('admin.leave.my-requests') ? 'page' : 'false' }}">
-            Pengajuan Saya
-        </a>
-        <a href="{{ route('admin.leave.create') }}" 
-           class="{{ $submenuLinkBaseClasses }} {{ request()->routeIs('admin.leave.create') ? $submenuLinkActiveClasses : $submenuLinkInactiveClasses }}"
-           role="menuitem"
-           aria-current="{{ request()->routeIs('admin.leave.create') ? 'page' : 'false' }}">
-            Ajukan Izin
-        </a>
-        <a href="{{ route('admin.leave.approvals') }}" 
-           class="{{ $submenuLinkBaseClasses }} {{ request()->routeIs('admin.leave.approvals') ? $submenuLinkActiveClasses : $submenuLinkInactiveClasses }}"
-           role="menuitem"
-           aria-current="{{ request()->routeIs('admin.leave.approvals') ? 'page' : 'false' }}">
-            Persetujuan
-        </a>
-    </div>
-</div>
-
-{{-- Swap Requests --}}
-<a href="{{ route('admin.swap.index') }}" 
-   class="{{ $linkBaseClasses }} {{ request()->routeIs('admin.swap.*') ? $linkActiveClasses : $linkInactiveClasses }}"
-   aria-current="{{ request()->routeIs('admin.swap.*') ? 'page' : 'false' }}">
-    <x-ui.icon name="arrow-right" class="w-5 h-5 mr-3 flex-shrink-0" />
-    <span>Tukar Jadwal</span>
-</a>
 
 {{-- Penalties --}}
 <a href="{{ route('admin.penalties.index') }}" 

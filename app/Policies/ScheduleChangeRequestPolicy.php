@@ -2,11 +2,10 @@
 
 namespace App\Policies;
 
-use App\Models\SwapRequest;
 use App\Models\ScheduleChangeRequest;
 use App\Models\User;
 
-class SwapRequestPolicy
+class ScheduleChangeRequestPolicy
 {
     /**
      * Can view any schedule change requests
@@ -19,7 +18,7 @@ class SwapRequestPolicy
     /**
      * Can view a specific schedule change request
      */
-    public function view(User $user, SwapRequest|ScheduleChangeRequest $request): bool
+    public function view(User $user, ScheduleChangeRequest $request): bool
     {
         return $user->id === $request->user_id ||
                $user->can('view.swap.all');
@@ -36,7 +35,7 @@ class SwapRequestPolicy
     /**
      * Can admin respond to a schedule change request
      */
-    public function adminRespond(User $user, SwapRequest|ScheduleChangeRequest $request): bool
+    public function adminRespond(User $user, ScheduleChangeRequest $request): bool
     {
         return $user->can('approve.swap.admin') &&
                $request->status === 'pending';
@@ -45,7 +44,7 @@ class SwapRequestPolicy
     /**
      * Can cancel a schedule change request
      */
-    public function cancel(User $user, SwapRequest|ScheduleChangeRequest $request): bool
+    public function cancel(User $user, ScheduleChangeRequest $request): bool
     {
         return $user->id === $request->user_id &&
                $request->status === 'pending';

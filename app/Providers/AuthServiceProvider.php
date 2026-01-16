@@ -5,10 +5,12 @@ namespace App\Providers;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use App\Models\Schedule;
 use App\Models\SwapRequest;
+use App\Models\ScheduleChangeRequest;
 use App\Models\LeaveRequest;
 use App\Models\Penalty;
 use App\Policies\SchedulePolicy;
 use App\Policies\SwapRequestPolicy;
+use App\Policies\ScheduleChangeRequestPolicy;
 use App\Policies\LeaveRequestPolicy;
 use App\Policies\PenaltyPolicy;
 
@@ -22,6 +24,7 @@ class AuthServiceProvider extends ServiceProvider
     protected $policies = [
         Schedule::class => SchedulePolicy::class,
         SwapRequest::class => SwapRequestPolicy::class,
+        ScheduleChangeRequest::class => ScheduleChangeRequestPolicy::class,
         LeaveRequest::class => LeaveRequestPolicy::class,
         Penalty::class => PenaltyPolicy::class,
     ];

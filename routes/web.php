@@ -201,20 +201,22 @@ Route::prefix('admin')
             Route::get('/list', \App\Livewire\Purchase\PurchaseList::class)->name('list');
         });
         
-        // Leave Requests
+        // Leave Requests - Redesigned Single Page
         Route::prefix('leave')->name('leave.')->group(function () {
-            Route::get('/', \App\Livewire\Leave\Index::class)->name('index');
-            Route::get('/my-requests', \App\Livewire\Leave\MyRequests::class)->name('my-requests');
-            Route::get('/create', \App\Livewire\Leave\CreateRequest::class)->name('create');
-            Route::get('/approvals', \App\Livewire\Leave\PendingApprovals::class)->name('approvals');
+            Route::get('/', \App\Livewire\Leave\LeaveManager::class)->name('index');
+            // Legacy routes redirect to new unified page
+            Route::redirect('/my-requests', '/admin/leave')->name('my-requests');
+            Route::redirect('/create', '/admin/leave')->name('create');
+            Route::redirect('/approvals', '/admin/leave?tab=approvals')->name('approvals');
         });
         
-        // Swap Requests
+        // Schedule Change Requests (formerly Swap) - Unified Single Page
         Route::prefix('swap')->name('swap.')->group(function () {
-            Route::get('/', \App\Livewire\Swap\Index::class)->name('index');
-            Route::get('/my-requests', \App\Livewire\Swap\MyRequests::class)->name('my-requests');
-            Route::get('/create', \App\Livewire\Swap\CreateRequest::class)->name('create');
-            Route::get('/approvals', \App\Livewire\Swap\PendingApprovals::class)->name('approvals');
+            Route::get('/', \App\Livewire\Schedule\ScheduleChangeManager::class)->name('index');
+            // Legacy routes redirect
+            Route::redirect('/my-requests', '/admin/swap')->name('my-requests');
+            Route::redirect('/create', '/admin/swap')->name('create');
+            Route::redirect('/approvals', '/admin/swap?tab=admin')->name('approvals');
         });
         
         // Penalties

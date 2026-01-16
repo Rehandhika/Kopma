@@ -5,11 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-/**
- * @deprecated Use ScheduleChangeRequest instead
- * This model is kept for backward compatibility with existing code
- */
-class SwapRequest extends Model
+class ScheduleChangeRequest extends Model
 {
     use HasFactory;
 
@@ -33,24 +29,12 @@ class SwapRequest extends Model
         'requested_date' => 'date',
         'admin_responded_at' => 'datetime',
         'completed_at' => 'datetime',
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
     ];
 
-    // Alias for backward compatibility
-    public function requester()
-    {
-        return $this->belongsTo(User::class, 'user_id');
-    }
-
+    // Relationships
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id');
-    }
-
-    public function requesterAssignment()
-    {
-        return $this->belongsTo(ScheduleAssignment::class, 'original_assignment_id');
+        return $this->belongsTo(User::class);
     }
 
     public function originalAssignment()
@@ -76,7 +60,7 @@ class SwapRequest extends Model
 
     public function scopeRejected($query)
     {
-        return $query->whereIn('status', ['rejected', 'cancelled']);
+        return $query->where('status', 'rejected');
     }
 
     // Helpers
@@ -92,7 +76,12 @@ class SwapRequest extends Model
 
     public function isRejected(): bool
     {
-        return in_array($this->status, ['rejected', 'cancelled']);
+        return $this->status === 'rejected';
+    }
+
+    public function canCancel(): bool
+    {
+        return $this->status === 'pending';
     }
 
     public function getChangeTypeLabel(): string
@@ -100,7 +89,7 @@ class SwapRequest extends Model
         return match($this->change_type) {
             'reschedule' => 'Pindah Jadwal',
             'cancel' => 'Batalkan Jadwal',
-            default => $this->change_type ?? '-',
+            default => $this->change_type,
         };
     }
 
@@ -112,6 +101,17 @@ class SwapRequest extends Model
             'rejected' => 'Ditolak',
             'cancelled' => 'Dibatalkan',
             default => $this->status,
+        };
+    }
+
+    public function getSessionLabel(?int $session = null): string
+    {
+        $s = $session ?? $this->requested_session;
+        return match($s) {
+            1 => 'Sesi 1 (07:30-10:00)',
+            2 => 'Sesi 2 (10:20-12:50)',
+            3 => 'Sesi 3 (13:30-16:00)',
+            default => '-',
         };
     }
 }
