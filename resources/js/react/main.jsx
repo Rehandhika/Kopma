@@ -1,24 +1,38 @@
 import React from 'react'
 import { createRoot } from 'react-dom/client'
-import AboutPage from './pages/AboutPage'
-import HomePage from './pages/HomePage'
-import NotFoundPage from './pages/NotFoundPage'
-import ProductDetailPage from './pages/ProductDetailPage'
+
+const HomePage = React.lazy(() => import('./pages/HomePage'))
+const AboutPage = React.lazy(() => import('./pages/AboutPage'))
+const ProductDetailPage = React.lazy(() => import('./pages/ProductDetailPage'))
+const NotFoundPage = React.lazy(() => import('./pages/NotFoundPage'))
 
 const rootElement = document.getElementById('react-public')
 
 if (rootElement) {
     const page = rootElement.dataset.page || 'home'
     const slug = rootElement.dataset.slug || ''
+    const initialDataElement = document.getElementById('public-initial-data')
+    let initialData = null
+    if (initialDataElement?.textContent) {
+        try {
+            initialData = JSON.parse(initialDataElement.textContent)
+        } catch {
+            initialData = null
+        }
+    }
 
-    let Page = HomePage
-    if (page === 'about') Page = AboutPage
-    if (page === 'product') Page = (props) => <ProductDetailPage {...props} slug={slug} />
-    if (!['home', 'about', 'product'].includes(page)) Page = NotFoundPage
+    const Page = () => {
+        if (page === 'about') return <AboutPage initialData={initialData} />
+        if (page === 'product') return <ProductDetailPage slug={slug} initialData={initialData} />
+        if (!['home', 'about', 'product'].includes(page)) return <NotFoundPage />
+        return <HomePage initialData={initialData} />
+    }
 
     createRoot(rootElement).render(
         <React.StrictMode>
-            <Page />
+            <React.Suspense fallback={<div className="min-h-screen bg-background" />}>
+                <Page />
+            </React.Suspense>
         </React.StrictMode>,
     )
 }

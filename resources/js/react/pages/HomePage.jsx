@@ -29,11 +29,12 @@ import {
 } from '@/components/ui/select'
 import { Skeleton } from '@/components/ui/skeleton'
 
-import BannerCarousel from '@/react/components/BannerCarousel'
 import PublicLayout from '@/react/components/PublicLayout'
 import useDebouncedValue from '@/react/hooks/useDebouncedValue'
 import { api } from '@/react/lib/api'
 import { formatRupiah } from '@/react/lib/format'
+
+const BannerCarousel = React.lazy(() => import('@/react/components/BannerCarousel'))
 
 function buildPageList(currentPage, lastPage) {
     const pages = []
@@ -53,11 +54,12 @@ function buildPageList(currentPage, lastPage) {
     return pages
 }
 
-function BannerSection() {
-    const [banners, setBanners] = React.useState([])
-    const [loading, setLoading] = React.useState(true)
+function BannerSection({ initialBanners }) {
+    const [banners, setBanners] = React.useState(() => (Array.isArray(initialBanners) ? initialBanners : []))
+    const [loading, setLoading] = React.useState(() => !Array.isArray(initialBanners))
 
     React.useEffect(() => {
+        if (Array.isArray(initialBanners)) return
         ;(async () => {
             try {
                 const res = await api.get('/api/public/banners')
@@ -71,7 +73,7 @@ function BannerSection() {
     if (loading) {
         return (
             <div className="w-full relative">
-                <div className="aspect-[16/5] w-full">
+                <div className="aspect-[16/9] w-full">
                     <Skeleton className="h-full w-full rounded-none" />
                 </div>
             </div>
@@ -97,35 +99,49 @@ function BannerSection() {
         <div className="w-full relative">
             <div className="absolute inset-0 bg-gradient-to-b from-background/0 to-background pointer-events-none z-10" />
             <div className="max-w-7xl mx-auto px-4">
-                <BannerCarousel
-                    slides={slides}
-                    loop={slides.length > 1}
-                    autoplayIntervalMs={5000}
-                    transitionDuration={40}
-                    showArrows={slides.length > 1}
-                    showDots={slides.length > 1}
-                />
+                <React.Suspense
+                    fallback={
+                        <div className="overflow-hidden rounded-2xl border border-border bg-card/20">
+                            <div className="aspect-[16/9] w-full">
+                                <Skeleton className="h-full w-full rounded-none" />
+                            </div>
+                        </div>
+                    }
+                >
+                    <BannerCarousel
+                        slides={slides}
+                        loop={slides.length > 1}
+                        autoplayIntervalMs={5000}
+                        transitionDuration={40}
+                        showArrows={slides.length > 1}
+                        showDots={slides.length > 1}
+                    />
+                </React.Suspense>
             </div>
         </div>
     )
 }
 
-function ProductsSection() {
+function ProductsSection({ initialCategories, initialProducts }) {
     const [search, setSearch] = React.useState('')
     const debouncedSearch = useDebouncedValue(search, 350)
     const [category, setCategory] = React.useState('')
 
-    const [categories, setCategories] = React.useState([])
-    const [products, setProducts] = React.useState(null)
-    const [loading, setLoading] = React.useState(true)
+    const [categories, setCategories] = React.useState(() =>
+        Array.isArray(initialCategories) ? initialCategories : [],
+    )
+    const [products, setProducts] = React.useState(() => initialProducts ?? null)
+    const [loading, setLoading] = React.useState(() => !initialProducts)
     const [page, setPage] = React.useState(1)
+    const initialAppliedRef = React.useRef(false)
 
     React.useEffect(() => {
+        if (Array.isArray(initialCategories)) return
         ;(async () => {
             const res = await api.get('/api/public/categories')
             setCategories(res.data?.data ?? [])
         })()
-    }, [])
+    }, [initialCategories])
 
     React.useEffect(() => {
         setPage(1)
@@ -133,6 +149,20 @@ function ProductsSection() {
 
     React.useEffect(() => {
         let cancelled = false
+
+        if (
+            !initialAppliedRef.current &&
+            initialProducts &&
+            !debouncedSearch &&
+            !category &&
+            page === 1
+        ) {
+            initialAppliedRef.current = true
+            setLoading(false)
+            return () => {
+                cancelled = true
+            }
+        }
 
         ;(async () => {
             setLoading(true)
@@ -156,7 +186,7 @@ function ProductsSection() {
         return () => {
             cancelled = true
         }
-    }, [debouncedSearch, category, page])
+    }, [debouncedSearch, category, page, initialProducts])
 
     const items = Array.isArray(products?.data) ? products.data : []
     const currentPage = Number(products?.current_page ?? page)
@@ -246,10 +276,12 @@ function ProductsSection() {
                                     <div className="aspect-square relative overflow-hidden bg-muted">
                                         {p.image_medium_url ? (
                                             <img
-                                                src={p.image_medium_url}
+                                                src={p.image_thumbnail_url || p.image_medium_url}
                                                 alt={p.name}
                                                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-90 group-hover:opacity-100"
                                                 loading="lazy"
+                                                fetchPriority="low"
+                                                sizes="(min-width: 1024px) 25vw, 50vw"
                                                 decoding="async"
                                             />
                                         ) : (
@@ -401,11 +433,15 @@ function ProductsSection() {
     )
 }
 
-export default function HomePage() {
+export default function HomePage({ initialData }) {
+    const initialBanners = initialData?.banners
+    const initialCategories = initialData?.categories
+    const initialProducts = initialData?.products
+
     return (
         <PublicLayout>
-            <BannerSection />
-            <ProductsSection />
+            <BannerSection initialBanners={initialBanners} />
+            <ProductsSection initialCategories={initialCategories} initialProducts={initialProducts} />
         </PublicLayout>
     )
 }

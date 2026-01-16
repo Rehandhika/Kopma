@@ -42,12 +42,17 @@ function StockBadge({ stock, minStock }) {
     )
 }
 
-export default function ProductDetailPage({ slug }) {
-    const [product, setProduct] = React.useState(null)
-    const [about, setAbout] = React.useState(null)
-    const [loading, setLoading] = React.useState(true)
+export default function ProductDetailPage({ slug, initialData }) {
+    const seededProduct =
+        initialData?.product && initialData.product.slug === slug ? initialData.product : null
+    const seededAbout = initialData?.about ?? null
+
+    const [product, setProduct] = React.useState(() => seededProduct)
+    const [about, setAbout] = React.useState(() => seededAbout)
+    const [loading, setLoading] = React.useState(() => !(seededProduct && seededAbout))
 
     React.useEffect(() => {
+        if (seededProduct && seededAbout) return
         let cancelled = false
 
         ;(async () => {
@@ -69,7 +74,7 @@ export default function ProductDetailPage({ slug }) {
         return () => {
             cancelled = true
         }
-    }, [slug])
+    }, [slug, seededProduct, seededAbout])
 
     const address = normalizeContactValue(about?.contact_address)
     const whatsapp = normalizeContactValue(about?.contact_whatsapp)
@@ -112,6 +117,8 @@ export default function ProductDetailPage({ slug }) {
                                         src={product.image_large_url}
                                         alt={product?.name ?? 'Produk'}
                                         className="w-full h-full object-cover"
+                                        loading="eager"
+                                        fetchPriority="high"
                                         decoding="async"
                                     />
                                 ) : (

@@ -3,201 +3,78 @@
 namespace App\Http\Controllers\PublicApi;
 
 use App\Http\Controllers\Controller;
-use App\Models\Banner;
-use App\Models\Product;
-use App\Models\StoreSetting;
+use App\Services\PublicDataService;
 use App\Services\StoreStatusService;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpFoundation\Response;
 
 class HomeController extends Controller
 {
-    public function about(): JsonResponse
+    private function respondCachedJson(Request $request, array $payload, int $maxAge, int $staleWhileRevalidate): Response
     {
-        $storeSetting = Cache::remember('api:public:store_settings:about', 300, function () {
-            return StoreSetting::query()->first();
-        });
+        $json = json_encode($payload, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        $etag = '"' . sha1((string) $json) . '"';
 
-        if (!$storeSetting) {
-            return response()->json([
-                'data' => [
-                    'about_text' => null,
-                    'contact_phone' => null,
-                    'contact_email' => null,
-                    'contact_whatsapp' => null,
-                    'contact_address' => null,
-                    'operating_hours' => null,
-                ],
-            ]);
+        $headers = [
+            'Content-Type' => 'application/json; charset=UTF-8',
+            'Cache-Control' => "public, max-age={$maxAge}, stale-while-revalidate={$staleWhileRevalidate}",
+            'ETag' => $etag,
+            'Vary' => 'Accept, Accept-Encoding',
+        ];
+
+        if ($request->headers->get('If-None-Match') === $etag) {
+            return response('', 304)->withHeaders($headers);
         }
 
-        return response()->json([
-            'data' => [
-                'about_text' => $storeSetting->about_text,
-                'contact_phone' => $storeSetting->contact_phone,
-                'contact_email' => $storeSetting->contact_email,
-                'contact_whatsapp' => $storeSetting->contact_whatsapp,
-                'contact_address' => $storeSetting->contact_address,
-                'operating_hours' => $storeSetting->operating_hours,
-            ],
-        ]);
+        return response($json, 200)->withHeaders($headers);
     }
 
-    public function banners(): JsonResponse
+    public function about(Request $request, PublicDataService $publicDataService): Response
     {
-        $banners = Cache::remember('api:public:banners:active', 300, function () {
-            return Banner::query()
-                ->active()
-                ->ordered()
-                ->get(['id', 'title', 'image_path', 'priority']);
-        });
-
-        $payload = $banners->map(function (Banner $banner) {
-            $imagePath = $banner->image_path;
-
-            $defaultUrl = $imagePath
-                ? Storage::disk('public')->url($imagePath)
-                : null;
-
-            $images = [
-                'default' => $defaultUrl,
-                '480' => null,
-                '768' => null,
-                '1920' => null,
-            ];
-
-            if ($imagePath) {
-                $pathInfo = pathinfo($imagePath);
-                $filename = $pathInfo['filename'] ?? '';
-                $directory = $pathInfo['dirname'] ?? '';
-                $extension = $pathInfo['extension'] ?? 'jpg';
-
-                $lastUnderscorePos = strrpos($filename, '_');
-                $uuid = $lastUnderscorePos !== false ? substr($filename, 0, $lastUnderscorePos) : $filename;
-
-                $images['480'] = Storage::disk('public')->url("{$directory}/{$uuid}_480.{$extension}");
-                $images['768'] = Storage::disk('public')->url("{$directory}/{$uuid}_768.{$extension}");
-                $images['1920'] = Storage::disk('public')->url("{$directory}/{$uuid}_1920.{$extension}");
-            }
-
-            return [
-                'id' => $banner->id,
-                'title' => $banner->title,
-                'images' => $images,
-            ];
-        })->values();
-
-        return response()->json([
-            'data' => $payload,
-        ]);
+        return $this->respondCachedJson($request, [
+            'data' => $publicDataService->about(),
+        ], 60, 300);
     }
 
-    public function categories(): JsonResponse
+    public function banners(Request $request, PublicDataService $publicDataService): Response
     {
-        $categories = Cache::remember('api:public:product_categories', 300, function () {
-            return Product::query()
-                ->public()
-                ->active()
-                ->whereNotNull('category')
-                ->distinct()
-                ->pluck('category')
-                ->sort()
-                ->values();
-        });
-
-        return response()->json([
-            'data' => $categories,
-        ]);
+        return $this->respondCachedJson($request, [
+            'data' => $publicDataService->banners(),
+        ], 60, 300);
     }
 
-    public function products(Request $request): JsonResponse
+    public function categories(Request $request, PublicDataService $publicDataService): Response
+    {
+        return $this->respondCachedJson($request, [
+            'data' => $publicDataService->categories(),
+        ], 60, 300);
+    }
+
+    public function products(Request $request, PublicDataService $publicDataService): Response
     {
         $search = (string) $request->query('search', '');
         $category = (string) $request->query('category', '');
         $perPage = (int) $request->query('per_page', 12);
         $perPage = max(1, min(48, $perPage));
+        $page = (int) $request->query('page', 1);
+        $page = max(1, $page);
 
-        $cacheKey = sprintf(
-            'api:public:products:page:%s:per:%s:search:%s:category:%s',
-            (string) $request->query('page', 1),
-            (string) $perPage,
-            $search,
-            $category
-        );
+        $products = $publicDataService->products($search, $category, $page, $perPage);
 
-        $products = Cache::remember($cacheKey, 300, function () use ($search, $category, $perPage) {
-            return Product::query()
-                ->select([
-                    'id',
-                    'name',
-                    'slug',
-                    'price',
-                    'stock',
-                    'min_stock',
-                    'category',
-                    'image',
-                    'is_featured',
-                    'status',
-                    'is_public',
-                    'display_order',
-                ])
-                ->public()
-                ->active()
-                ->when($search, function ($query) use ($search) {
-                    $query->where(function ($q) use ($search) {
-                        $q->where('name', 'like', '%' . $search . '%')
-                            ->orWhere('description', 'like', '%' . $search . '%')
-                            ->orWhere('sku', 'like', '%' . $search . '%');
-                    });
-                })
-                ->when($category, function ($query) use ($category) {
-                    $query->where('category', $category);
-                })
-                ->ordered()
-                ->paginate($perPage);
-        });
-
-        return response()->json($products);
+        return $this->respondCachedJson($request, $products->toArray(), 60, 300);
     }
 
-    public function product(string $slug): JsonResponse
+    public function product(Request $request, string $slug, PublicDataService $publicDataService): Response
     {
-        $cacheKey = "api:public:product:slug:{$slug}";
-
-        $product = Cache::remember($cacheKey, 300, function () use ($slug) {
-            return Product::query()
-                ->select([
-                    'id',
-                    'name',
-                    'slug',
-                    'sku',
-                    'price',
-                    'stock',
-                    'min_stock',
-                    'category',
-                    'description',
-                    'image',
-                    'is_featured',
-                ])
-                ->where('is_public', true)
-                ->active()
-                ->where('slug', $slug)
-                ->firstOrFail();
-        });
-
-        return response()->json([
-            'data' => array_merge($product->toArray(), [
-                'image_large_url' => $product->image_large_url,
-            ]),
-        ]);
+        return $this->respondCachedJson($request, [
+            'data' => $publicDataService->product($slug),
+        ], 60, 300);
     }
 
-    public function storeStatus(StoreStatusService $storeStatusService): JsonResponse
+    public function storeStatus(Request $request, StoreStatusService $storeStatusService): Response
     {
-        return response()->json([
+        return $this->respondCachedJson($request, [
             'data' => $storeStatusService->getStatus(),
-        ]);
+        ], 5, 10);
     }
 }

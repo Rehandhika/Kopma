@@ -20,6 +20,7 @@
     @vite(['resources/css/app.css', 'resources/js/react/main.jsx'])
 </head>
 <body class="bg-background text-foreground antialiased">
+    <script type="application/json" id="public-initial-data">@json($initial ?? null)</script>
     <div
         id="react-public"
         data-page="{{ $page ?? 'home' }}"

@@ -39,10 +39,12 @@ export type BannerCarouselProps = {
 function BannerImage({
     slide,
     active,
+    priority = false,
     scrimClassName,
 }: {
     slide: BannerSlide
     active: boolean
+    priority?: boolean
     scrimClassName?: string
 }) {
     const [loaded, setLoaded] = React.useState(false)
@@ -81,7 +83,8 @@ function BannerImage({
                             active ? 'scale-[1.02]' : 'scale-100',
                             loaded ? 'opacity-100' : 'opacity-0',
                         )}
-                        loading="lazy"
+                        loading={priority ? 'eager' : 'lazy'}
+                        fetchPriority={priority ? 'high' : 'low'}
                         decoding="async"
                         draggable={false}
                         onLoad={() => setLoaded(true)}
@@ -166,7 +169,7 @@ export default function BannerCarousel({
                             <CarouselItem key={slide.id} className="pl-0">
                                 <div className="relative overflow-hidden rounded-2xl border border-border bg-card/20">
                                     <div className="aspect-[16/9] w-full">
-                                        <BannerImage slide={slide} active={isActive} />
+                                        <BannerImage slide={slide} active={isActive} priority={idx === 0} />
                                     </div>
 
                                     <div
@@ -250,4 +253,3 @@ export default function BannerCarousel({
         </div>
     )
 }
-

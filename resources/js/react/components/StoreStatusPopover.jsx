@@ -9,34 +9,68 @@ export default function StoreStatusPopover() {
     const [status, setStatus] = React.useState(null)
     const [loading, setLoading] = React.useState(true)
     const [error, setError] = React.useState(false)
+    const [open, setOpen] = React.useState(false)
+    const lastFetchedAtRef = React.useRef(0)
 
     const load = React.useCallback(async (signal) => {
         try {
             const res = await api.get('/api/public/store-status', { signal })
             setStatus(res.data?.data ?? null)
             setError(false)
+            lastFetchedAtRef.current = Date.now()
         } catch (e) {
             if (signal?.aborted) return
             setError(true)
+            lastFetchedAtRef.current = Date.now()
         }
     }, [])
 
     React.useEffect(() => {
         const controller = new AbortController()
         let intervalId
-        ;(async () => {
-            try {
-                await load(controller.signal)
-            } finally {
-                setLoading(false)
+        let idleHandle
+
+        const scheduleInitial = () => {
+            const run = async () => {
+                try {
+                    await load(controller.signal)
+                } finally {
+                    setLoading(false)
+                }
             }
-            intervalId = window.setInterval(() => load(controller.signal), 10_000)
-        })()
+
+            if (typeof window.requestIdleCallback === 'function') {
+                idleHandle = window.requestIdleCallback(run, { timeout: 1500 })
+            } else {
+                idleHandle = window.setTimeout(run, 600)
+            }
+        }
+
+        scheduleInitial()
+        intervalId = window.setInterval(() => {
+            if (document.hidden) return
+            load(controller.signal)
+        }, 30_000)
+
         return () => {
             controller.abort()
+            if (typeof window.cancelIdleCallback === 'function') {
+                if (idleHandle) window.cancelIdleCallback(idleHandle)
+            } else {
+                if (idleHandle) window.clearTimeout(idleHandle)
+            }
             if (intervalId) window.clearInterval(intervalId)
         }
     }, [load])
+
+    React.useEffect(() => {
+        if (!open) return
+        if (document.hidden) return
+        if (Date.now() - lastFetchedAtRef.current < 5_000) return
+        const controller = new AbortController()
+        load(controller.signal)
+        return () => controller.abort()
+    }, [open, load])
 
     const isOpen = Boolean(status?.is_open)
     const reason = status?.reason ?? ''
@@ -44,7 +78,7 @@ export default function StoreStatusPopover() {
     const nextOpenTime = status?.next_open_time ?? null
 
     return (
-        <Popover>
+        <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
                 <Button
                     variant="outline"

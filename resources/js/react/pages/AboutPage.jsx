@@ -84,11 +84,13 @@ function OperatingHoursGrid({ operatingHours }) {
     )
 }
 
-export default function AboutPage() {
-    const [data, setData] = React.useState(null)
-    const [loading, setLoading] = React.useState(true)
+export default function AboutPage({ initialData }) {
+    const seeded = initialData?.about ?? null
+    const [data, setData] = React.useState(() => seeded)
+    const [loading, setLoading] = React.useState(() => !seeded)
 
     React.useEffect(() => {
+        if (seeded) return
         ;(async () => {
             try {
                 const res = await api.get('/api/public/about')
@@ -97,7 +99,7 @@ export default function AboutPage() {
                 setLoading(false)
             }
         })()
-    }, [])
+    }, [seeded])
 
     const aboutText = normalizeContactValue(data?.about_text)
     const phone = normalizeContactValue(data?.contact_phone)

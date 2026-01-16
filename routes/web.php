@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LogoutController;
+use App\Http\Controllers\PublicPageController;
 use App\Http\Controllers\PublicApi\HomeController as PublicHomeApiController;
 use App\Livewire\Dashboard\Index as DashboardIndex;
 
@@ -12,24 +13,16 @@ use App\Livewire\Dashboard\Index as DashboardIndex;
 */
 
 // Public Catalog (Home)
-Route::get('/', function () {
-    return view('public.react', ['page' => 'home']);
-})->name('home');
+Route::get('/', [PublicPageController::class, 'home'])->name('home');
 
 // Public Products
-Route::get('/products', function () {
-    return view('public.react', ['page' => 'home']);
-})->name('public.products');
+Route::get('/products', [PublicPageController::class, 'home'])->name('public.products');
 
 // Public Product Detail
-Route::get('/products/{slug}', function (string $slug) {
-    return view('public.react', ['page' => 'product', 'slug' => $slug]);
-})->name('public.products.show');
+Route::get('/products/{slug}', [PublicPageController::class, 'product'])->name('public.products.show');
 
 // Public About page
-Route::get('/about', function () {
-    return view('public.react', ['page' => 'about']);
-})->name('public.about');
+Route::get('/about', [PublicPageController::class, 'about'])->name('public.about');
 
 // Public JSON API (for React public pages)
 Route::prefix('api/public')
