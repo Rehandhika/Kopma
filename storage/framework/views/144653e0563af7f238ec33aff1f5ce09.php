@@ -1,480 +1,256 @@
-<div class="space-y-6">
-    <!-- Welcome Section -->
-    <div class="bg-gradient-to-r from-indigo-500 to-purple-600 overflow-hidden shadow-lg rounded-lg">
-        <div class="p-6 text-white">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0">
-                        <div class="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center backdrop-blur-sm">
-                            <!--[if BLOCK]><![endif]--><?php if(auth()->check()): ?>
-                                <span class="text-white font-bold text-2xl"><?php echo e(substr(auth()->user()->name, 0, 1)); ?></span>
-                            <?php else: ?>
-                                <span class="text-white font-bold text-2xl">?</span>
-                            <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
-                        </div>
-                    </div>
-                    <div class="ml-5">
+<div class="space-y-4 sm:space-y-6">
+    
+    <div class="bg-gradient-to-r from-primary-600 to-primary-700 rounded-xl overflow-hidden shadow-lg">
+        <div class="p-4 sm:p-6 text-white">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 sm:w-14 sm:h-14 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm shrink-0">
                         <!--[if BLOCK]><![endif]--><?php if(auth()->check()): ?>
-                            <h2 class="text-2xl font-bold">
-                                Selamat datang, <?php echo e(auth()->user()->name); ?>!
-                            </h2>
-                            <p class="text-indigo-100 mt-1">
-                                NIM: <?php echo e(auth()->user()->nim); ?> • 
-                                <!--[if BLOCK]><![endif]--><?php $__currentLoopData = auth()->user()->roles; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $role): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                    <span class="capitalize"><?php echo e($role->name); ?></span><?php echo e(!$loop->last ? ', ' : ''); ?>
+                            <span class="text-white font-bold text-xl sm:text-2xl"><?php echo e(substr(auth()->user()->name, 0, 1)); ?></span>
+                        <?php else: ?>
+                            <span class="text-white font-bold text-xl">?</span>
+                        <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
+                    </div>
+                    <div class="min-w-0">
+                        <!--[if BLOCK]><![endif]--><?php if(auth()->check()): ?>
+                            <h1 class="text-lg sm:text-xl font-bold truncate">Halo, <?php echo e(auth()->user()->name); ?>!</h1>
+                            <p class="text-primary-100 text-xs sm:text-sm mt-0.5">
+                                <?php echo e(auth()->user()->nim ?? '-'); ?> • 
+                                <?php echo e(auth()->user()->roles?->pluck('name')?->join(', ') ?? 'User'); ?>
 
-                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><!--[if ENDBLOCK]><![endif]-->
                             </p>
                         <?php else: ?>
-                            <h2 class="text-2xl font-bold">
-                                Selamat datang di SIKOPMA
-                            </h2>
-                            <p class="text-indigo-100 mt-1">
-                                Silakan login untuk melihat statistik pribadi.
-                            </p>
+                            <h1 class="text-lg sm:text-xl font-bold">Selamat datang di SIKOPMA</h1>
+                            <p class="text-primary-100 text-sm">Silakan login untuk melanjutkan</p>
                         <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
                     </div>
                 </div>
-                <div class="text-right">
-                    <p class="text-sm text-indigo-100"><?php echo e(now()->isoFormat('dddd')); ?></p>
-                    <p class="text-lg font-semibold"><?php echo e(now()->isoFormat('D MMMM Y')); ?></p>
-                    <p class="text-2xl font-bold mt-1" id="current-time"><?php echo e(now()->format('H:i:s')); ?></p>
-                    <p class="text-xs text-indigo-100">Waktu Portugal (WET/WEST)</p>
+                <div class="text-left sm:text-right bg-white/10 rounded-lg px-3 py-2 sm:px-4 sm:py-3">
+                    <p class="text-xs text-primary-100"><?php echo e(now()->translatedFormat('l')); ?></p>
+                    <p class="text-sm sm:text-base font-semibold"><?php echo e(now()->translatedFormat('d F Y')); ?></p>
+                    <p class="text-xl sm:text-2xl font-bold mt-0.5" x-data x-init="
+                        setInterval(() => {
+                            $el.textContent = new Date().toLocaleTimeString('id-ID', {hour: '2-digit', minute: '2-digit', second: '2-digit'})
+                        }, 1000)
+                    "><?php echo e(now()->format('H:i:s')); ?></p>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- User Stats Cards -->
-    <?php if (isset($component)) { $__componentOriginalddfdd8eb2a2b0d47c29a0436357ad57f = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginalddfdd8eb2a2b0d47c29a0436357ad57f = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.layout.grid','data' => ['cols' => '4','class' => 'gap-5']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('layout.grid'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['cols' => '4','class' => 'gap-5']); ?>
-        <?php if (isset($component)) { $__componentOriginala4a09407c281b10513bf47f7415fb4c1 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginala4a09407c281b10513bf47f7415fb4c1 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.layout.stat-card','data' => ['label' => 'Kehadiran Bulan Ini','value' => ''.e($userStats['monthlyAttendance']['present']).'/'.e($userStats['monthlyAttendance']['total']).'','icon' => 'check-circle','iconColor' => 'bg-green-100','iconTextColor' => 'text-green-600']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('layout.stat-card'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['label' => 'Kehadiran Bulan Ini','value' => ''.e($userStats['monthlyAttendance']['present']).'/'.e($userStats['monthlyAttendance']['total']).'','icon' => 'check-circle','iconColor' => 'bg-green-100','iconTextColor' => 'text-green-600']); ?>
-<?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginala4a09407c281b10513bf47f7415fb4c1)): ?>
-<?php $attributes = $__attributesOriginala4a09407c281b10513bf47f7415fb4c1; ?>
-<?php unset($__attributesOriginala4a09407c281b10513bf47f7415fb4c1); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginala4a09407c281b10513bf47f7415fb4c1)): ?>
-<?php $component = $__componentOriginala4a09407c281b10513bf47f7415fb4c1; ?>
-<?php unset($__componentOriginala4a09407c281b10513bf47f7415fb4c1); ?>
-<?php endif; ?>
+    
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        <div class="bg-white dark:bg-gray-800 rounded-lg p-3 sm:p-4 border border-gray-200 dark:border-gray-700">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center shrink-0">
+                    <svg class="w-5 h-5 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+                <div class="min-w-0">
+                    <p class="text-xs text-gray-500 dark:text-gray-400">Kehadiran</p>
+                    <p class="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">
+                        <?php echo e($this->userStats['monthlyAttendance']['present']); ?>/<?php echo e($this->userStats['monthlyAttendance']['total']); ?>
 
-        <?php if (isset($component)) { $__componentOriginala4a09407c281b10513bf47f7415fb4c1 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginala4a09407c281b10513bf47f7415fb4c1 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.layout.stat-card','data' => ['label' => 'Terlambat','value' => ''.e($userStats['monthlyAttendance']['late']).'','icon' => 'clock','iconColor' => 'bg-yellow-100','iconTextColor' => 'text-yellow-600']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('layout.stat-card'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['label' => 'Terlambat','value' => ''.e($userStats['monthlyAttendance']['late']).'','icon' => 'clock','iconColor' => 'bg-yellow-100','iconTextColor' => 'text-yellow-600']); ?>
-<?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginala4a09407c281b10513bf47f7415fb4c1)): ?>
-<?php $attributes = $__attributesOriginala4a09407c281b10513bf47f7415fb4c1; ?>
-<?php unset($__attributesOriginala4a09407c281b10513bf47f7415fb4c1); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginala4a09407c281b10513bf47f7415fb4c1)): ?>
-<?php $component = $__componentOriginala4a09407c281b10513bf47f7415fb4c1; ?>
-<?php unset($__componentOriginala4a09407c281b10513bf47f7415fb4c1); ?>
-<?php endif; ?>
+                    </p>
+                    <p class="text-xs text-gray-400">bulan ini</p>
+                </div>
+            </div>
+        </div>
 
-        <?php if (isset($component)) { $__componentOriginala4a09407c281b10513bf47f7415fb4c1 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginala4a09407c281b10513bf47f7415fb4c1 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.layout.stat-card','data' => ['label' => 'Penalti Aktif','value' => ''.e($userStats['penalties']['count']).'','subtitle' => ''.e($userStats['penalties']['points']).' poin','icon' => 'exclamation-triangle','iconColor' => 'bg-red-100','iconTextColor' => 'text-red-600']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('layout.stat-card'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['label' => 'Penalti Aktif','value' => ''.e($userStats['penalties']['count']).'','subtitle' => ''.e($userStats['penalties']['points']).' poin','icon' => 'exclamation-triangle','iconColor' => 'bg-red-100','iconTextColor' => 'text-red-600']); ?>
-<?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginala4a09407c281b10513bf47f7415fb4c1)): ?>
-<?php $attributes = $__attributesOriginala4a09407c281b10513bf47f7415fb4c1; ?>
-<?php unset($__attributesOriginala4a09407c281b10513bf47f7415fb4c1); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginala4a09407c281b10513bf47f7415fb4c1)): ?>
-<?php $component = $__componentOriginala4a09407c281b10513bf47f7415fb4c1; ?>
-<?php unset($__componentOriginala4a09407c281b10513bf47f7415fb4c1); ?>
-<?php endif; ?>
+        <div class="bg-white dark:bg-gray-800 rounded-lg p-3 sm:p-4 border border-gray-200 dark:border-gray-700">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center shrink-0">
+                    <svg class="w-5 h-5 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+                <div class="min-w-0">
+                    <p class="text-xs text-gray-500 dark:text-gray-400">Terlambat</p>
+                    <p class="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">
+                        <?php echo e($this->userStats['monthlyAttendance']['late']); ?>
 
-        <?php if (isset($component)) { $__componentOriginala4a09407c281b10513bf47f7415fb4c1 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginala4a09407c281b10513bf47f7415fb4c1 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.layout.stat-card','data' => ['label' => 'Notifikasi','value' => ''.e($userStats['notifications']->count()).'','icon' => 'bell','iconColor' => 'bg-blue-100','iconTextColor' => 'text-blue-600']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('layout.stat-card'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['label' => 'Notifikasi','value' => ''.e($userStats['notifications']->count()).'','icon' => 'bell','iconColor' => 'bg-blue-100','iconTextColor' => 'text-blue-600']); ?>
-<?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginala4a09407c281b10513bf47f7415fb4c1)): ?>
-<?php $attributes = $__attributesOriginala4a09407c281b10513bf47f7415fb4c1; ?>
-<?php unset($__attributesOriginala4a09407c281b10513bf47f7415fb4c1); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginala4a09407c281b10513bf47f7415fb4c1)): ?>
-<?php $component = $__componentOriginala4a09407c281b10513bf47f7415fb4c1; ?>
-<?php unset($__componentOriginala4a09407c281b10513bf47f7415fb4c1); ?>
-<?php endif; ?>
-     <?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginalddfdd8eb2a2b0d47c29a0436357ad57f)): ?>
-<?php $attributes = $__attributesOriginalddfdd8eb2a2b0d47c29a0436357ad57f; ?>
-<?php unset($__attributesOriginalddfdd8eb2a2b0d47c29a0436357ad57f); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginalddfdd8eb2a2b0d47c29a0436357ad57f)): ?>
-<?php $component = $__componentOriginalddfdd8eb2a2b0d47c29a0436357ad57f; ?>
-<?php unset($__componentOriginalddfdd8eb2a2b0d47c29a0436357ad57f); ?>
-<?php endif; ?>
+                    </p>
+                    <p class="text-xs text-gray-400">kali</p>
+                </div>
+            </div>
+        </div>
 
-    <!--[if BLOCK]><![endif]--><?php if($isAdmin): ?>
-    <!-- Admin Stats -->
-    <?php if (isset($component)) { $__componentOriginaldae4cd48acb67888a4631e1ba48f2f93 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginaldae4cd48acb67888a4631e1ba48f2f93 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.ui.card','data' => ['title' => 'Statistik Hari Ini (Admin)']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('ui.card'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['title' => 'Statistik Hari Ini (Admin)']); ?>
-        <?php if (isset($component)) { $__componentOriginalddfdd8eb2a2b0d47c29a0436357ad57f = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginalddfdd8eb2a2b0d47c29a0436357ad57f = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.layout.grid','data' => ['cols' => '4','class' => 'gap-4']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('layout.grid'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['cols' => '4','class' => 'gap-4']); ?>
-            <div class="border-l-4 border-green-500 pl-4">
-                <p class="text-sm text-gray-600">Kehadiran</p>
-                <p class="text-2xl font-bold text-gray-900"><?php echo e($adminStats['todayAttendance']['present']); ?>/<?php echo e($adminStats['todayAttendance']['total']); ?></p>
+        <div class="bg-white dark:bg-gray-800 rounded-lg p-3 sm:p-4 border border-gray-200 dark:border-gray-700">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg bg-red-100 dark:bg-red-900/30 flex items-center justify-center shrink-0">
+                    <svg class="w-5 h-5 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                    </svg>
+                </div>
+                <div class="min-w-0">
+                    <p class="text-xs text-gray-500 dark:text-gray-400">Penalti</p>
+                    <p class="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">
+                        <?php echo e($this->userStats['penalties']['count']); ?>
+
+                    </p>
+                    <p class="text-xs text-gray-400"><?php echo e($this->userStats['penalties']['points']); ?> poin</p>
+                </div>
             </div>
-            <div class="border-l-4 border-blue-500 pl-4">
-                <p class="text-sm text-gray-600">Penjualan</p>
-                <p class="text-2xl font-bold text-gray-900"><?php echo e(format_currency($adminStats['todaySales'])); ?></p>
-                <p class="text-xs text-gray-500"><?php echo e($adminStats['todayTransactions']); ?> transaksi</p>
+        </div>
+
+        <div class="bg-white dark:bg-gray-800 rounded-lg p-3 sm:p-4 border border-gray-200 dark:border-gray-700">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center shrink-0">
+                    <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                    </svg>
+                </div>
+                <div class="min-w-0">
+                    <p class="text-xs text-gray-500 dark:text-gray-400">Notifikasi</p>
+                    <p class="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">
+                        <?php echo e($this->userStats['notificationCount']); ?>
+
+                    </p>
+                    <p class="text-xs text-gray-400">belum dibaca</p>
+                </div>
             </div>
-            <div class="border-l-4 border-yellow-500 pl-4">
-                <p class="text-sm text-gray-600">Stok Rendah</p>
-                <p class="text-2xl font-bold text-gray-900"><?php echo e($adminStats['lowStockProducts']); ?></p>
+        </div>
+    </div>
+
+    
+    <!--[if BLOCK]><![endif]--><?php if($this->isAdmin): ?>
+    <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <div class="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+            <h2 class="font-semibold text-sm text-gray-900 dark:text-white">Statistik Admin Hari Ini</h2>
+        </div>
+        <div class="p-4">
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="border-l-4 border-emerald-500 pl-3">
+                    <p class="text-xs text-gray-500 dark:text-gray-400">Kehadiran</p>
+                    <p class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
+                        <?php echo e($this->adminStats['todayAttendance']['present']); ?>/<?php echo e($this->adminStats['todayAttendance']['total']); ?>
+
+                    </p>
+                </div>
+                <div class="border-l-4 border-blue-500 pl-3">
+                    <p class="text-xs text-gray-500 dark:text-gray-400">Penjualan</p>
+                    <p class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white"><?php echo e(format_currency($this->adminStats['todaySales'])); ?></p>
+                    <p class="text-xs text-gray-400"><?php echo e($this->adminStats['todayTransactions']); ?> transaksi</p>
+                </div>
+                <div class="border-l-4 border-amber-500 pl-3">
+                    <p class="text-xs text-gray-500 dark:text-gray-400">Stok Rendah</p>
+                    <p class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white"><?php echo e($this->adminStats['lowStockProducts']); ?></p>
+                    <p class="text-xs text-gray-400">produk</p>
+                </div>
+                <div class="border-l-4 border-red-500 pl-3">
+                    <p class="text-xs text-gray-500 dark:text-gray-400">Persetujuan</p>
+                    <p class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white"><?php echo e($this->adminStats['pendingLeaves'] + $this->adminStats['pendingSwaps']); ?></p>
+                    <p class="text-xs text-gray-400"><?php echo e($this->adminStats['pendingLeaves']); ?> cuti, <?php echo e($this->adminStats['pendingSwaps']); ?> tukar</p>
+                </div>
             </div>
-            <div class="border-l-4 border-red-500 pl-4">
-                <p class="text-sm text-gray-600">Persetujuan</p>
-                <p class="text-2xl font-bold text-gray-900"><?php echo e($adminStats['pendingLeaves'] + $adminStats['pendingSwaps']); ?></p>
-                <p class="text-xs text-gray-500"><?php echo e($adminStats['pendingLeaves']); ?> cuti, <?php echo e($adminStats['pendingSwaps']); ?> swap</p>
-            </div>
-         <?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginalddfdd8eb2a2b0d47c29a0436357ad57f)): ?>
-<?php $attributes = $__attributesOriginalddfdd8eb2a2b0d47c29a0436357ad57f; ?>
-<?php unset($__attributesOriginalddfdd8eb2a2b0d47c29a0436357ad57f); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginalddfdd8eb2a2b0d47c29a0436357ad57f)): ?>
-<?php $component = $__componentOriginalddfdd8eb2a2b0d47c29a0436357ad57f; ?>
-<?php unset($__componentOriginalddfdd8eb2a2b0d47c29a0436357ad57f); ?>
-<?php endif; ?>
-     <?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginaldae4cd48acb67888a4631e1ba48f2f93)): ?>
-<?php $attributes = $__attributesOriginaldae4cd48acb67888a4631e1ba48f2f93; ?>
-<?php unset($__attributesOriginaldae4cd48acb67888a4631e1ba48f2f93); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginaldae4cd48acb67888a4631e1ba48f2f93)): ?>
-<?php $component = $__componentOriginaldae4cd48acb67888a4631e1ba48f2f93; ?>
-<?php unset($__componentOriginaldae4cd48acb67888a4631e1ba48f2f93); ?>
-<?php endif; ?>
+        </div>
+    </div>
     <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
 
-    <!-- Main Content Grid -->
-    <?php if (isset($component)) { $__componentOriginalddfdd8eb2a2b0d47c29a0436357ad57f = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginalddfdd8eb2a2b0d47c29a0436357ad57f = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.layout.grid','data' => ['cols' => '2','class' => 'gap-6']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('layout.grid'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['cols' => '2','class' => 'gap-6']); ?>
-        <!-- Today's Schedule Detail -->
-        <?php if (isset($component)) { $__componentOriginaldae4cd48acb67888a4631e1ba48f2f93 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginaldae4cd48acb67888a4631e1ba48f2f93 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.ui.card','data' => ['title' => 'Jadwal Hari Ini']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('ui.card'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['title' => 'Jadwal Hari Ini']); ?>
-            <!--[if BLOCK]><![endif]--><?php if($userStats['todaySchedule']): ?>
-                <div class="bg-blue-50 border border-blue-200 rounded-md p-4">
-                    <div class="flex items-start">
-                        <div class="flex-shrink-0">
-                            <?php if (isset($component)) { $__componentOriginal56804098dcf376a0e2227cb77b6cd00a = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginal56804098dcf376a0e2227cb77b6cd00a = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.ui.icon','data' => ['name' => 'clock','class' => 'h-5 w-5 text-blue-600']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('ui.icon'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['name' => 'clock','class' => 'h-5 w-5 text-blue-600']); ?>
-<?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginal56804098dcf376a0e2227cb77b6cd00a)): ?>
-<?php $attributes = $__attributesOriginal56804098dcf376a0e2227cb77b6cd00a; ?>
-<?php unset($__attributesOriginal56804098dcf376a0e2227cb77b6cd00a); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginal56804098dcf376a0e2227cb77b6cd00a)): ?>
-<?php $component = $__componentOriginal56804098dcf376a0e2227cb77b6cd00a; ?>
-<?php unset($__componentOriginal56804098dcf376a0e2227cb77b6cd00a); ?>
-<?php endif; ?>
-                        </div>
-                        <div class="ml-3 flex-1">
-                            <h4 class="text-sm font-medium text-blue-900">Sesi <?php echo e($userStats['todaySchedule']->session); ?></h4>
-                            <p class="text-sm text-blue-700 mt-1"><?php echo e($userStats['todaySchedule']->date->format('d M Y')); ?></p>
-                            <a href="<?php echo e(route('admin.attendance.check-in-out')); ?>" class="inline-flex items-center mt-3 text-sm font-medium text-blue-600 hover:text-blue-800">
-                                Check-in Sekarang
-                                <?php if (isset($component)) { $__componentOriginal56804098dcf376a0e2227cb77b6cd00a = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginal56804098dcf376a0e2227cb77b6cd00a = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.ui.icon','data' => ['name' => 'chevron-right','class' => 'ml-1 w-4 h-4']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('ui.icon'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['name' => 'chevron-right','class' => 'ml-1 w-4 h-4']); ?>
-<?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginal56804098dcf376a0e2227cb77b6cd00a)): ?>
-<?php $attributes = $__attributesOriginal56804098dcf376a0e2227cb77b6cd00a; ?>
-<?php unset($__attributesOriginal56804098dcf376a0e2227cb77b6cd00a); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginal56804098dcf376a0e2227cb77b6cd00a)): ?>
-<?php $component = $__componentOriginal56804098dcf376a0e2227cb77b6cd00a; ?>
-<?php unset($__componentOriginal56804098dcf376a0e2227cb77b6cd00a); ?>
-<?php endif; ?>
-                            </a>
+    
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        
+        <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+            <div class="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+                <h2 class="font-semibold text-sm text-gray-900 dark:text-white">Jadwal Hari Ini</h2>
+            </div>
+            <div class="p-4">
+                <!--[if BLOCK]><![endif]--><?php if($this->userStats['todaySchedule']): ?>
+                    <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                        <div class="flex items-start gap-3">
+                            <div class="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center shrink-0">
+                                <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <h4 class="font-medium text-blue-900 dark:text-blue-100">Sesi <?php echo e($this->userStats['todaySchedule']->session); ?></h4>
+                                <p class="text-sm text-blue-700 dark:text-blue-300 mt-0.5">
+                                    <?php echo e($this->userStats['todaySchedule']->date->translatedFormat('d F Y')); ?>
+
+                                </p>
+                                <a href="<?php echo e(route('admin.attendance.check-in-out')); ?>" 
+                                    class="inline-flex items-center gap-1 mt-3 text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">
+                                    Check-in Sekarang
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                    </svg>
+                                </a>
+                            </div>
                         </div>
                     </div>
-                </div>
-            <?php else: ?>
-                <?php if (isset($component)) { $__componentOriginalfe16eb12133e72aabae529d081318460 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginalfe16eb12133e72aabae529d081318460 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.layout.empty-state','data' => ['icon' => 'calendar','title' => 'Tidak ada jadwal hari ini']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('layout.empty-state'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['icon' => 'calendar','title' => 'Tidak ada jadwal hari ini']); ?>
-<?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginalfe16eb12133e72aabae529d081318460)): ?>
-<?php $attributes = $__attributesOriginalfe16eb12133e72aabae529d081318460; ?>
-<?php unset($__attributesOriginalfe16eb12133e72aabae529d081318460); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginalfe16eb12133e72aabae529d081318460)): ?>
-<?php $component = $__componentOriginalfe16eb12133e72aabae529d081318460; ?>
-<?php unset($__componentOriginalfe16eb12133e72aabae529d081318460); ?>
-<?php endif; ?>
-            <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
-         <?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginaldae4cd48acb67888a4631e1ba48f2f93)): ?>
-<?php $attributes = $__attributesOriginaldae4cd48acb67888a4631e1ba48f2f93; ?>
-<?php unset($__attributesOriginaldae4cd48acb67888a4631e1ba48f2f93); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginaldae4cd48acb67888a4631e1ba48f2f93)): ?>
-<?php $component = $__componentOriginaldae4cd48acb67888a4631e1ba48f2f93; ?>
-<?php unset($__componentOriginaldae4cd48acb67888a4631e1ba48f2f93); ?>
-<?php endif; ?>
+                <?php else: ?>
+                    <div class="text-center py-8">
+                        <svg class="w-12 h-12 text-gray-300 dark:text-gray-600 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                        </svg>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Tidak ada jadwal hari ini</p>
+                    </div>
+                <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
+            </div>
+        </div>
 
-        <!-- Recent Notifications -->
-        <?php if (isset($component)) { $__componentOriginaldae4cd48acb67888a4631e1ba48f2f93 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginaldae4cd48acb67888a4631e1ba48f2f93 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.ui.card','data' => ['title' => 'Notifikasi Terbaru']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('ui.card'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['title' => 'Notifikasi Terbaru']); ?>
-            <!--[if BLOCK]><![endif]--><?php if($userStats['notifications']->count() > 0): ?>
-                <div class="space-y-3">
-                    <!--[if BLOCK]><![endif]--><?php $__currentLoopData = $userStats['notifications']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $notification): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                        <div class="flex items-start p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
-                            <div class="flex-shrink-0">
-                                <div class="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
-                            </div>
-                            <div class="ml-3 flex-1 min-w-0">
-                                <p class="text-sm font-medium text-gray-900"><?php echo e($notification->title); ?></p>
-                                <p class="text-sm text-gray-600 mt-1"><?php echo e(Str::limit($notification->message, 80)); ?></p>
+        
+        <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+            <div class="px-4 py-3 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+                <h2 class="font-semibold text-sm text-gray-900 dark:text-white">Notifikasi Terbaru</h2>
+                <!--[if BLOCK]><![endif]--><?php if($this->userStats['notifications']->count() > 0): ?>
+                    <a href="<?php echo e(route('admin.notifications.index')); ?>" class="text-xs text-primary-600 hover:text-primary-700">Lihat Semua</a>
+                <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
+            </div>
+            <div class="divide-y divide-gray-200 dark:divide-gray-700">
+                <!--[if BLOCK]><![endif]--><?php $__empty_1 = true; $__currentLoopData = $this->userStats['notifications']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $notification): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                    <div class="p-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition">
+                        <div class="flex items-start gap-3">
+                            <div class="w-2 h-2 bg-blue-500 rounded-full mt-1.5 shrink-0"></div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm font-medium text-gray-900 dark:text-white truncate"><?php echo e($notification->title); ?></p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5 line-clamp-2"><?php echo e($notification->message); ?></p>
                                 <p class="text-xs text-gray-400 mt-1"><?php echo e($notification->created_at->diffForHumans()); ?></p>
                             </div>
                         </div>
-                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><!--[if ENDBLOCK]><![endif]-->
-                    <a href="<?php echo e(route('admin.notifications.index')); ?>" class="block text-center text-sm text-indigo-600 hover:text-indigo-800 font-medium mt-4">
-                        Lihat Semua Notifikasi →
-                    </a>
-                </div>
-            <?php else: ?>
-                <?php if (isset($component)) { $__componentOriginalfe16eb12133e72aabae529d081318460 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginalfe16eb12133e72aabae529d081318460 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.layout.empty-state','data' => ['icon' => 'bell','title' => 'Tidak ada notifikasi baru']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('layout.empty-state'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['icon' => 'bell','title' => 'Tidak ada notifikasi baru']); ?>
-<?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginalfe16eb12133e72aabae529d081318460)): ?>
-<?php $attributes = $__attributesOriginalfe16eb12133e72aabae529d081318460; ?>
-<?php unset($__attributesOriginalfe16eb12133e72aabae529d081318460); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginalfe16eb12133e72aabae529d081318460)): ?>
-<?php $component = $__componentOriginalfe16eb12133e72aabae529d081318460; ?>
-<?php unset($__componentOriginalfe16eb12133e72aabae529d081318460); ?>
-<?php endif; ?>
-            <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
-         <?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginaldae4cd48acb67888a4631e1ba48f2f93)): ?>
-<?php $attributes = $__attributesOriginaldae4cd48acb67888a4631e1ba48f2f93; ?>
-<?php unset($__attributesOriginaldae4cd48acb67888a4631e1ba48f2f93); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginaldae4cd48acb67888a4631e1ba48f2f93)): ?>
-<?php $component = $__componentOriginaldae4cd48acb67888a4631e1ba48f2f93; ?>
-<?php unset($__componentOriginaldae4cd48acb67888a4631e1ba48f2f93); ?>
-<?php endif; ?>
-     <?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginalddfdd8eb2a2b0d47c29a0436357ad57f)): ?>
-<?php $attributes = $__attributesOriginalddfdd8eb2a2b0d47c29a0436357ad57f; ?>
-<?php unset($__attributesOriginalddfdd8eb2a2b0d47c29a0436357ad57f); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginalddfdd8eb2a2b0d47c29a0436357ad57f)): ?>
-<?php $component = $__componentOriginalddfdd8eb2a2b0d47c29a0436357ad57f; ?>
-<?php unset($__componentOriginalddfdd8eb2a2b0d47c29a0436357ad57f); ?>
-<?php endif; ?>
-
-    <!-- Upcoming Schedules -->
-    <!--[if BLOCK]><![endif]--><?php if($userStats['upcomingSchedules']->count() > 0): ?>
-        <?php if (isset($component)) { $__componentOriginaldae4cd48acb67888a4631e1ba48f2f93 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginaldae4cd48acb67888a4631e1ba48f2f93 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.ui.card','data' => ['title' => 'Jadwal Mendatang (7 Hari)']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('ui.card'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['title' => 'Jadwal Mendatang (7 Hari)']); ?>
-            <div class="space-y-2">
-                <!--[if BLOCK]><![endif]--><?php $__currentLoopData = $userStats['upcomingSchedules']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $schedule): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
-                        <div class="flex items-center space-x-3">
-                            <div class="flex-shrink-0 w-12 text-center">
-                                <p class="text-xs text-gray-500"><?php echo e($schedule->date->format('D')); ?></p>
-                                <p class="text-lg font-semibold text-gray-900"><?php echo e($schedule->date->format('d')); ?></p>
-                            </div>
-                            <div>
-                                <p class="text-sm font-medium text-gray-900">Sesi <?php echo e($schedule->session); ?></p>
-                                <p class="text-xs text-gray-500"><?php echo e($schedule->date->format('F Y')); ?></p>
-                            </div>
-                        </div>
-                        <?php if (isset($component)) { $__componentOriginalab7baa01105b3dfe1e0cf1dfc58879b4 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginalab7baa01105b3dfe1e0cf1dfc58879b4 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.ui.badge','data' => ['variant' => 'secondary']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('ui.badge'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['variant' => 'secondary']); ?><?php echo e($schedule->status); ?> <?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginalab7baa01105b3dfe1e0cf1dfc58879b4)): ?>
-<?php $attributes = $__attributesOriginalab7baa01105b3dfe1e0cf1dfc58879b4; ?>
-<?php unset($__attributesOriginalab7baa01105b3dfe1e0cf1dfc58879b4); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginalab7baa01105b3dfe1e0cf1dfc58879b4)): ?>
-<?php $component = $__componentOriginalab7baa01105b3dfe1e0cf1dfc58879b4; ?>
-<?php unset($__componentOriginalab7baa01105b3dfe1e0cf1dfc58879b4); ?>
-<?php endif; ?>
                     </div>
-                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><!--[if ENDBLOCK]><![endif]-->
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
+                    <div class="text-center py-8">
+                        <svg class="w-12 h-12 text-gray-300 dark:text-gray-600 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                        </svg>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Tidak ada notifikasi baru</p>
+                    </div>
+                <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
             </div>
-         <?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginaldae4cd48acb67888a4631e1ba48f2f93)): ?>
-<?php $attributes = $__attributesOriginaldae4cd48acb67888a4631e1ba48f2f93; ?>
-<?php unset($__attributesOriginaldae4cd48acb67888a4631e1ba48f2f93); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginaldae4cd48acb67888a4631e1ba48f2f93)): ?>
-<?php $component = $__componentOriginaldae4cd48acb67888a4631e1ba48f2f93; ?>
-<?php unset($__componentOriginaldae4cd48acb67888a4631e1ba48f2f93); ?>
-<?php endif; ?>
-    <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
-</div>
+        </div>
+    </div>
 
-<?php $__env->startPush('scripts'); ?>
-<script>
-    // Update clock every second with Portugal timezone
-    function updateClock() {
-        const now = new Date();
-        
-        // Convert to Portugal timezone (Europe/Lisbon)
-        const portugalTime = new Date(now.toLocaleString('en-US', { timeZone: 'Europe/Lisbon' }));
-        
-        const hours = String(portugalTime.getHours()).padStart(2, '0');
-        const minutes = String(portugalTime.getMinutes()).padStart(2, '0');
-        const seconds = String(portugalTime.getSeconds()).padStart(2, '0');
-        
-        const timeElement = document.getElementById('current-time');
-        if (timeElement) {
-            timeElement.textContent = `${hours}:${minutes}:${seconds}`;
-        }
-    }
     
-    // Update immediately and then every second
-    updateClock();
-    setInterval(updateClock, 1000);
-</script>
-<?php $__env->stopPush(); ?>
+    <!--[if BLOCK]><![endif]--><?php if($this->userStats['upcomingSchedules']->count() > 0): ?>
+    <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <div class="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+            <h2 class="font-semibold text-sm text-gray-900 dark:text-white">Jadwal Mendatang (7 Hari)</h2>
+        </div>
+        <div class="divide-y divide-gray-200 dark:divide-gray-700">
+            <!--[if BLOCK]><![endif]--><?php $__currentLoopData = $this->userStats['upcomingSchedules']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $schedule): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                <div class="p-3 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-700/50 transition">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 text-center shrink-0">
+                            <p class="text-xs text-gray-500 dark:text-gray-400"><?php echo e($schedule->date->translatedFormat('D')); ?></p>
+                            <p class="text-lg font-bold text-gray-900 dark:text-white"><?php echo e($schedule->date->format('d')); ?></p>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-gray-900 dark:text-white">Sesi <?php echo e($schedule->session); ?></p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400"><?php echo e($schedule->date->translatedFormat('F Y')); ?></p>
+                        </div>
+                    </div>
+                    <span class="px-2 py-0.5 text-xs font-medium rounded bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300">
+                        <?php echo e(ucfirst($schedule->status)); ?>
+
+                    </span>
+                </div>
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><!--[if ENDBLOCK]><![endif]-->
+        </div>
+    </div>
+    <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
+
+</div>
 <?php /**PATH C:\laragon\www\Kopma\resources\views/livewire/dashboard/index.blade.php ENDPATH**/ ?>

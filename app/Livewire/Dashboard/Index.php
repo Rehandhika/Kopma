@@ -3,159 +3,209 @@
 namespace App\Livewire\Dashboard;
 
 use Livewire\Component;
-use App\Models\{
-    ScheduleAssignment, 
-    Penalty, 
-    Notification, 
-    Attendance, 
-    User, 
-    Sale, 
-    Product,
-    LeaveRequest,
-    SwapRequest
-};
-use Carbon\Carbon;
+use Livewire\Attributes\Title;
+use Livewire\Attributes\Computed;
+use App\Models\{ScheduleAssignment, Penalty, Notification, Attendance, User, Sale, Product, LeaveRequest, SwapRequest};
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
+#[Title('Dashboard')]
 class Index extends Component
 {
-    /**
-     * Render the dashboard with statistics
-     *
-     * @return \Illuminate\View\View
-     */
-    public function render()
+    #[Computed]
+    public function isAdmin(): bool
     {
         $user = auth()->user();
-
-        // Initialize default values
-        $isAdmin = false;
+        if (!$user) return false;
         
-        // Complete admin stats with ALL required keys
-        $adminStats = [
-            'todayAttendance' => [
-                'present' => 0,
-                'total' => 0
+        return method_exists($user, 'hasAnyRole')
+            ? $user->hasAnyRole(['Super Admin', 'Ketua', 'Wakil Ketua', 'BPH'])
+            : false;
+    }
+
+    #[Computed]
+    public function userStats(): array
+    {
+        $user = auth()->user();
+        if (!$user) {
+            return $this->defaultUserStats();
+        }
+
+        $userId = $user->id;
+        $today = now()->format('Y-m-d');
+        $monthStart = now()->startOfMonth()->format('Y-m-d');
+        $monthEnd = now()->endOfMonth()->format('Y-m-d');
+
+        // Single query untuk monthly attendance stats
+        try {
+            $attendanceStats = DB::selectOne("
+                SELECT 
+                    SUM(status = 'present') as present,
+                    SUM(status = 'late') as late,
+                    COUNT(*) as total
+                FROM attendances 
+                WHERE user_id = ? AND date BETWEEN ? AND ?
+            ", [$userId, $monthStart, $monthEnd]);
+        } catch (\Exception $e) {
+            $attendanceStats = (object) ['present' => 0, 'late' => 0, 'total' => 0];
+        }
+
+        // Single query untuk penalty stats
+        try {
+            $penaltyStats = DB::selectOne("
+                SELECT COALESCE(SUM(points), 0) as points, COUNT(*) as count
+                FROM penalties 
+                WHERE user_id = ? AND status = 'active'
+            ", [$userId]);
+        } catch (\Exception $e) {
+            $penaltyStats = (object) ['points' => 0, 'count' => 0];
+        }
+
+        // Notification count
+        try {
+            $notifCount = DB::selectOne("
+                SELECT COUNT(*) as count FROM notifications 
+                WHERE user_id = ? AND read_at IS NULL
+            ", [$userId]);
+        } catch (\Exception $e) {
+            $notifCount = (object) ['count' => 0];
+        }
+
+        // Today's schedule
+        try {
+            $todaySchedule = ScheduleAssignment::where('user_id', $userId)
+                ->where('date', $today)
+                ->where('status', 'scheduled')
+                ->with('schedule:id,name')
+                ->select('id', 'schedule_id', 'date', 'session', 'status')
+                ->first();
+        } catch (\Exception $e) {
+            $todaySchedule = null;
+        }
+
+        // Upcoming schedules (next 7 days)
+        try {
+            $upcomingSchedules = ScheduleAssignment::where('user_id', $userId)
+                ->whereBetween('date', [now()->addDay()->format('Y-m-d'), now()->addDays(7)->format('Y-m-d')])
+                ->where('status', 'scheduled')
+                ->with('schedule:id,name')
+                ->select('id', 'schedule_id', 'date', 'session', 'status')
+                ->orderBy('date')
+                ->limit(5)
+                ->get();
+        } catch (\Exception $e) {
+            $upcomingSchedules = collect();
+        }
+
+        // Recent notifications
+        try {
+            $notifications = Notification::where('user_id', $userId)
+                ->whereNull('read_at')
+                ->select('id', 'title', 'message', 'created_at')
+                ->latest()
+                ->limit(5)
+                ->get();
+        } catch (\Exception $e) {
+            $notifications = collect();
+        }
+
+        return [
+            'monthlyAttendance' => [
+                'present' => (int)($attendanceStats->present ?? 0),
+                'late' => (int)($attendanceStats->late ?? 0),
+                'total' => (int)($attendanceStats->total ?? 0),
             ],
+            'penalties' => [
+                'points' => (int)($penaltyStats->points ?? 0),
+                'count' => (int)($penaltyStats->count ?? 0),
+            ],
+            'notificationCount' => (int)($notifCount->count ?? 0),
+            'todaySchedule' => $todaySchedule,
+            'upcomingSchedules' => $upcomingSchedules,
+            'notifications' => $notifications,
+        ];
+    }
+
+    #[Computed]
+    public function adminStats(): array
+    {
+        if (!$this->isAdmin) {
+            return $this->defaultAdminStats();
+        }
+
+        $today = now()->format('Y-m-d');
+
+        // Single query untuk semua admin stats
+        try {
+            $stats = DB::selectOne("
+                SELECT
+                    (SELECT COUNT(*) FROM attendances WHERE DATE(date) = ? AND status = 'present') as today_present,
+                    (SELECT COUNT(*) FROM schedule_assignments WHERE date = ?) as today_scheduled,
+                    (SELECT COALESCE(SUM(total_amount), 0) FROM sales WHERE DATE(date) = ? AND deleted_at IS NULL) as today_sales,
+                    (SELECT COUNT(*) FROM sales WHERE DATE(date) = ? AND deleted_at IS NULL) as today_transactions,
+                    (SELECT COUNT(*) FROM users WHERE status = 'active' AND deleted_at IS NULL) as active_members,
+                    (SELECT COUNT(*) FROM products WHERE stock <= min_stock AND deleted_at IS NULL) as low_stock,
+                    (SELECT COUNT(*) FROM leave_requests WHERE status = 'pending') as pending_leaves,
+                    0 as pending_swaps
+            ", [$today, $today, $today, $today]);
+        } catch (\Exception $e) {
+            // Fallback query with only essential tables
+            $stats = DB::selectOne("
+                SELECT
+                    (SELECT COUNT(*) FROM attendances WHERE DATE(date) = ? AND status = 'present') as today_present,
+                    (SELECT COUNT(*) FROM schedule_assignments WHERE date = ?) as today_scheduled,
+                    (SELECT COALESCE(SUM(total_amount), 0) FROM sales WHERE DATE(date) = ? AND deleted_at IS NULL) as today_sales,
+                    (SELECT COUNT(*) FROM sales WHERE DATE(date) = ? AND deleted_at IS NULL) as today_transactions,
+                    (SELECT COUNT(*) FROM users WHERE status = 'active' AND deleted_at IS NULL) as active_members,
+                    0 as low_stock,
+                    0 as pending_leaves,
+                    0 as pending_swaps
+            ", [$today, $today, $today, $today]);
+        }
+
+        return [
+            'todayAttendance' => [
+                'present' => (int)($stats->today_present ?? 0),
+                'total' => (int)($stats->today_scheduled ?? 0),
+            ],
+            'todaySales' => (float)($stats->today_sales ?? 0),
+            'todayTransactions' => (int)($stats->today_transactions ?? 0),
+            'activeMembers' => (int)($stats->active_members ?? 0),
+            'lowStockProducts' => (int)($stats->low_stock ?? 0),
+            'pendingLeaves' => (int)($stats->pending_leaves ?? 0),
+            'pendingSwaps' => (int)($stats->pending_swaps ?? 0),
+        ];
+    }
+
+    private function defaultUserStats(): array
+    {
+        return [
+            'monthlyAttendance' => ['present' => 0, 'late' => 0, 'total' => 0],
+            'penalties' => ['points' => 0, 'count' => 0],
+            'notificationCount' => 0,
+            'todaySchedule' => null,
+            'upcomingSchedules' => collect(),
+            'notifications' => collect(),
+        ];
+    }
+
+    private function defaultAdminStats(): array
+    {
+        return [
+            'todayAttendance' => ['present' => 0, 'total' => 0],
             'todaySales' => 0,
             'todayTransactions' => 0,
             'activeMembers' => 0,
-            'pendingRequests' => 0,
-            'lowStockProducts' => 0,      // ← Added
-            'pendingLeaves' => 0,          // ← Added
-            'pendingSwaps' => 0,           // ← Added
+            'lowStockProducts' => 0,
+            'pendingLeaves' => 0,
+            'pendingSwaps' => 0,
         ];
-        
-        // Complete user stats
-        $userStats = [
-            'todaySchedule' => null,
-            'upcomingSchedules' => collect(),
-            'monthlyAttendance' => [
-                'present' => 0,
-                'late' => 0,
-                'total' => 0,
-            ],
-            'penalties' => [
-                'points' => 0,
-                'count' => 0,
-            ],
-            'notifications' => collect(),
-        ];
+    }
 
-        // Only load real stats when user is authenticated
-        if ($user) {
-            // Check if user is admin
-            $isAdmin = method_exists($user, 'hasAnyRole')
-                ? $user->hasAnyRole(['Super Admin', 'Ketua', 'Wakil Ketua', 'BPH'])
-                : false;
-
-            // Load User Stats
-            try {
-                $userStats = [
-                    'todaySchedule' => ScheduleAssignment::where('user_id', $user->id)
-                        ->where('date', today())
-                        ->where('status', 'scheduled')
-                        ->with('schedule')
-                        ->first(),
-                    
-                    'upcomingSchedules' => ScheduleAssignment::where('user_id', $user->id)
-                        ->whereBetween('date', [today()->addDay(), today()->addDays(7)])
-                        ->where('status', 'scheduled')
-                        ->with('schedule')
-                        ->orderBy('date')
-                        ->limit(5)
-                        ->get(),
-                    
-                    'monthlyAttendance' => [
-                        'present' => Attendance::where('user_id', $user->id)
-                            ->whereMonth('check_in', now()->month)
-                            ->where('status', 'present')
-                            ->count(),
-                        'late' => Attendance::where('user_id', $user->id)
-                            ->whereMonth('check_in', now()->month)
-                            ->where('status', 'late')
-                            ->count(),
-                        'total' => ScheduleAssignment::where('user_id', $user->id)
-                            ->whereMonth('date', now()->month)
-                            ->count(),
-                    ],
-                    
-                    'penalties' => [
-                        'points' => Penalty::where('user_id', $user->id)
-                            ->where('status', 'active')
-                            ->sum('points') ?? 0,
-                        'count' => Penalty::where('user_id', $user->id)
-                            ->where('status', 'active')
-                            ->count(),
-                    ],
-                    
-                    'notifications' => Notification::where('user_id', $user->id)
-                        ->whereNull('read_at')
-                        ->orderBy('created_at', 'desc')
-                        ->limit(5)
-                        ->get(),
-                ];
-            } catch (\Exception $e) {
-                Log::error('Dashboard user stats error: ' . $e->getMessage());
-            }
-
-            // Load Admin Stats (if admin)
-            if ($isAdmin) {
-                try {
-                    $adminStats = [
-                        'todayAttendance' => [
-                            'present' => Attendance::whereDate('check_in', today())
-                                ->where('status', 'present')
-                                ->count(),
-                            'total' => ScheduleAssignment::where('date', today())
-                                ->count(),
-                        ],
-                        'todaySales' => Sale::whereDate('created_at', today())
-                            ->sum('total_amount') ?? 0,
-                        'todayTransactions' => Sale::whereDate('created_at', today())
-                            ->count(),
-                        'activeMembers' => User::where('status', 'active')
-                            ->count(),
-                        'pendingRequests' => 0, // Placeholder
-                        'lowStockProducts' => Product::where('stock', '<=', DB::raw('minimum_stock'))
-                            ->count(),
-                        'pendingLeaves' => LeaveRequest::where('status', 'pending')
-                            ->count(),
-                        'pendingSwaps' => SwapRequest::where('status', 'pending')
-                            ->count(),
-                    ];
-                } catch (\Exception $e) {
-                    Log::error('Dashboard admin stats error: ' . $e->getMessage());
-                    // Keep default values on error
-                }
-            }
-        }
-
-        return view('livewire.dashboard.index', [
-            'userStats' => $userStats,
-            'adminStats' => $adminStats,
-            'isAdmin' => $isAdmin,
-        ])->layout('layouts.app')->title('Dashboard');
+    public function render()
+    {
+        return view('livewire.dashboard.index')
+            ->layout('layouts.app', [
+                'userStats' => $this->userStats
+            ]);
     }
 }
