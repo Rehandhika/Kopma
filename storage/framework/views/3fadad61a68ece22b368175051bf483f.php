@@ -1,522 +1,203 @@
-<div class="space-y-6">
-    <!-- Page Header -->
-    <?php if (isset($component)) { $__componentOriginal4743781065990dfe96029737c4f06097 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginal4743781065990dfe96029737c4f06097 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.layout.page-header','data' => ['title' => 'Penalti Saya','description' => 'Lihat dan kelola penalti yang Anda terima']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('layout.page-header'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['title' => 'Penalti Saya','description' => 'Lihat dan kelola penalti yang Anda terima']); ?>
-<?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginal4743781065990dfe96029737c4f06097)): ?>
-<?php $attributes = $__attributesOriginal4743781065990dfe96029737c4f06097; ?>
-<?php unset($__attributesOriginal4743781065990dfe96029737c4f06097); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginal4743781065990dfe96029737c4f06097)): ?>
-<?php $component = $__componentOriginal4743781065990dfe96029737c4f06097; ?>
-<?php unset($__componentOriginal4743781065990dfe96029737c4f06097); ?>
-<?php endif; ?>
+<div class="space-y-4 sm:space-y-6">
+    
+    <div>
+        <h1 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Penalti Saya</h1>
+        <p class="text-xs sm:text-sm text-gray-500 mt-0.5">Lihat dan kelola penalti yang Anda terima</p>
+    </div>
 
-    <!-- Warning Alert for High Points -->
-    <!--[if BLOCK]><![endif]--><?php if($summary['total_points'] >= 50): ?>
-        <?php if (isset($component)) { $__componentOriginal746de018ded8594083eb43be3f1332e1 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginal746de018ded8594083eb43be3f1332e1 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.ui.alert','data' => ['variant' => 'danger','dismissible' => true,'icon' => true]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('ui.alert'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['variant' => 'danger','dismissible' => true,'icon' => true]); ?>
-            <div class="font-medium">Peringatan: Total Poin Penalti Tinggi</div>
-            <div class="mt-1 text-sm">
-                Anda memiliki <?php echo e($summary['total_points']); ?> poin penalti aktif. Harap segera menyelesaikan masalah ini untuk menghindari sanksi lebih lanjut.
+    
+    <!--[if BLOCK]><![endif]--><?php if($this->summary['total_points'] >= 50): ?>
+        <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-3 sm:p-4">
+            <div class="flex gap-3">
+                <svg class="w-5 h-5 text-red-600 dark:text-red-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                </svg>
+                <div>
+                    <p class="font-medium text-red-800 dark:text-red-200 text-sm">Peringatan: Total Poin Tinggi</p>
+                    <p class="text-xs text-red-700 dark:text-red-300 mt-0.5">Anda memiliki <?php echo e($this->summary['total_points']); ?> poin penalti aktif.</p>
+                </div>
             </div>
-         <?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginal746de018ded8594083eb43be3f1332e1)): ?>
-<?php $attributes = $__attributesOriginal746de018ded8594083eb43be3f1332e1; ?>
-<?php unset($__attributesOriginal746de018ded8594083eb43be3f1332e1); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginal746de018ded8594083eb43be3f1332e1)): ?>
-<?php $component = $__componentOriginal746de018ded8594083eb43be3f1332e1; ?>
-<?php unset($__componentOriginal746de018ded8594083eb43be3f1332e1); ?>
-<?php endif; ?>
-    <?php elseif($summary['total_points'] >= 30): ?>
-        <?php if (isset($component)) { $__componentOriginal746de018ded8594083eb43be3f1332e1 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginal746de018ded8594083eb43be3f1332e1 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.ui.alert','data' => ['variant' => 'warning','dismissible' => true,'icon' => true]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('ui.alert'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['variant' => 'warning','dismissible' => true,'icon' => true]); ?>
-            <div class="font-medium">Perhatian: Poin Penalti Meningkat</div>
-            <div class="mt-1 text-sm">
-                Anda memiliki <?php echo e($summary['total_points']); ?> poin penalti aktif. Mohon perhatikan kehadiran dan kinerja Anda.
+        </div>
+    <?php elseif($this->summary['total_points'] >= 30): ?>
+        <div class="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-3 sm:p-4">
+            <div class="flex gap-3">
+                <svg class="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                </svg>
+                <div>
+                    <p class="font-medium text-amber-800 dark:text-amber-200 text-sm">Perhatian: Poin Meningkat</p>
+                    <p class="text-xs text-amber-700 dark:text-amber-300 mt-0.5">Anda memiliki <?php echo e($this->summary['total_points']); ?> poin penalti aktif.</p>
+                </div>
             </div>
-         <?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginal746de018ded8594083eb43be3f1332e1)): ?>
-<?php $attributes = $__attributesOriginal746de018ded8594083eb43be3f1332e1; ?>
-<?php unset($__attributesOriginal746de018ded8594083eb43be3f1332e1); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginal746de018ded8594083eb43be3f1332e1)): ?>
-<?php $component = $__componentOriginal746de018ded8594083eb43be3f1332e1; ?>
-<?php unset($__componentOriginal746de018ded8594083eb43be3f1332e1); ?>
-<?php endif; ?>
+        </div>
     <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
 
-    <!-- Summary Cards -->
-    <?php if (isset($component)) { $__componentOriginalddfdd8eb2a2b0d47c29a0436357ad57f = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginalddfdd8eb2a2b0d47c29a0436357ad57f = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.layout.grid','data' => ['cols' => '4','gap' => '4']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('layout.grid'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['cols' => '4','gap' => '4']); ?>
-        <?php if (isset($component)) { $__componentOriginala4a09407c281b10513bf47f7415fb4c1 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginala4a09407c281b10513bf47f7415fb4c1 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.layout.stat-card','data' => ['label' => 'Total Poin','value' => $summary['total_points'],'icon' => 'exclamation-triangle','iconColor' => 'bg-danger-100','iconTextColor' => 'text-danger-600']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('layout.stat-card'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['label' => 'Total Poin','value' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($summary['total_points']),'icon' => 'exclamation-triangle','iconColor' => 'bg-danger-100','iconTextColor' => 'text-danger-600']); ?>
-<?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginala4a09407c281b10513bf47f7415fb4c1)): ?>
-<?php $attributes = $__attributesOriginala4a09407c281b10513bf47f7415fb4c1; ?>
-<?php unset($__attributesOriginala4a09407c281b10513bf47f7415fb4c1); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginala4a09407c281b10513bf47f7415fb4c1)): ?>
-<?php $component = $__componentOriginala4a09407c281b10513bf47f7415fb4c1; ?>
-<?php unset($__componentOriginala4a09407c281b10513bf47f7415fb4c1); ?>
-<?php endif; ?>
+    
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        <div class="bg-gradient-to-br from-red-500 to-red-600 rounded-lg p-3 sm:p-4 text-white">
+            <p class="text-red-100 text-xs font-medium">Total Poin</p>
+            <p class="text-lg sm:text-xl font-bold mt-1"><?php echo e($this->summary['total_points']); ?></p>
+            <p class="text-red-200 text-xs mt-0.5">poin aktif</p>
+        </div>
         
-        <?php if (isset($component)) { $__componentOriginala4a09407c281b10513bf47f7415fb4c1 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginala4a09407c281b10513bf47f7415fb4c1 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.layout.stat-card','data' => ['label' => 'Aktif','value' => $summary['by_status']['active'] ?? 0,'icon' => 'exclamation-circle','iconColor' => 'bg-gray-100','iconTextColor' => 'text-gray-600']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('layout.stat-card'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['label' => 'Aktif','value' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($summary['by_status']['active'] ?? 0),'icon' => 'exclamation-circle','iconColor' => 'bg-gray-100','iconTextColor' => 'text-gray-600']); ?>
-<?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginala4a09407c281b10513bf47f7415fb4c1)): ?>
-<?php $attributes = $__attributesOriginala4a09407c281b10513bf47f7415fb4c1; ?>
-<?php unset($__attributesOriginala4a09407c281b10513bf47f7415fb4c1); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginala4a09407c281b10513bf47f7415fb4c1)): ?>
-<?php $component = $__componentOriginala4a09407c281b10513bf47f7415fb4c1; ?>
-<?php unset($__componentOriginala4a09407c281b10513bf47f7415fb4c1); ?>
-<?php endif; ?>
+        <div class="bg-gradient-to-br from-amber-500 to-amber-600 rounded-lg p-3 sm:p-4 text-white">
+            <p class="text-amber-100 text-xs font-medium">Aktif</p>
+            <p class="text-lg sm:text-xl font-bold mt-1"><?php echo e($this->summary['active']); ?></p>
+            <p class="text-amber-200 text-xs mt-0.5">penalti</p>
+        </div>
         
-        <?php if (isset($component)) { $__componentOriginala4a09407c281b10513bf47f7415fb4c1 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginala4a09407c281b10513bf47f7415fb4c1 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.layout.stat-card','data' => ['label' => 'Banding','value' => $summary['by_status']['appealed'] ?? 0,'icon' => 'clock','iconColor' => 'bg-warning-100','iconTextColor' => 'text-warning-600']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('layout.stat-card'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['label' => 'Banding','value' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($summary['by_status']['appealed'] ?? 0),'icon' => 'clock','iconColor' => 'bg-warning-100','iconTextColor' => 'text-warning-600']); ?>
-<?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginala4a09407c281b10513bf47f7415fb4c1)): ?>
-<?php $attributes = $__attributesOriginala4a09407c281b10513bf47f7415fb4c1; ?>
-<?php unset($__attributesOriginala4a09407c281b10513bf47f7415fb4c1); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginala4a09407c281b10513bf47f7415fb4c1)): ?>
-<?php $component = $__componentOriginala4a09407c281b10513bf47f7415fb4c1; ?>
-<?php unset($__componentOriginala4a09407c281b10513bf47f7415fb4c1); ?>
-<?php endif; ?>
+        <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg p-3 sm:p-4 text-white">
+            <p class="text-blue-100 text-xs font-medium">Banding</p>
+            <p class="text-lg sm:text-xl font-bold mt-1"><?php echo e($this->summary['appealed']); ?></p>
+            <p class="text-blue-200 text-xs mt-0.5">pengajuan</p>
+        </div>
         
-        <?php if (isset($component)) { $__componentOriginala4a09407c281b10513bf47f7415fb4c1 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginala4a09407c281b10513bf47f7415fb4c1 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.layout.stat-card','data' => ['label' => 'Total Penalti','value' => $summary['count'],'icon' => 'document-text','iconColor' => 'bg-gray-100','iconTextColor' => 'text-gray-600']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('layout.stat-card'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['label' => 'Total Penalti','value' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($summary['count']),'icon' => 'document-text','iconColor' => 'bg-gray-100','iconTextColor' => 'text-gray-600']); ?>
-<?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginala4a09407c281b10513bf47f7415fb4c1)): ?>
-<?php $attributes = $__attributesOriginala4a09407c281b10513bf47f7415fb4c1; ?>
-<?php unset($__attributesOriginala4a09407c281b10513bf47f7415fb4c1); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginala4a09407c281b10513bf47f7415fb4c1)): ?>
-<?php $component = $__componentOriginala4a09407c281b10513bf47f7415fb4c1; ?>
-<?php unset($__componentOriginala4a09407c281b10513bf47f7415fb4c1); ?>
-<?php endif; ?>
-     <?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginalddfdd8eb2a2b0d47c29a0436357ad57f)): ?>
-<?php $attributes = $__attributesOriginalddfdd8eb2a2b0d47c29a0436357ad57f; ?>
-<?php unset($__attributesOriginalddfdd8eb2a2b0d47c29a0436357ad57f); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginalddfdd8eb2a2b0d47c29a0436357ad57f)): ?>
-<?php $component = $__componentOriginalddfdd8eb2a2b0d47c29a0436357ad57f; ?>
-<?php unset($__componentOriginalddfdd8eb2a2b0d47c29a0436357ad57f); ?>
-<?php endif; ?>
+        <div class="bg-gradient-to-br from-gray-500 to-gray-600 rounded-lg p-3 sm:p-4 text-white">
+            <p class="text-gray-100 text-xs font-medium">Total</p>
+            <p class="text-lg sm:text-xl font-bold mt-1"><?php echo e($this->summary['count']); ?></p>
+            <p class="text-gray-200 text-xs mt-0.5">penalti</p>
+        </div>
+    </div>
 
-    <!-- Filter -->
-    <?php if (isset($component)) { $__componentOriginaldae4cd48acb67888a4631e1ba48f2f93 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginaldae4cd48acb67888a4631e1ba48f2f93 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.ui.card','data' => ['padding' => 'true']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('ui.card'); ?>
+    
+    <div class="bg-white dark:bg-gray-800 rounded-lg p-3 sm:p-4 border border-gray-200 dark:border-gray-700">
+        <label class="block text-xs text-gray-500 mb-1.5">Filter Status</label>
+        <?php if (isset($component)) { $__componentOriginal01b6cc14fe7fc10e17b29bd1c55b4032 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal01b6cc14fe7fc10e17b29bd1c55b4032 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.ui.dropdown-select','data' => ['wire' => 'statusFilter','options' => [
+                ['value' => '', 'label' => 'Semua Status'],
+                ['value' => 'active', 'label' => 'Aktif'],
+                ['value' => 'appealed', 'label' => 'Banding'],
+                ['value' => 'dismissed', 'label' => 'Dibatalkan'],
+                ['value' => 'expired', 'label' => 'Kedaluwarsa'],
+            ],'placeholder' => 'Semua Status','class' => 'w-full sm:w-56']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('ui.dropdown-select'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['padding' => 'true']); ?>
-        <?php if (isset($component)) { $__componentOriginal231e2c645bf8af0c5c05a5dc5a94c862 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginal231e2c645bf8af0c5c05a5dc5a94c862 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.ui.select','data' => ['name' => 'statusFilter','wire:model.live' => 'statusFilter','label' => 'Filter Status']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('ui.select'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php $component->withAttributes(['wire' => 'statusFilter','options' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute([
+                ['value' => '', 'label' => 'Semua Status'],
+                ['value' => 'active', 'label' => 'Aktif'],
+                ['value' => 'appealed', 'label' => 'Banding'],
+                ['value' => 'dismissed', 'label' => 'Dibatalkan'],
+                ['value' => 'expired', 'label' => 'Kedaluwarsa'],
+            ]),'placeholder' => 'Semua Status','class' => 'w-full sm:w-56']); ?>
+<?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['name' => 'statusFilter','wire:model.live' => 'statusFilter','label' => 'Filter Status']); ?>
-            <option value="">Semua Status</option>
-            <option value="active">Aktif</option>
-            <option value="appealed">Banding</option>
-            <option value="dismissed">Dibatalkan</option>
-            <option value="expired">Kedaluwarsa</option>
-         <?php echo $__env->renderComponent(); ?>
+<?php if (isset($__attributesOriginal01b6cc14fe7fc10e17b29bd1c55b4032)): ?>
+<?php $attributes = $__attributesOriginal01b6cc14fe7fc10e17b29bd1c55b4032; ?>
+<?php unset($__attributesOriginal01b6cc14fe7fc10e17b29bd1c55b4032); ?>
 <?php endif; ?>
-<?php if (isset($__attributesOriginal231e2c645bf8af0c5c05a5dc5a94c862)): ?>
-<?php $attributes = $__attributesOriginal231e2c645bf8af0c5c05a5dc5a94c862; ?>
-<?php unset($__attributesOriginal231e2c645bf8af0c5c05a5dc5a94c862); ?>
+<?php if (isset($__componentOriginal01b6cc14fe7fc10e17b29bd1c55b4032)): ?>
+<?php $component = $__componentOriginal01b6cc14fe7fc10e17b29bd1c55b4032; ?>
+<?php unset($__componentOriginal01b6cc14fe7fc10e17b29bd1c55b4032); ?>
 <?php endif; ?>
-<?php if (isset($__componentOriginal231e2c645bf8af0c5c05a5dc5a94c862)): ?>
-<?php $component = $__componentOriginal231e2c645bf8af0c5c05a5dc5a94c862; ?>
-<?php unset($__componentOriginal231e2c645bf8af0c5c05a5dc5a94c862); ?>
-<?php endif; ?>
-     <?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginaldae4cd48acb67888a4631e1ba48f2f93)): ?>
-<?php $attributes = $__attributesOriginaldae4cd48acb67888a4631e1ba48f2f93; ?>
-<?php unset($__attributesOriginaldae4cd48acb67888a4631e1ba48f2f93); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginaldae4cd48acb67888a4631e1ba48f2f93)): ?>
-<?php $component = $__componentOriginaldae4cd48acb67888a4631e1ba48f2f93; ?>
-<?php unset($__componentOriginaldae4cd48acb67888a4631e1ba48f2f93); ?>
-<?php endif; ?>
+    </div>
 
-    <!-- Penalty List -->
-    <?php if (isset($component)) { $__componentOriginaldae4cd48acb67888a4631e1ba48f2f93 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginaldae4cd48acb67888a4631e1ba48f2f93 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.ui.card','data' => ['padding' => 'false']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('ui.card'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['padding' => 'false']); ?>
-        <?php if (isset($component)) { $__componentOriginal8ed4d2c4c8d055b5cd9b81025b3a3f27 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginal8ed4d2c4c8d055b5cd9b81025b3a3f27 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.data.table','data' => ['headers' => ['Tanggal', 'Jenis', 'Deskripsi', 'Poin', 'Status']]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('data.table'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['headers' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute(['Tanggal', 'Jenis', 'Deskripsi', 'Poin', 'Status'])]); ?>
+    
+    <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <div class="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+            <h3 class="font-semibold text-sm text-gray-900 dark:text-white">Daftar Penalti</h3>
+        </div>
+
+        
+        <div class="sm:hidden divide-y divide-gray-200 dark:divide-gray-700">
             <!--[if BLOCK]><![endif]--><?php $__empty_1 = true; $__currentLoopData = $penalties; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $penalty): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
-                <?php if (isset($component)) { $__componentOriginalb4e1d3352348902d30955c9827e95353 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginalb4e1d3352348902d30955c9827e95353 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.data.table-row','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('data.table-row'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes([]); ?>
-                    <?php if (isset($component)) { $__componentOriginal026d0ae70983922f13829f6932913f9f = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginal026d0ae70983922f13829f6932913f9f = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.data.table-cell','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('data.table-cell'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes([]); ?>
-                        <?php echo e($penalty->date->format('d/m/Y')); ?>
+                <?php
+                    $statusConfig = match($penalty->status) {
+                        'active' => ['label' => 'Aktif', 'class' => 'bg-red-100 text-red-700 dark:bg-red-900/50 dark:text-red-400'],
+                        'appealed' => ['label' => 'Banding', 'class' => 'bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-400'],
+                        'dismissed' => ['label' => 'Dibatalkan', 'class' => 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-400'],
+                        'expired' => ['label' => 'Kedaluwarsa', 'class' => 'bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-500'],
+                        default => ['label' => $penalty->status, 'class' => 'bg-gray-100 text-gray-700']
+                    };
+                ?>
+                <div class="p-3 space-y-1">
+                    <div class="flex justify-between items-start">
+                        <span class="font-medium text-sm text-gray-900 dark:text-white"><?php echo e($penalty->penaltyType->name ?? '-'); ?></span>
+                        <span class="px-1.5 py-0.5 rounded text-xs font-medium <?php echo e($statusConfig['class']); ?>">
+                            <?php echo e($statusConfig['label']); ?>
 
-                     <?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginal026d0ae70983922f13829f6932913f9f)): ?>
-<?php $attributes = $__attributesOriginal026d0ae70983922f13829f6932913f9f; ?>
-<?php unset($__attributesOriginal026d0ae70983922f13829f6932913f9f); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginal026d0ae70983922f13829f6932913f9f)): ?>
-<?php $component = $__componentOriginal026d0ae70983922f13829f6932913f9f; ?>
-<?php unset($__componentOriginal026d0ae70983922f13829f6932913f9f); ?>
-<?php endif; ?>
-                    <?php if (isset($component)) { $__componentOriginal026d0ae70983922f13829f6932913f9f = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginal026d0ae70983922f13829f6932913f9f = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.data.table-cell','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('data.table-cell'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes([]); ?>
-                        <?php echo e($penalty->penaltyType->name ?? '-'); ?>
-
-                     <?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginal026d0ae70983922f13829f6932913f9f)): ?>
-<?php $attributes = $__attributesOriginal026d0ae70983922f13829f6932913f9f; ?>
-<?php unset($__attributesOriginal026d0ae70983922f13829f6932913f9f); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginal026d0ae70983922f13829f6932913f9f)): ?>
-<?php $component = $__componentOriginal026d0ae70983922f13829f6932913f9f; ?>
-<?php unset($__componentOriginal026d0ae70983922f13829f6932913f9f); ?>
-<?php endif; ?>
-                    <?php if (isset($component)) { $__componentOriginal026d0ae70983922f13829f6932913f9f = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginal026d0ae70983922f13829f6932913f9f = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.data.table-cell','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('data.table-cell'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes([]); ?>
-                        <div class="max-w-xs truncate"><?php echo e($penalty->description); ?></div>
-                     <?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginal026d0ae70983922f13829f6932913f9f)): ?>
-<?php $attributes = $__attributesOriginal026d0ae70983922f13829f6932913f9f; ?>
-<?php unset($__attributesOriginal026d0ae70983922f13829f6932913f9f); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginal026d0ae70983922f13829f6932913f9f)): ?>
-<?php $component = $__componentOriginal026d0ae70983922f13829f6932913f9f; ?>
-<?php unset($__componentOriginal026d0ae70983922f13829f6932913f9f); ?>
-<?php endif; ?>
-                    <?php if (isset($component)) { $__componentOriginal026d0ae70983922f13829f6932913f9f = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginal026d0ae70983922f13829f6932913f9f = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.data.table-cell','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('data.table-cell'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes([]); ?>
-                        <span class="font-semibold text-danger-600"><?php echo e($penalty->points); ?></span>
-                     <?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginal026d0ae70983922f13829f6932913f9f)): ?>
-<?php $attributes = $__attributesOriginal026d0ae70983922f13829f6932913f9f; ?>
-<?php unset($__attributesOriginal026d0ae70983922f13829f6932913f9f); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginal026d0ae70983922f13829f6932913f9f)): ?>
-<?php $component = $__componentOriginal026d0ae70983922f13829f6932913f9f; ?>
-<?php unset($__componentOriginal026d0ae70983922f13829f6932913f9f); ?>
-<?php endif; ?>
-                    <?php if (isset($component)) { $__componentOriginal026d0ae70983922f13829f6932913f9f = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginal026d0ae70983922f13829f6932913f9f = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.data.table-cell','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('data.table-cell'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes([]); ?>
-                        <?php if (isset($component)) { $__componentOriginalab7baa01105b3dfe1e0cf1dfc58879b4 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginalab7baa01105b3dfe1e0cf1dfc58879b4 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.ui.badge','data' => ['variant' => match($penalty->status) {
-                                'active' => 'danger',
-                                'appealed' => 'warning',
-                                'dismissed' => 'secondary',
-                                'expired' => 'gray',
-                                default => 'gray'
-                            }]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('ui.badge'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['variant' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute(match($penalty->status) {
-                                'active' => 'danger',
-                                'appealed' => 'warning',
-                                'dismissed' => 'secondary',
-                                'expired' => 'gray',
-                                default => 'gray'
-                            })]); ?>
-                            <?php echo e(match($penalty->status) {
-                                'active' => 'Aktif',
-                                'appealed' => 'Banding',
-                                'dismissed' => 'Dibatalkan',
-                                'expired' => 'Kedaluwarsa',
-                                default => ucfirst($penalty->status)
-                            }); ?>
-
-                         <?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginalab7baa01105b3dfe1e0cf1dfc58879b4)): ?>
-<?php $attributes = $__attributesOriginalab7baa01105b3dfe1e0cf1dfc58879b4; ?>
-<?php unset($__attributesOriginalab7baa01105b3dfe1e0cf1dfc58879b4); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginalab7baa01105b3dfe1e0cf1dfc58879b4)): ?>
-<?php $component = $__componentOriginalab7baa01105b3dfe1e0cf1dfc58879b4; ?>
-<?php unset($__componentOriginalab7baa01105b3dfe1e0cf1dfc58879b4); ?>
-<?php endif; ?>
-                     <?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginal026d0ae70983922f13829f6932913f9f)): ?>
-<?php $attributes = $__attributesOriginal026d0ae70983922f13829f6932913f9f; ?>
-<?php unset($__attributesOriginal026d0ae70983922f13829f6932913f9f); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginal026d0ae70983922f13829f6932913f9f)): ?>
-<?php $component = $__componentOriginal026d0ae70983922f13829f6932913f9f; ?>
-<?php unset($__componentOriginal026d0ae70983922f13829f6932913f9f); ?>
-<?php endif; ?>
-                 <?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginalb4e1d3352348902d30955c9827e95353)): ?>
-<?php $attributes = $__attributesOriginalb4e1d3352348902d30955c9827e95353; ?>
-<?php unset($__attributesOriginalb4e1d3352348902d30955c9827e95353); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginalb4e1d3352348902d30955c9827e95353)): ?>
-<?php $component = $__componentOriginalb4e1d3352348902d30955c9827e95353; ?>
-<?php unset($__componentOriginalb4e1d3352348902d30955c9827e95353); ?>
-<?php endif; ?>
+                        </span>
+                    </div>
+                    <div class="flex justify-between text-xs">
+                        <span class="text-gray-500"><?php echo e($penalty->date->format('d/m/Y')); ?></span>
+                        <span class="font-semibold text-red-600 dark:text-red-400"><?php echo e($penalty->points); ?> poin</span>
+                    </div>
+                    <!--[if BLOCK]><![endif]--><?php if($penalty->description): ?>
+                        <p class="text-xs text-gray-500 truncate"><?php echo e($penalty->description); ?></p>
+                    <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
+                </div>
             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
-                <?php if (isset($component)) { $__componentOriginalb4e1d3352348902d30955c9827e95353 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginalb4e1d3352348902d30955c9827e95353 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.data.table-row','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('data.table-row'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes([]); ?>
-                    <?php if (isset($component)) { $__componentOriginal026d0ae70983922f13829f6932913f9f = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginal026d0ae70983922f13829f6932913f9f = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.data.table-cell','data' => ['colspan' => '5']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('data.table-cell'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['colspan' => '5']); ?>
-                        <?php if (isset($component)) { $__componentOriginalfe16eb12133e72aabae529d081318460 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginalfe16eb12133e72aabae529d081318460 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.layout.empty-state','data' => ['icon' => 'document-text','title' => 'Tidak ada penalti','description' => 'Anda tidak memiliki penalti saat ini']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('layout.empty-state'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['icon' => 'document-text','title' => 'Tidak ada penalti','description' => 'Anda tidak memiliki penalti saat ini']); ?>
-<?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginalfe16eb12133e72aabae529d081318460)): ?>
-<?php $attributes = $__attributesOriginalfe16eb12133e72aabae529d081318460; ?>
-<?php unset($__attributesOriginalfe16eb12133e72aabae529d081318460); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginalfe16eb12133e72aabae529d081318460)): ?>
-<?php $component = $__componentOriginalfe16eb12133e72aabae529d081318460; ?>
-<?php unset($__componentOriginalfe16eb12133e72aabae529d081318460); ?>
-<?php endif; ?>
-                     <?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginal026d0ae70983922f13829f6932913f9f)): ?>
-<?php $attributes = $__attributesOriginal026d0ae70983922f13829f6932913f9f; ?>
-<?php unset($__attributesOriginal026d0ae70983922f13829f6932913f9f); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginal026d0ae70983922f13829f6932913f9f)): ?>
-<?php $component = $__componentOriginal026d0ae70983922f13829f6932913f9f; ?>
-<?php unset($__componentOriginal026d0ae70983922f13829f6932913f9f); ?>
-<?php endif; ?>
-                 <?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginalb4e1d3352348902d30955c9827e95353)): ?>
-<?php $attributes = $__attributesOriginalb4e1d3352348902d30955c9827e95353; ?>
-<?php unset($__attributesOriginalb4e1d3352348902d30955c9827e95353); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginalb4e1d3352348902d30955c9827e95353)): ?>
-<?php $component = $__componentOriginalb4e1d3352348902d30955c9827e95353; ?>
-<?php unset($__componentOriginalb4e1d3352348902d30955c9827e95353); ?>
-<?php endif; ?>
+                <div class="p-8 text-center text-gray-400 text-sm">Tidak ada penalti</div>
             <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
-         <?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginal8ed4d2c4c8d055b5cd9b81025b3a3f27)): ?>
-<?php $attributes = $__attributesOriginal8ed4d2c4c8d055b5cd9b81025b3a3f27; ?>
-<?php unset($__attributesOriginal8ed4d2c4c8d055b5cd9b81025b3a3f27); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginal8ed4d2c4c8d055b5cd9b81025b3a3f27)): ?>
-<?php $component = $__componentOriginal8ed4d2c4c8d055b5cd9b81025b3a3f27; ?>
-<?php unset($__componentOriginal8ed4d2c4c8d055b5cd9b81025b3a3f27); ?>
-<?php endif; ?>
-     <?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginaldae4cd48acb67888a4631e1ba48f2f93)): ?>
-<?php $attributes = $__attributesOriginaldae4cd48acb67888a4631e1ba48f2f93; ?>
-<?php unset($__attributesOriginaldae4cd48acb67888a4631e1ba48f2f93); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginaldae4cd48acb67888a4631e1ba48f2f93)): ?>
-<?php $component = $__componentOriginaldae4cd48acb67888a4631e1ba48f2f93; ?>
-<?php unset($__componentOriginaldae4cd48acb67888a4631e1ba48f2f93); ?>
-<?php endif; ?>
+        </div>
 
-    <!-- Pagination -->
-    <?php if (isset($component)) { $__componentOriginal49b03e4fe6969761a6e8370f5d162f5c = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginal49b03e4fe6969761a6e8370f5d162f5c = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.data.pagination','data' => ['paginator' => $penalties]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('data.pagination'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['paginator' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($penalties)]); ?>
-<?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginal49b03e4fe6969761a6e8370f5d162f5c)): ?>
-<?php $attributes = $__attributesOriginal49b03e4fe6969761a6e8370f5d162f5c; ?>
-<?php unset($__attributesOriginal49b03e4fe6969761a6e8370f5d162f5c); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginal49b03e4fe6969761a6e8370f5d162f5c)): ?>
-<?php $component = $__componentOriginal49b03e4fe6969761a6e8370f5d162f5c; ?>
-<?php unset($__componentOriginal49b03e4fe6969761a6e8370f5d162f5c); ?>
-<?php endif; ?>
+        
+        <div class="hidden sm:block overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead class="bg-gray-50 dark:bg-gray-900/50 text-xs text-gray-500 uppercase">
+                    <tr>
+                        <th class="px-4 py-2.5 text-left">Tanggal</th>
+                        <th class="px-4 py-2.5 text-left">Jenis</th>
+                        <th class="px-4 py-2.5 text-left">Deskripsi</th>
+                        <th class="px-4 py-2.5 text-center">Poin</th>
+                        <th class="px-4 py-2.5 text-center">Status</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                    <!--[if BLOCK]><![endif]--><?php $__empty_1 = true; $__currentLoopData = $penalties; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $penalty): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                        <?php
+                            $statusConfig = match($penalty->status) {
+                                'active' => ['label' => 'Aktif', 'class' => 'bg-red-100 text-red-700 dark:bg-red-900/50 dark:text-red-400'],
+                                'appealed' => ['label' => 'Banding', 'class' => 'bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-400'],
+                                'dismissed' => ['label' => 'Dibatalkan', 'class' => 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-400'],
+                                'expired' => ['label' => 'Kedaluwarsa', 'class' => 'bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-500'],
+                                default => ['label' => $penalty->status, 'class' => 'bg-gray-100 text-gray-700']
+                            };
+                        ?>
+                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-900/30">
+                            <td class="px-4 py-2.5 text-gray-600 dark:text-gray-400"><?php echo e($penalty->date->format('d/m/Y')); ?></td>
+                            <td class="px-4 py-2.5 text-gray-900 dark:text-white font-medium"><?php echo e($penalty->penaltyType->name ?? '-'); ?></td>
+                            <td class="px-4 py-2.5 text-gray-600 dark:text-gray-400 max-w-xs truncate"><?php echo e($penalty->description ?? '-'); ?></td>
+                            <td class="px-4 py-2.5 text-center">
+                                <span class="font-semibold text-red-600 dark:text-red-400"><?php echo e($penalty->points); ?></span>
+                            </td>
+                            <td class="px-4 py-2.5 text-center">
+                                <span class="px-2 py-0.5 rounded text-xs font-medium <?php echo e($statusConfig['class']); ?>">
+                                    <?php echo e($statusConfig['label']); ?>
+
+                                </span>
+                            </td>
+                        </tr>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
+                        <tr>
+                            <td colspan="5" class="px-4 py-12 text-center text-gray-400 text-sm">Tidak ada penalti</td>
+                        </tr>
+                    <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
+                </tbody>
+            </table>
+        </div>
+
+        <!--[if BLOCK]><![endif]--><?php if($penalties->hasPages()): ?>
+            <div class="px-4 py-3 border-t border-gray-200 dark:border-gray-700">
+                <?php echo e($penalties->links()); ?>
+
+            </div>
+        <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
+    </div>
+
+    
+    <div wire:loading.delay class="fixed inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center z-50">
+        <div class="bg-white dark:bg-gray-800 rounded-lg px-4 py-3 shadow-lg flex items-center gap-2">
+            <svg class="animate-spin h-4 w-4 text-primary-600" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+            </svg>
+            <span class="text-sm text-gray-700 dark:text-gray-300">Memuat...</span>
+        </div>
+    </div>
 </div>
 <?php /**PATH C:\laragon\www\Kopma\resources\views/livewire/penalty/index.blade.php ENDPATH**/ ?>

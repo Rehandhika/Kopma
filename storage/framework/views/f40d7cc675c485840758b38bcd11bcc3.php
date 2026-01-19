@@ -32,21 +32,66 @@
                 class="px-2 py-1.5 text-xs sm:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
             <input type="date" wire:model.live.debounce.500ms="dateTo" 
                 class="px-2 py-1.5 text-xs sm:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-            <select wire:model.live="userFilter" 
-                class="px-2 py-1.5 text-xs sm:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                <option value="all">Semua User</option>
-                <!--[if BLOCK]><![endif]--><?php $__currentLoopData = $this->users; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $user): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                    <option value="<?php echo e($user->id); ?>"><?php echo e($user->name); ?></option>
-                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><!--[if ENDBLOCK]><![endif]-->
-            </select>
-            <select wire:model.live="statusFilter" 
-                class="px-2 py-1.5 text-xs sm:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                <option value="all">Semua Status</option>
-                <option value="active">Aktif</option>
-                <option value="appealed">Banding</option>
-                <option value="dismissed">Dibatalkan</option>
-                <option value="expired">Kadaluarsa</option>
-            </select>
+            
+            <?php if (isset($component)) { $__componentOriginal01b6cc14fe7fc10e17b29bd1c55b4032 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal01b6cc14fe7fc10e17b29bd1c55b4032 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.ui.dropdown-select','data' => ['wire' => 'userFilter','options' => array_merge(
+                    [['value' => 'all', 'label' => 'Semua User']],
+                    collect($this->users)->map(fn($u) => ['value' => (string)$u->id, 'label' => $u->name])->toArray()
+                ),'placeholder' => 'Semua User','searchable' => true]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('ui.dropdown-select'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes(['wire' => 'userFilter','options' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute(array_merge(
+                    [['value' => 'all', 'label' => 'Semua User']],
+                    collect($this->users)->map(fn($u) => ['value' => (string)$u->id, 'label' => $u->name])->toArray()
+                )),'placeholder' => 'Semua User','searchable' => true]); ?>
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal01b6cc14fe7fc10e17b29bd1c55b4032)): ?>
+<?php $attributes = $__attributesOriginal01b6cc14fe7fc10e17b29bd1c55b4032; ?>
+<?php unset($__attributesOriginal01b6cc14fe7fc10e17b29bd1c55b4032); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal01b6cc14fe7fc10e17b29bd1c55b4032)): ?>
+<?php $component = $__componentOriginal01b6cc14fe7fc10e17b29bd1c55b4032; ?>
+<?php unset($__componentOriginal01b6cc14fe7fc10e17b29bd1c55b4032); ?>
+<?php endif; ?>
+            
+            <?php if (isset($component)) { $__componentOriginal01b6cc14fe7fc10e17b29bd1c55b4032 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal01b6cc14fe7fc10e17b29bd1c55b4032 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.ui.dropdown-select','data' => ['wire' => 'statusFilter','options' => [
+                    ['value' => 'all', 'label' => 'Semua Status'],
+                    ['value' => 'active', 'label' => 'Aktif'],
+                    ['value' => 'appealed', 'label' => 'Banding'],
+                    ['value' => 'dismissed', 'label' => 'Dibatalkan'],
+                    ['value' => 'expired', 'label' => 'Kadaluarsa'],
+                ],'placeholder' => 'Semua Status']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('ui.dropdown-select'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes(['wire' => 'statusFilter','options' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute([
+                    ['value' => 'all', 'label' => 'Semua Status'],
+                    ['value' => 'active', 'label' => 'Aktif'],
+                    ['value' => 'appealed', 'label' => 'Banding'],
+                    ['value' => 'dismissed', 'label' => 'Dibatalkan'],
+                    ['value' => 'expired', 'label' => 'Kadaluarsa'],
+                ]),'placeholder' => 'Semua Status']); ?>
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal01b6cc14fe7fc10e17b29bd1c55b4032)): ?>
+<?php $attributes = $__attributesOriginal01b6cc14fe7fc10e17b29bd1c55b4032; ?>
+<?php unset($__attributesOriginal01b6cc14fe7fc10e17b29bd1c55b4032); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal01b6cc14fe7fc10e17b29bd1c55b4032)): ?>
+<?php $component = $__componentOriginal01b6cc14fe7fc10e17b29bd1c55b4032; ?>
+<?php unset($__componentOriginal01b6cc14fe7fc10e17b29bd1c55b4032); ?>
+<?php endif; ?>
         </div>
     </div>
 

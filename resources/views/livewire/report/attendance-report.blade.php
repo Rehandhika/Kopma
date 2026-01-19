@@ -30,20 +30,27 @@
                 class="px-2 py-1.5 text-xs sm:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
             <input type="date" wire:model.live.debounce.500ms="dateTo" 
                 class="px-2 py-1.5 text-xs sm:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-            <select wire:model.live="userFilter" 
-                class="px-2 py-1.5 text-xs sm:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                <option value="all">Semua User</option>
-                @foreach($this->users as $user)
-                    <option value="{{ $user->id }}">{{ $user->name }}</option>
-                @endforeach
-            </select>
-            <select wire:model.live="statusFilter" 
-                class="px-2 py-1.5 text-xs sm:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                <option value="all">Semua Status</option>
-                <option value="present">Hadir</option>
-                <option value="late">Terlambat</option>
-                <option value="absent">Tidak Hadir</option>
-            </select>
+            
+            <x-ui.dropdown-select 
+                wire="userFilter"
+                :options="array_merge(
+                    [['value' => 'all', 'label' => 'Semua User']],
+                    collect($this->users)->map(fn($u) => ['value' => (string)$u->id, 'label' => $u->name])->toArray()
+                )"
+                placeholder="Semua User"
+                :searchable="true"
+            />
+            
+            <x-ui.dropdown-select 
+                wire="statusFilter"
+                :options="[
+                    ['value' => 'all', 'label' => 'Semua Status'],
+                    ['value' => 'present', 'label' => 'Hadir'],
+                    ['value' => 'late', 'label' => 'Terlambat'],
+                    ['value' => 'absent', 'label' => 'Tidak Hadir'],
+                ]"
+                placeholder="Semua Status"
+            />
         </div>
     </div>
 
