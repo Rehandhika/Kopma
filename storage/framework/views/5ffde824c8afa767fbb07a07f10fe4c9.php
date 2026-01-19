@@ -155,7 +155,7 @@
         
         <div class="sm:hidden divide-y divide-gray-200 dark:divide-gray-700">
             <!--[if BLOCK]><![endif]--><?php $__empty_1 = true; $__currentLoopData = $sales; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $sale): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
-                <div class="p-3 space-y-1">
+                <div wire:click="showDetail(<?php echo e($sale->id); ?>)" class="p-3 space-y-1 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 active:bg-gray-100">
                     <div class="flex justify-between items-start">
                         <span class="font-mono text-xs bg-gray-100 dark:bg-gray-700 px-1.5 py-0.5 rounded"><?php echo e($sale->invoice_number); ?></span>
                         <span class="font-semibold text-sm text-gray-900 dark:text-white"><?php echo e(format_currency($sale->total_amount)); ?></span>
@@ -194,7 +194,7 @@
                 </thead>
                 <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
                     <!--[if BLOCK]><![endif]--><?php $__empty_1 = true; $__currentLoopData = $sales; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $sale): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
-                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-900/30">
+                        <tr wire:click="showDetail(<?php echo e($sale->id); ?>)" class="hover:bg-gray-50 dark:hover:bg-gray-900/30 cursor-pointer">
                             <td class="px-4 py-2.5">
                                 <span class="font-mono text-xs bg-gray-100 dark:bg-gray-700 px-1.5 py-0.5 rounded"><?php echo e($sale->invoice_number); ?></span>
                             </td>
@@ -247,6 +247,120 @@
             <span class="text-sm text-gray-700 dark:text-gray-300">Memuat...</span>
         </div>
     </div>
+
+    
+    <!--[if BLOCK]><![endif]--><?php if($selectedSaleId && $this->selectedSale): ?>
+        <div class="fixed inset-0 z-50 overflow-y-auto" wire:keydown.escape.window="closeDetail">
+            <div class="flex min-h-full items-end sm:items-center justify-center p-4">
+                
+                <div wire:click="closeDetail" class="fixed inset-0 bg-black/50 transition-opacity"></div>
+                
+                
+                <div class="relative bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-md sm:max-w-lg transform transition-all">
+                    
+                    <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+                        <div>
+                            <h3 class="font-semibold text-gray-900 dark:text-white">Detail Transaksi</h3>
+                            <p class="text-xs text-gray-500 font-mono"><?php echo e($this->selectedSale->invoice_number); ?></p>
+                        </div>
+                        <button wire:click="closeDetail" class="p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700">
+                            <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                        </button>
+                    </div>
+                    
+                    
+                    <div class="p-4 space-y-4 max-h-[60vh] overflow-y-auto">
+                        
+                        <div class="grid grid-cols-2 gap-3 text-sm">
+                            <div>
+                                <p class="text-xs text-gray-500">Tanggal</p>
+                                <p class="font-medium text-gray-900 dark:text-white"><?php echo e($this->selectedSale->created_at->format('d/m/Y H:i')); ?></p>
+                            </div>
+                            <div>
+                                <p class="text-xs text-gray-500">Kasir</p>
+                                <p class="font-medium text-gray-900 dark:text-white"><?php echo e($this->selectedSale->cashier->name ?? '-'); ?></p>
+                            </div>
+                            <div>
+                                <p class="text-xs text-gray-500">Metode</p>
+                                <span class="inline-block px-2 py-0.5 rounded text-xs font-medium
+                                    <?php echo e($this->selectedSale->payment_method === 'cash' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-400' : ''); ?>
+
+                                    <?php echo e($this->selectedSale->payment_method === 'transfer' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-400' : ''); ?>
+
+                                    <?php echo e($this->selectedSale->payment_method === 'qris' ? 'bg-violet-100 text-violet-700 dark:bg-violet-900/50 dark:text-violet-400' : ''); ?>">
+                                    <?php echo e(strtoupper($this->selectedSale->payment_method)); ?>
+
+                                </span>
+                            </div>
+                            <div>
+                                <p class="text-xs text-gray-500">Item</p>
+                                <p class="font-medium text-gray-900 dark:text-white"><?php echo e($this->selectedSale->items->count()); ?> produk</p>
+                            </div>
+                        </div>
+
+                        
+                        <div>
+                            <p class="text-xs text-gray-500 mb-2">Daftar Item</p>
+                            <div class="bg-gray-50 dark:bg-gray-900/50 rounded-lg divide-y divide-gray-200 dark:divide-gray-700">
+                                <!--[if BLOCK]><![endif]--><?php $__currentLoopData = $this->selectedSale->items; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <div class="p-3 flex justify-between items-start gap-2">
+                                        <div class="flex-1 min-w-0">
+                                            <p class="text-sm font-medium text-gray-900 dark:text-white truncate">
+                                                <?php echo e($item->product->name ?? $item->product_name); ?>
+
+                                            </p>
+                                            <p class="text-xs text-gray-500">
+                                                <?php echo e($item->quantity); ?> × <?php echo e(format_currency($item->price)); ?>
+
+                                            </p>
+                                        </div>
+                                        <p class="text-sm font-semibold text-gray-900 dark:text-white shrink-0">
+                                            <?php echo e(format_currency($item->subtotal)); ?>
+
+                                        </p>
+                                    </div>
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><!--[if ENDBLOCK]><![endif]-->
+                            </div>
+                        </div>
+
+                        
+                        <div class="bg-gray-50 dark:bg-gray-900/50 rounded-lg p-3 space-y-2">
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600 dark:text-gray-400">Total</span>
+                                <span class="font-bold text-gray-900 dark:text-white"><?php echo e(format_currency($this->selectedSale->total_amount)); ?></span>
+                            </div>
+                            <!--[if BLOCK]><![endif]--><?php if($this->selectedSale->payment_amount): ?>
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-gray-600 dark:text-gray-400">Bayar</span>
+                                    <span class="text-gray-900 dark:text-white"><?php echo e(format_currency($this->selectedSale->payment_amount)); ?></span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-gray-600 dark:text-gray-400">Kembalian</span>
+                                    <span class="text-gray-900 dark:text-white"><?php echo e(format_currency($this->selectedSale->change_amount)); ?></span>
+                                </div>
+                            <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
+                        </div>
+
+                        <!--[if BLOCK]><![endif]--><?php if($this->selectedSale->notes): ?>
+                            <div>
+                                <p class="text-xs text-gray-500 mb-1">Catatan</p>
+                                <p class="text-sm text-gray-700 dark:text-gray-300"><?php echo e($this->selectedSale->notes); ?></p>
+                            </div>
+                        <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
+                    </div>
+
+                    
+                    <div class="p-4 border-t border-gray-200 dark:border-gray-700">
+                        <button wire:click="closeDetail" class="w-full px-4 py-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 text-sm font-medium rounded-lg transition">
+                            Tutup
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
 
     
     <div id="chartData" class="hidden"

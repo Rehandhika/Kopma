@@ -1,584 +1,184 @@
-<div class="p-6">
-    <?php if (isset($component)) { $__componentOriginal4743781065990dfe96029737c4f06097 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginal4743781065990dfe96029737c4f06097 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.layout.page-header','data' => ['title' => 'Laporan Kehadiran','description' => 'Analisis dan statistik kehadiran karyawan']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('layout.page-header'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['title' => 'Laporan Kehadiran','description' => 'Analisis dan statistik kehadiran karyawan']); ?>
-         <?php $__env->slot('actions', null, []); ?> 
-            <?php if (isset($component)) { $__componentOriginala8bb031a483a05f647cb99ed3a469847 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginala8bb031a483a05f647cb99ed3a469847 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.ui.button','data' => ['variant' => 'white','icon' => 'download']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('ui.button'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['variant' => 'white','icon' => 'download']); ?>
-                Export Excel
-             <?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginala8bb031a483a05f647cb99ed3a469847)): ?>
-<?php $attributes = $__attributesOriginala8bb031a483a05f647cb99ed3a469847; ?>
-<?php unset($__attributesOriginala8bb031a483a05f647cb99ed3a469847); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginala8bb031a483a05f647cb99ed3a469847)): ?>
-<?php $component = $__componentOriginala8bb031a483a05f647cb99ed3a469847; ?>
-<?php unset($__componentOriginala8bb031a483a05f647cb99ed3a469847); ?>
-<?php endif; ?>
-            <?php if (isset($component)) { $__componentOriginala8bb031a483a05f647cb99ed3a469847 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginala8bb031a483a05f647cb99ed3a469847 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.ui.button','data' => ['variant' => 'primary','icon' => 'printer']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('ui.button'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['variant' => 'primary','icon' => 'printer']); ?>
-                Cetak
-             <?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginala8bb031a483a05f647cb99ed3a469847)): ?>
-<?php $attributes = $__attributesOriginala8bb031a483a05f647cb99ed3a469847; ?>
-<?php unset($__attributesOriginala8bb031a483a05f647cb99ed3a469847); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginala8bb031a483a05f647cb99ed3a469847)): ?>
-<?php $component = $__componentOriginala8bb031a483a05f647cb99ed3a469847; ?>
-<?php unset($__componentOriginala8bb031a483a05f647cb99ed3a469847); ?>
-<?php endif; ?>
-         <?php $__env->endSlot(); ?>
-     <?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginal4743781065990dfe96029737c4f06097)): ?>
-<?php $attributes = $__attributesOriginal4743781065990dfe96029737c4f06097; ?>
-<?php unset($__attributesOriginal4743781065990dfe96029737c4f06097); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginal4743781065990dfe96029737c4f06097)): ?>
-<?php $component = $__componentOriginal4743781065990dfe96029737c4f06097; ?>
-<?php unset($__componentOriginal4743781065990dfe96029737c4f06097); ?>
-<?php endif; ?>
+<div class="space-y-4 sm:space-y-6">
+    
+    <div>
+        <h1 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Laporan Kehadiran</h1>
+        <p class="text-xs sm:text-sm text-gray-500 mt-0.5">
+            <?php echo e(\Carbon\Carbon::parse($dateFrom)->translatedFormat('d M Y')); ?> - 
+            <?php echo e(\Carbon\Carbon::parse($dateTo)->translatedFormat('d M Y')); ?>
+
+        </p>
+    </div>
 
     
-    <?php if (isset($component)) { $__componentOriginalddfdd8eb2a2b0d47c29a0436357ad57f = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginalddfdd8eb2a2b0d47c29a0436357ad57f = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.layout.grid','data' => ['cols' => '4','class' => 'mb-6']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('layout.grid'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['cols' => '4','class' => 'mb-6']); ?>
-        <?php if (isset($component)) { $__componentOriginala4a09407c281b10513bf47f7415fb4c1 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginala4a09407c281b10513bf47f7415fb4c1 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.layout.stat-card','data' => ['label' => 'Total Kehadiran','value' => $stats['total'],'icon' => 'clipboard-list','iconColor' => 'bg-primary-100','iconTextColor' => 'text-primary-600']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('layout.stat-card'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['label' => 'Total Kehadiran','value' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($stats['total']),'icon' => 'clipboard-list','iconColor' => 'bg-primary-100','iconTextColor' => 'text-primary-600']); ?>
-<?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginala4a09407c281b10513bf47f7415fb4c1)): ?>
-<?php $attributes = $__attributesOriginala4a09407c281b10513bf47f7415fb4c1; ?>
-<?php unset($__attributesOriginala4a09407c281b10513bf47f7415fb4c1); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginala4a09407c281b10513bf47f7415fb4c1)): ?>
-<?php $component = $__componentOriginala4a09407c281b10513bf47f7415fb4c1; ?>
-<?php unset($__componentOriginala4a09407c281b10513bf47f7415fb4c1); ?>
-<?php endif; ?>
-        <?php if (isset($component)) { $__componentOriginala4a09407c281b10513bf47f7415fb4c1 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginala4a09407c281b10513bf47f7415fb4c1 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.layout.stat-card','data' => ['label' => 'Hadir','value' => $stats['present'],'icon' => 'check-circle','iconColor' => 'bg-success-100','iconTextColor' => 'text-success-600']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('layout.stat-card'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['label' => 'Hadir','value' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($stats['present']),'icon' => 'check-circle','iconColor' => 'bg-success-100','iconTextColor' => 'text-success-600']); ?>
-<?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginala4a09407c281b10513bf47f7415fb4c1)): ?>
-<?php $attributes = $__attributesOriginala4a09407c281b10513bf47f7415fb4c1; ?>
-<?php unset($__attributesOriginala4a09407c281b10513bf47f7415fb4c1); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginala4a09407c281b10513bf47f7415fb4c1)): ?>
-<?php $component = $__componentOriginala4a09407c281b10513bf47f7415fb4c1; ?>
-<?php unset($__componentOriginala4a09407c281b10513bf47f7415fb4c1); ?>
-<?php endif; ?>
-        <?php if (isset($component)) { $__componentOriginala4a09407c281b10513bf47f7415fb4c1 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginala4a09407c281b10513bf47f7415fb4c1 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.layout.stat-card','data' => ['label' => 'Terlambat','value' => $stats['late'],'icon' => 'clock','iconColor' => 'bg-warning-100','iconTextColor' => 'text-warning-600']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('layout.stat-card'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['label' => 'Terlambat','value' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($stats['late']),'icon' => 'clock','iconColor' => 'bg-warning-100','iconTextColor' => 'text-warning-600']); ?>
-<?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginala4a09407c281b10513bf47f7415fb4c1)): ?>
-<?php $attributes = $__attributesOriginala4a09407c281b10513bf47f7415fb4c1; ?>
-<?php unset($__attributesOriginala4a09407c281b10513bf47f7415fb4c1); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginala4a09407c281b10513bf47f7415fb4c1)): ?>
-<?php $component = $__componentOriginala4a09407c281b10513bf47f7415fb4c1; ?>
-<?php unset($__componentOriginala4a09407c281b10513bf47f7415fb4c1); ?>
-<?php endif; ?>
-        <?php if (isset($component)) { $__componentOriginala4a09407c281b10513bf47f7415fb4c1 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginala4a09407c281b10513bf47f7415fb4c1 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.layout.stat-card','data' => ['label' => 'Tidak Hadir','value' => $stats['absent'],'icon' => 'x-circle','iconColor' => 'bg-danger-100','iconTextColor' => 'text-danger-600']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('layout.stat-card'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['label' => 'Tidak Hadir','value' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($stats['absent']),'icon' => 'x-circle','iconColor' => 'bg-danger-100','iconTextColor' => 'text-danger-600']); ?>
-<?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginala4a09407c281b10513bf47f7415fb4c1)): ?>
-<?php $attributes = $__attributesOriginala4a09407c281b10513bf47f7415fb4c1; ?>
-<?php unset($__attributesOriginala4a09407c281b10513bf47f7415fb4c1); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginala4a09407c281b10513bf47f7415fb4c1)): ?>
-<?php $component = $__componentOriginala4a09407c281b10513bf47f7415fb4c1; ?>
-<?php unset($__componentOriginala4a09407c281b10513bf47f7415fb4c1); ?>
-<?php endif; ?>
-     <?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginalddfdd8eb2a2b0d47c29a0436357ad57f)): ?>
-<?php $attributes = $__attributesOriginalddfdd8eb2a2b0d47c29a0436357ad57f; ?>
-<?php unset($__attributesOriginalddfdd8eb2a2b0d47c29a0436357ad57f); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginalddfdd8eb2a2b0d47c29a0436357ad57f)): ?>
-<?php $component = $__componentOriginalddfdd8eb2a2b0d47c29a0436357ad57f; ?>
-<?php unset($__componentOriginalddfdd8eb2a2b0d47c29a0436357ad57f); ?>
-<?php endif; ?>
+    <div class="bg-white dark:bg-gray-800 rounded-lg p-3 sm:p-4 border border-gray-200 dark:border-gray-700 space-y-3">
+        
+        <div class="flex flex-wrap gap-2">
+            <!--[if BLOCK]><![endif]--><?php $__currentLoopData = ['today' => 'Hari Ini', 'week' => 'Minggu', 'month' => 'Bulan']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $label): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                <button wire:click="setPeriod('<?php echo e($key); ?>')"
+                    class="<?php echo \Illuminate\Support\Arr::toCssClasses([
+                        'px-3 py-1.5 text-xs sm:text-sm font-medium rounded-lg transition',
+                        'bg-primary-600 text-white' => $period === $key,
+                        'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300' => $period !== $key,
+                    ]); ?>">
+                    <?php echo e($label); ?>
 
-    
-    <?php if (isset($component)) { $__componentOriginaldae4cd48acb67888a4631e1ba48f2f93 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginaldae4cd48acb67888a4631e1ba48f2f93 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.ui.card','data' => ['class' => 'mb-6']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('ui.card'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['class' => 'mb-6']); ?>
-        <?php if (isset($component)) { $__componentOriginalddfdd8eb2a2b0d47c29a0436357ad57f = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginalddfdd8eb2a2b0d47c29a0436357ad57f = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.layout.grid','data' => ['cols' => '4']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('layout.grid'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['cols' => '4']); ?>
-            <?php if (isset($component)) { $__componentOriginal65bd7e7dbd93cec773ad6501ce127e46 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginal65bd7e7dbd93cec773ad6501ce127e46 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.ui.input','data' => ['label' => 'Dari','name' => 'dateFrom','type' => 'date','wire:model.live' => 'dateFrom']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('ui.input'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['label' => 'Dari','name' => 'dateFrom','type' => 'date','wire:model.live' => 'dateFrom']); ?>
-<?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginal65bd7e7dbd93cec773ad6501ce127e46)): ?>
-<?php $attributes = $__attributesOriginal65bd7e7dbd93cec773ad6501ce127e46; ?>
-<?php unset($__attributesOriginal65bd7e7dbd93cec773ad6501ce127e46); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginal65bd7e7dbd93cec773ad6501ce127e46)): ?>
-<?php $component = $__componentOriginal65bd7e7dbd93cec773ad6501ce127e46; ?>
-<?php unset($__componentOriginal65bd7e7dbd93cec773ad6501ce127e46); ?>
-<?php endif; ?>
-            <?php if (isset($component)) { $__componentOriginal65bd7e7dbd93cec773ad6501ce127e46 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginal65bd7e7dbd93cec773ad6501ce127e46 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.ui.input','data' => ['label' => 'Sampai','name' => 'dateTo','type' => 'date','wire:model.live' => 'dateTo']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('ui.input'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['label' => 'Sampai','name' => 'dateTo','type' => 'date','wire:model.live' => 'dateTo']); ?>
-<?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginal65bd7e7dbd93cec773ad6501ce127e46)): ?>
-<?php $attributes = $__attributesOriginal65bd7e7dbd93cec773ad6501ce127e46; ?>
-<?php unset($__attributesOriginal65bd7e7dbd93cec773ad6501ce127e46); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginal65bd7e7dbd93cec773ad6501ce127e46)): ?>
-<?php $component = $__componentOriginal65bd7e7dbd93cec773ad6501ce127e46; ?>
-<?php unset($__componentOriginal65bd7e7dbd93cec773ad6501ce127e46); ?>
-<?php endif; ?>
-            <?php if (isset($component)) { $__componentOriginal231e2c645bf8af0c5c05a5dc5a94c862 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginal231e2c645bf8af0c5c05a5dc5a94c862 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.ui.select','data' => ['label' => 'User','name' => 'userFilter','wire:model.live' => 'userFilter']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('ui.select'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['label' => 'User','name' => 'userFilter','wire:model.live' => 'userFilter']); ?>
-                <option value="all">Semua</option>
-                <!--[if BLOCK]><![endif]--><?php $__currentLoopData = $users; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $user): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                </button>
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><!--[if ENDBLOCK]><![endif]-->
+        </div>
+
+        
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
+            <input type="date" wire:model.live.debounce.500ms="dateFrom" 
+                class="px-2 py-1.5 text-xs sm:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+            <input type="date" wire:model.live.debounce.500ms="dateTo" 
+                class="px-2 py-1.5 text-xs sm:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+            <select wire:model.live="userFilter" 
+                class="px-2 py-1.5 text-xs sm:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                <option value="all">Semua User</option>
+                <!--[if BLOCK]><![endif]--><?php $__currentLoopData = $this->users; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $user): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                     <option value="<?php echo e($user->id); ?>"><?php echo e($user->name); ?></option>
                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><!--[if ENDBLOCK]><![endif]-->
-             <?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginal231e2c645bf8af0c5c05a5dc5a94c862)): ?>
-<?php $attributes = $__attributesOriginal231e2c645bf8af0c5c05a5dc5a94c862; ?>
-<?php unset($__attributesOriginal231e2c645bf8af0c5c05a5dc5a94c862); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginal231e2c645bf8af0c5c05a5dc5a94c862)): ?>
-<?php $component = $__componentOriginal231e2c645bf8af0c5c05a5dc5a94c862; ?>
-<?php unset($__componentOriginal231e2c645bf8af0c5c05a5dc5a94c862); ?>
-<?php endif; ?>
-            <?php if (isset($component)) { $__componentOriginal231e2c645bf8af0c5c05a5dc5a94c862 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginal231e2c645bf8af0c5c05a5dc5a94c862 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.ui.select','data' => ['label' => 'Status','name' => 'statusFilter','wire:model.live' => 'statusFilter']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('ui.select'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['label' => 'Status','name' => 'statusFilter','wire:model.live' => 'statusFilter']); ?>
-                <option value="all">Semua</option>
+            </select>
+            <select wire:model.live="statusFilter" 
+                class="px-2 py-1.5 text-xs sm:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                <option value="all">Semua Status</option>
                 <option value="present">Hadir</option>
                 <option value="late">Terlambat</option>
                 <option value="absent">Tidak Hadir</option>
-             <?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginal231e2c645bf8af0c5c05a5dc5a94c862)): ?>
-<?php $attributes = $__attributesOriginal231e2c645bf8af0c5c05a5dc5a94c862; ?>
-<?php unset($__attributesOriginal231e2c645bf8af0c5c05a5dc5a94c862); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginal231e2c645bf8af0c5c05a5dc5a94c862)): ?>
-<?php $component = $__componentOriginal231e2c645bf8af0c5c05a5dc5a94c862; ?>
-<?php unset($__componentOriginal231e2c645bf8af0c5c05a5dc5a94c862); ?>
-<?php endif; ?>
-         <?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginalddfdd8eb2a2b0d47c29a0436357ad57f)): ?>
-<?php $attributes = $__attributesOriginalddfdd8eb2a2b0d47c29a0436357ad57f; ?>
-<?php unset($__attributesOriginalddfdd8eb2a2b0d47c29a0436357ad57f); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginalddfdd8eb2a2b0d47c29a0436357ad57f)): ?>
-<?php $component = $__componentOriginalddfdd8eb2a2b0d47c29a0436357ad57f; ?>
-<?php unset($__componentOriginalddfdd8eb2a2b0d47c29a0436357ad57f); ?>
-<?php endif; ?>
-     <?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginaldae4cd48acb67888a4631e1ba48f2f93)): ?>
-<?php $attributes = $__attributesOriginaldae4cd48acb67888a4631e1ba48f2f93; ?>
-<?php unset($__attributesOriginaldae4cd48acb67888a4631e1ba48f2f93); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginaldae4cd48acb67888a4631e1ba48f2f93)): ?>
-<?php $component = $__componentOriginaldae4cd48acb67888a4631e1ba48f2f93; ?>
-<?php unset($__componentOriginaldae4cd48acb67888a4631e1ba48f2f93); ?>
-<?php endif; ?>
+            </select>
+        </div>
+    </div>
 
     
-    <?php if (isset($component)) { $__componentOriginaldae4cd48acb67888a4631e1ba48f2f93 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginaldae4cd48acb67888a4631e1ba48f2f93 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.ui.card','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('ui.card'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes([]); ?>
-        <?php if (isset($component)) { $__componentOriginal8ed4d2c4c8d055b5cd9b81025b3a3f27 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginal8ed4d2c4c8d055b5cd9b81025b3a3f27 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.data.table','data' => ['headers' => ['Tanggal', 'Nama', 'Check In', 'Check Out', 'Jam Kerja', 'Status']]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('data.table'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['headers' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute(['Tanggal', 'Nama', 'Check In', 'Check Out', 'Jam Kerja', 'Status'])]); ?>
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg p-3 sm:p-4 text-white">
+            <p class="text-blue-100 text-xs font-medium">Total</p>
+            <p class="text-lg sm:text-xl font-bold mt-1"><?php echo e(number_format($this->stats->total ?? 0)); ?></p>
+            <p class="text-blue-200 text-xs mt-0.5">kehadiran</p>
+        </div>
+        
+        <div class="bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-lg p-3 sm:p-4 text-white">
+            <p class="text-emerald-100 text-xs font-medium">Hadir</p>
+            <p class="text-lg sm:text-xl font-bold mt-1"><?php echo e(number_format($this->stats->present ?? 0)); ?></p>
+            <p class="text-emerald-200 text-xs mt-0.5">tepat waktu</p>
+        </div>
+        
+        <div class="bg-gradient-to-br from-amber-500 to-amber-600 rounded-lg p-3 sm:p-4 text-white">
+            <p class="text-amber-100 text-xs font-medium">Terlambat</p>
+            <p class="text-lg sm:text-xl font-bold mt-1"><?php echo e(number_format($this->stats->late ?? 0)); ?></p>
+            <p class="text-amber-200 text-xs mt-0.5">kali</p>
+        </div>
+        
+        <div class="bg-gradient-to-br from-red-500 to-red-600 rounded-lg p-3 sm:p-4 text-white">
+            <p class="text-red-100 text-xs font-medium">Tidak Hadir</p>
+            <p class="text-lg sm:text-xl font-bold mt-1"><?php echo e(number_format($this->stats->absent ?? 0)); ?></p>
+            <p class="text-red-200 text-xs mt-0.5">kali</p>
+        </div>
+    </div>
+
+    
+    <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <div class="px-4 py-3 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+            <h3 class="font-semibold text-sm text-gray-900 dark:text-white">Detail Kehadiran</h3>
+            <span class="text-xs text-gray-500"><?php echo e($attendances->total()); ?> data</span>
+        </div>
+
+        
+        <div class="sm:hidden divide-y divide-gray-200 dark:divide-gray-700">
             <!--[if BLOCK]><![endif]--><?php $__empty_1 = true; $__currentLoopData = $attendances; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $attendance): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
-                <?php if (isset($component)) { $__componentOriginalb4e1d3352348902d30955c9827e95353 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginalb4e1d3352348902d30955c9827e95353 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.data.table-row','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('data.table-row'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes([]); ?>
-                    <?php if (isset($component)) { $__componentOriginal026d0ae70983922f13829f6932913f9f = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginal026d0ae70983922f13829f6932913f9f = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.data.table-cell','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('data.table-cell'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes([]); ?><?php echo e($attendance->date->format('d M Y')); ?> <?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginal026d0ae70983922f13829f6932913f9f)): ?>
-<?php $attributes = $__attributesOriginal026d0ae70983922f13829f6932913f9f; ?>
-<?php unset($__attributesOriginal026d0ae70983922f13829f6932913f9f); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginal026d0ae70983922f13829f6932913f9f)): ?>
-<?php $component = $__componentOriginal026d0ae70983922f13829f6932913f9f; ?>
-<?php unset($__componentOriginal026d0ae70983922f13829f6932913f9f); ?>
-<?php endif; ?>
-                    <?php if (isset($component)) { $__componentOriginal026d0ae70983922f13829f6932913f9f = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginal026d0ae70983922f13829f6932913f9f = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.data.table-cell','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('data.table-cell'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes([]); ?><?php echo e($attendance->user->name); ?> <?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginal026d0ae70983922f13829f6932913f9f)): ?>
-<?php $attributes = $__attributesOriginal026d0ae70983922f13829f6932913f9f; ?>
-<?php unset($__attributesOriginal026d0ae70983922f13829f6932913f9f); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginal026d0ae70983922f13829f6932913f9f)): ?>
-<?php $component = $__componentOriginal026d0ae70983922f13829f6932913f9f; ?>
-<?php unset($__componentOriginal026d0ae70983922f13829f6932913f9f); ?>
-<?php endif; ?>
-                    <?php if (isset($component)) { $__componentOriginal026d0ae70983922f13829f6932913f9f = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginal026d0ae70983922f13829f6932913f9f = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.data.table-cell','data' => ['class' => 'text-center']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('data.table-cell'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['class' => 'text-center']); ?><?php echo e($attendance->check_in ?? '-'); ?> <?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginal026d0ae70983922f13829f6932913f9f)): ?>
-<?php $attributes = $__attributesOriginal026d0ae70983922f13829f6932913f9f; ?>
-<?php unset($__attributesOriginal026d0ae70983922f13829f6932913f9f); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginal026d0ae70983922f13829f6932913f9f)): ?>
-<?php $component = $__componentOriginal026d0ae70983922f13829f6932913f9f; ?>
-<?php unset($__componentOriginal026d0ae70983922f13829f6932913f9f); ?>
-<?php endif; ?>
-                    <?php if (isset($component)) { $__componentOriginal026d0ae70983922f13829f6932913f9f = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginal026d0ae70983922f13829f6932913f9f = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.data.table-cell','data' => ['class' => 'text-center']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('data.table-cell'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['class' => 'text-center']); ?><?php echo e($attendance->check_out ?? '-'); ?> <?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginal026d0ae70983922f13829f6932913f9f)): ?>
-<?php $attributes = $__attributesOriginal026d0ae70983922f13829f6932913f9f; ?>
-<?php unset($__attributesOriginal026d0ae70983922f13829f6932913f9f); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginal026d0ae70983922f13829f6932913f9f)): ?>
-<?php $component = $__componentOriginal026d0ae70983922f13829f6932913f9f; ?>
-<?php unset($__componentOriginal026d0ae70983922f13829f6932913f9f); ?>
-<?php endif; ?>
-                    <?php if (isset($component)) { $__componentOriginal026d0ae70983922f13829f6932913f9f = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginal026d0ae70983922f13829f6932913f9f = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.data.table-cell','data' => ['class' => 'text-center']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('data.table-cell'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['class' => 'text-center']); ?><?php echo e($attendance->work_hours ?? '-'); ?> <?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginal026d0ae70983922f13829f6932913f9f)): ?>
-<?php $attributes = $__attributesOriginal026d0ae70983922f13829f6932913f9f; ?>
-<?php unset($__attributesOriginal026d0ae70983922f13829f6932913f9f); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginal026d0ae70983922f13829f6932913f9f)): ?>
-<?php $component = $__componentOriginal026d0ae70983922f13829f6932913f9f; ?>
-<?php unset($__componentOriginal026d0ae70983922f13829f6932913f9f); ?>
-<?php endif; ?>
-                    <?php if (isset($component)) { $__componentOriginal026d0ae70983922f13829f6932913f9f = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginal026d0ae70983922f13829f6932913f9f = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.data.table-cell','data' => ['class' => 'text-center']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('data.table-cell'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['class' => 'text-center']); ?>
-                        <?php if (isset($component)) { $__componentOriginalab7baa01105b3dfe1e0cf1dfc58879b4 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginalab7baa01105b3dfe1e0cf1dfc58879b4 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.ui.badge','data' => ['variant' => match($attendance->status) {
-                                'present' => 'success',
-                                'late' => 'warning',
-                                'absent' => 'danger',
-                                'excused' => 'info',
-                                default => 'gray'
-                            }]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('ui.badge'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['variant' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute(match($attendance->status) {
-                                'present' => 'success',
-                                'late' => 'warning',
-                                'absent' => 'danger',
-                                'excused' => 'info',
-                                default => 'gray'
-                            })]); ?>
-                            <?php echo e(match($attendance->status) {
-                                'present' => 'Hadir',
-                                'late' => 'Terlambat',
-                                'absent' => 'Tidak Hadir',
-                                'excused' => 'Izin',
-                                default => $attendance->status
-                            }); ?>
+                <?php
+                    $statusConfig = match($attendance->status) {
+                        'present' => ['label' => 'Hadir', 'class' => 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-400'],
+                        'late' => ['label' => 'Terlambat', 'class' => 'bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-400'],
+                        'absent' => ['label' => 'Tidak Hadir', 'class' => 'bg-red-100 text-red-700 dark:bg-red-900/50 dark:text-red-400'],
+                        'excused' => ['label' => 'Izin', 'class' => 'bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-400'],
+                        default => ['label' => $attendance->status, 'class' => 'bg-gray-100 text-gray-700']
+                    };
+                ?>
+                <div class="p-3 space-y-1">
+                    <div class="flex justify-between items-start">
+                        <span class="font-medium text-sm text-gray-900 dark:text-white"><?php echo e($attendance->user->name ?? '-'); ?></span>
+                        <span class="px-1.5 py-0.5 rounded text-xs font-medium <?php echo e($statusConfig['class']); ?>">
+                            <?php echo e($statusConfig['label']); ?>
 
-                         <?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginalab7baa01105b3dfe1e0cf1dfc58879b4)): ?>
-<?php $attributes = $__attributesOriginalab7baa01105b3dfe1e0cf1dfc58879b4; ?>
-<?php unset($__attributesOriginalab7baa01105b3dfe1e0cf1dfc58879b4); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginalab7baa01105b3dfe1e0cf1dfc58879b4)): ?>
-<?php $component = $__componentOriginalab7baa01105b3dfe1e0cf1dfc58879b4; ?>
-<?php unset($__componentOriginalab7baa01105b3dfe1e0cf1dfc58879b4); ?>
-<?php endif; ?>
-                     <?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginal026d0ae70983922f13829f6932913f9f)): ?>
-<?php $attributes = $__attributesOriginal026d0ae70983922f13829f6932913f9f; ?>
-<?php unset($__attributesOriginal026d0ae70983922f13829f6932913f9f); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginal026d0ae70983922f13829f6932913f9f)): ?>
-<?php $component = $__componentOriginal026d0ae70983922f13829f6932913f9f; ?>
-<?php unset($__componentOriginal026d0ae70983922f13829f6932913f9f); ?>
-<?php endif; ?>
-                 <?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginalb4e1d3352348902d30955c9827e95353)): ?>
-<?php $attributes = $__attributesOriginalb4e1d3352348902d30955c9827e95353; ?>
-<?php unset($__attributesOriginalb4e1d3352348902d30955c9827e95353); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginalb4e1d3352348902d30955c9827e95353)): ?>
-<?php $component = $__componentOriginalb4e1d3352348902d30955c9827e95353; ?>
-<?php unset($__componentOriginalb4e1d3352348902d30955c9827e95353); ?>
-<?php endif; ?>
+                        </span>
+                    </div>
+                    <div class="flex justify-between text-xs text-gray-500">
+                        <span><?php echo e($attendance->date->format('d/m/Y')); ?></span>
+                        <span><?php echo e($attendance->check_in ?? '-'); ?> - <?php echo e($attendance->check_out ?? '-'); ?></span>
+                    </div>
+                    <!--[if BLOCK]><![endif]--><?php if($attendance->work_hours): ?>
+                        <div class="text-xs text-gray-500">Jam kerja: <?php echo e($attendance->work_hours); ?></div>
+                    <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
+                </div>
             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
-                <?php if (isset($component)) { $__componentOriginalb4e1d3352348902d30955c9827e95353 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginalb4e1d3352348902d30955c9827e95353 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.data.table-row','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('data.table-row'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes([]); ?>
-                    <?php if (isset($component)) { $__componentOriginal026d0ae70983922f13829f6932913f9f = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginal026d0ae70983922f13829f6932913f9f = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.data.table-cell','data' => ['colspan' => '6']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('data.table-cell'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['colspan' => '6']); ?>
-                        <?php if (isset($component)) { $__componentOriginalfe16eb12133e72aabae529d081318460 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginalfe16eb12133e72aabae529d081318460 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.layout.empty-state','data' => ['icon' => 'clipboard-list','title' => 'Tidak ada data kehadiran','description' => 'Ubah filter atau periode waktu untuk melihat data']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('layout.empty-state'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['icon' => 'clipboard-list','title' => 'Tidak ada data kehadiran','description' => 'Ubah filter atau periode waktu untuk melihat data']); ?>
-<?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginalfe16eb12133e72aabae529d081318460)): ?>
-<?php $attributes = $__attributesOriginalfe16eb12133e72aabae529d081318460; ?>
-<?php unset($__attributesOriginalfe16eb12133e72aabae529d081318460); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginalfe16eb12133e72aabae529d081318460)): ?>
-<?php $component = $__componentOriginalfe16eb12133e72aabae529d081318460; ?>
-<?php unset($__componentOriginalfe16eb12133e72aabae529d081318460); ?>
-<?php endif; ?>
-                     <?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginal026d0ae70983922f13829f6932913f9f)): ?>
-<?php $attributes = $__attributesOriginal026d0ae70983922f13829f6932913f9f; ?>
-<?php unset($__attributesOriginal026d0ae70983922f13829f6932913f9f); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginal026d0ae70983922f13829f6932913f9f)): ?>
-<?php $component = $__componentOriginal026d0ae70983922f13829f6932913f9f; ?>
-<?php unset($__componentOriginal026d0ae70983922f13829f6932913f9f); ?>
-<?php endif; ?>
-                 <?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginalb4e1d3352348902d30955c9827e95353)): ?>
-<?php $attributes = $__attributesOriginalb4e1d3352348902d30955c9827e95353; ?>
-<?php unset($__attributesOriginalb4e1d3352348902d30955c9827e95353); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginalb4e1d3352348902d30955c9827e95353)): ?>
-<?php $component = $__componentOriginalb4e1d3352348902d30955c9827e95353; ?>
-<?php unset($__componentOriginalb4e1d3352348902d30955c9827e95353); ?>
-<?php endif; ?>
+                <div class="p-8 text-center text-gray-400 text-sm">Tidak ada data kehadiran</div>
             <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
-         <?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginal8ed4d2c4c8d055b5cd9b81025b3a3f27)): ?>
-<?php $attributes = $__attributesOriginal8ed4d2c4c8d055b5cd9b81025b3a3f27; ?>
-<?php unset($__attributesOriginal8ed4d2c4c8d055b5cd9b81025b3a3f27); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginal8ed4d2c4c8d055b5cd9b81025b3a3f27)): ?>
-<?php $component = $__componentOriginal8ed4d2c4c8d055b5cd9b81025b3a3f27; ?>
-<?php unset($__componentOriginal8ed4d2c4c8d055b5cd9b81025b3a3f27); ?>
-<?php endif; ?>
+        </div>
 
-         <?php $__env->slot('footer', null, []); ?> 
-            <?php echo e($attendances->links()); ?>
+        
+        <div class="hidden sm:block overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead class="bg-gray-50 dark:bg-gray-900/50 text-xs text-gray-500 uppercase">
+                    <tr>
+                        <th class="px-4 py-2.5 text-left">Tanggal</th>
+                        <th class="px-4 py-2.5 text-left">Nama</th>
+                        <th class="px-4 py-2.5 text-center">Check In</th>
+                        <th class="px-4 py-2.5 text-center">Check Out</th>
+                        <th class="px-4 py-2.5 text-center">Jam Kerja</th>
+                        <th class="px-4 py-2.5 text-center">Status</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                    <!--[if BLOCK]><![endif]--><?php $__empty_1 = true; $__currentLoopData = $attendances; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $attendance): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                        <?php
+                            $statusConfig = match($attendance->status) {
+                                'present' => ['label' => 'Hadir', 'class' => 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-400'],
+                                'late' => ['label' => 'Terlambat', 'class' => 'bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-400'],
+                                'absent' => ['label' => 'Tidak Hadir', 'class' => 'bg-red-100 text-red-700 dark:bg-red-900/50 dark:text-red-400'],
+                                'excused' => ['label' => 'Izin', 'class' => 'bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-400'],
+                                default => ['label' => $attendance->status, 'class' => 'bg-gray-100 text-gray-700']
+                            };
+                        ?>
+                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-900/30">
+                            <td class="px-4 py-2.5 text-gray-600 dark:text-gray-400"><?php echo e($attendance->date->format('d/m/Y')); ?></td>
+                            <td class="px-4 py-2.5 text-gray-900 dark:text-white font-medium"><?php echo e($attendance->user->name ?? '-'); ?></td>
+                            <td class="px-4 py-2.5 text-center text-gray-600 dark:text-gray-400"><?php echo e($attendance->check_in ?? '-'); ?></td>
+                            <td class="px-4 py-2.5 text-center text-gray-600 dark:text-gray-400"><?php echo e($attendance->check_out ?? '-'); ?></td>
+                            <td class="px-4 py-2.5 text-center text-gray-600 dark:text-gray-400"><?php echo e($attendance->work_hours ?? '-'); ?></td>
+                            <td class="px-4 py-2.5 text-center">
+                                <span class="px-2 py-0.5 rounded text-xs font-medium <?php echo e($statusConfig['class']); ?>">
+                                    <?php echo e($statusConfig['label']); ?>
 
-         <?php $__env->endSlot(); ?>
-     <?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginaldae4cd48acb67888a4631e1ba48f2f93)): ?>
-<?php $attributes = $__attributesOriginaldae4cd48acb67888a4631e1ba48f2f93; ?>
-<?php unset($__attributesOriginaldae4cd48acb67888a4631e1ba48f2f93); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginaldae4cd48acb67888a4631e1ba48f2f93)): ?>
-<?php $component = $__componentOriginaldae4cd48acb67888a4631e1ba48f2f93; ?>
-<?php unset($__componentOriginaldae4cd48acb67888a4631e1ba48f2f93); ?>
-<?php endif; ?>
+                                </span>
+                            </td>
+                        </tr>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
+                        <tr>
+                            <td colspan="6" class="px-4 py-12 text-center text-gray-400 text-sm">Tidak ada data kehadiran</td>
+                        </tr>
+                    <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
+                </tbody>
+            </table>
+        </div>
+
+        <!--[if BLOCK]><![endif]--><?php if($attendances->hasPages()): ?>
+            <div class="px-4 py-3 border-t border-gray-200 dark:border-gray-700">
+                <?php echo e($attendances->links()); ?>
+
+            </div>
+        <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
+    </div>
+
+    
+    <div wire:loading.delay class="fixed inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center z-50">
+        <div class="bg-white dark:bg-gray-800 rounded-lg px-4 py-3 shadow-lg flex items-center gap-2">
+            <svg class="animate-spin h-4 w-4 text-primary-600" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+            </svg>
+            <span class="text-sm text-gray-700 dark:text-gray-300">Memuat...</span>
+        </div>
+    </div>
 </div>
 <?php /**PATH C:\laragon\www\Kopma\resources\views/livewire/report/attendance-report.blade.php ENDPATH**/ ?>

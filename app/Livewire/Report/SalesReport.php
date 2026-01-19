@@ -52,6 +52,26 @@ class SalesReport extends Component
         $this->resetPage();
     }
 
+    public function showDetail(int $saleId)
+    {
+        $this->selectedSaleId = $saleId;
+    }
+
+    public function closeDetail()
+    {
+        $this->selectedSaleId = null;
+    }
+
+    #[Computed]
+    public function selectedSale()
+    {
+        if (!$this->selectedSaleId) return null;
+        
+        return Sale::with(['items.product:id,name', 'cashier:id,name'])
+            ->select('id', 'invoice_number', 'cashier_id', 'payment_method', 'total_amount', 'payment_amount', 'change_amount', 'notes', 'created_at')
+            ->find($this->selectedSaleId);
+    }
+
     private function updatePeriodBasedOnDates()
     {
         if (empty($this->dateFrom) || empty($this->dateTo)) {

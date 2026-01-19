@@ -4,49 +4,129 @@ namespace App\Livewire\Report;
 
 use Livewire\Component;
 use Livewire\WithPagination;
+use Livewire\Attributes\Title;
+use Livewire\Attributes\Computed;
 use App\Models\{Penalty, User};
-use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
+#[Title('Laporan Penalti')]
 class PenaltyReport extends Component
 {
     use WithPagination;
 
-    public $dateFrom;
-    public $dateTo;
-    public $userFilter = 'all';
-    public $statusFilter = 'all';
+    public string $dateFrom = '';
+    public string $dateTo = '';
+    public string $userFilter = 'all';
+    public string $statusFilter = 'all';
+    public string $period = 'month';
 
     public function mount()
     {
-        $this->dateFrom = now()->startOfMonth()->format('Y-m-d');
-        $this->dateTo = now()->format('Y-m-d');
+        $this->setPeriod('month');
+    }
+
+    public function setPeriod(string $period)
+    {
+        $this->period = $period;
+        $now = now();
+
+        [$this->dateFrom, $this->dateTo] = match ($period) {
+            'today' => [$now->format('Y-m-d'), $now->format('Y-m-d')],
+            'week' => [$now->copy()->startOfWeek()->format('Y-m-d'), $now->copy()->endOfWeek()->format('Y-m-d')],
+            'month' => [$now->copy()->startOfMonth()->format('Y-m-d'), $now->copy()->endOfMonth()->format('Y-m-d')],
+            'year' => [$now->copy()->startOfYear()->format('Y-m-d'), $now->copy()->endOfYear()->format('Y-m-d')],
+            default => [$this->dateFrom, $this->dateTo],
+        };
+
+        $this->resetPage();
+    }
+
+    public function updatedDateFrom()
+    {
+        $this->updatePeriodBasedOnDates();
+        $this->resetPage();
+    }
+
+    public function updatedDateTo()
+    {
+        $this->updatePeriodBasedOnDates();
+        $this->resetPage();
+    }
+
+    private function updatePeriodBasedOnDates()
+    {
+        if (empty($this->dateFrom) || empty($this->dateTo)) {
+            $this->period = 'custom';
+            return;
+        }
+
+        $now = now();
+        $dateFrom = \Carbon\Carbon::parse($this->dateFrom);
+        $dateTo = \Carbon\Carbon::parse($this->dateTo);
+
+        // Check if dates match predefined periods
+        if ($dateFrom->format('Y-m-d') === $now->format('Y-m-d') && 
+            $dateTo->format('Y-m-d') === $now->format('Y-m-d')) {
+            $this->period = 'today';
+        } elseif ($dateFrom->format('Y-m-d') === $now->copy()->startOfWeek()->format('Y-m-d') && 
+                  $dateTo->format('Y-m-d') === $now->copy()->endOfWeek()->format('Y-m-d')) {
+            $this->period = 'week';
+        } elseif ($dateFrom->format('Y-m-d') === $now->copy()->startOfMonth()->format('Y-m-d') && 
+                  $dateTo->format('Y-m-d') === $now->copy()->endOfMonth()->format('Y-m-d')) {
+            $this->period = 'month';
+        } elseif ($dateFrom->format('Y-m-d') === $now->copy()->startOfYear()->format('Y-m-d') && 
+                  $dateTo->format('Y-m-d') === $now->copy()->endOfYear()->format('Y-m-d')) {
+            $this->period = 'year';
+        } else {
+            $this->period = 'custom';
+        }
+    }
+
+    public function updatedUserFilter()
+    {
+        $this->resetPage();
+    }
+
+    public function updatedStatusFilter()
+    {
+        $this->resetPage();
+    }
+
+    #[Computed]
+    public function stats()
+    {
+        return DB::table('penalties')
+            ->whereBetween('date', [$this->dateFrom, $this->dateTo])
+            ->when($this->userFilter !== 'all', fn($q) => $q->where('user_id', $this->userFilter))
+            ->selectRaw("
+                COUNT(*) as total,
+                SUM(status = 'active') as active,
+                SUM(status = 'appealed') as appealed,
+                SUM(status = 'dismissed') as dismissed,
+                SUM(status = 'expired') as expired,
+                COALESCE(SUM(points), 0) as total_points
+            ")
+            ->first();
+    }
+
+    #[Computed]
+    public function users()
+    {
+        return User::select('id', 'name')->orderBy('name')->get();
     }
 
     public function render()
     {
-        $penalties = Penalty::with(['user:id,name,nim', 'penaltyType:id,name,code,points'])
+        $penalties = Penalty::query()
             ->whereBetween('date', [$this->dateFrom, $this->dateTo])
             ->when($this->userFilter !== 'all', fn($q) => $q->where('user_id', $this->userFilter))
             ->when($this->statusFilter !== 'all', fn($q) => $q->where('status', $this->statusFilter))
+            ->with(['user:id,name,nim', 'penaltyType:id,name,code'])
+            ->select('id', 'user_id', 'penalty_type_id', 'date', 'points', 'description', 'status')
             ->latest('date')
-            ->paginate(20);
+            ->paginate(15);
 
-        // Summary statistics
-        $stats = Penalty::whereBetween('date', [$this->dateFrom, $this->dateTo])
-            ->selectRaw('COUNT(*) as total')
-            ->selectRaw('SUM(CASE WHEN status = "active" THEN 1 ELSE 0 END) as active')
-            ->selectRaw('SUM(CASE WHEN status = "appealed" THEN 1 ELSE 0 END) as appealed')
-            ->selectRaw('SUM(CASE WHEN status = "dismissed" THEN 1 ELSE 0 END) as dismissed')
-            ->selectRaw('SUM(CASE WHEN status = "expired" THEN 1 ELSE 0 END) as expired')
-            ->selectRaw('SUM(points) as total_points')
-            ->first();
-
-        $users = User::orderBy('name')->get();
-
-        return view('livewire.report.penalty-report', [
-            'penalties' => $penalties,
-            'stats' => $stats,
-            'users' => $users,
-        ])->layout('layouts.app')->title('Laporan Penalti');
+        return view('livewire.report.penalty-report', ['penalties' => $penalties])
+            ->layout('layouts.app');
     }
 }
