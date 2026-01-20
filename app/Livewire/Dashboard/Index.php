@@ -5,12 +5,45 @@ namespace App\Livewire\Dashboard;
 use Livewire\Component;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Computed;
+use Livewire\Attributes\On;
 use App\Models\{ScheduleAssignment, Penalty, Notification, Attendance, User, Sale, Product, LeaveRequest, SwapRequest};
 use Illuminate\Support\Facades\DB;
 
 #[Title('Dashboard')]
 class Index extends Component
 {
+    /**
+     * Listen for schedule-updated event to refresh dashboard data
+     * This event is dispatched from CreateSchedule, EditSchedule, etc.
+     */
+    #[On('schedule-updated')]
+    public function onScheduleUpdated(): void
+    {
+        // Clear computed property cache by unsetting them
+        // This forces Livewire to re-compute on next access
+        unset($this->userStats);
+        unset($this->adminStats);
+    }
+
+    /**
+     * Listen for attendance-updated event
+     */
+    #[On('attendance-updated')]
+    public function onAttendanceUpdated(): void
+    {
+        unset($this->userStats);
+        unset($this->adminStats);
+    }
+
+    /**
+     * Listen for notification-updated event
+     */
+    #[On('notification-updated')]
+    public function onNotificationUpdated(): void
+    {
+        unset($this->userStats);
+    }
+
     #[Computed]
     public function isAdmin(): bool
     {

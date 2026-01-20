@@ -4,7 +4,7 @@ namespace App\Livewire\Schedule;
 
 use Livewire\Component;
 use Livewire\WithPagination;
-use Livewire\Attributes\{Title, Layout, Computed};
+use Livewire\Attributes\{Title, Layout, Computed, On};
 use App\Models\{Schedule, User, Availability};
 use Illuminate\Support\Facades\{DB, Cache};
 use Carbon\Carbon;
@@ -19,6 +19,21 @@ class Index extends Component
     public bool $showMemberModal = false;
     public ?array $selectedMemberAvailability = null;
     public ?string $selectedMemberName = null;
+
+    /**
+     * Listen for schedule-updated event to refresh data
+     */
+    #[On('schedule-updated')]
+    public function onScheduleUpdated(): void
+    {
+        // Clear computed property cache
+        unset($this->membersWithAvailability);
+        unset($this->availabilityStats);
+        
+        // Clear the cache for members availability
+        $weekStart = now()->startOfWeek(Carbon::MONDAY);
+        Cache::forget("members_availability_{$weekStart->format('Y-m-d')}");
+    }
 
     #[Computed]
     public function currentWeekStart(): Carbon
@@ -132,6 +147,9 @@ class Index extends Component
             
             $schedule->update(['status' => 'published']);
             
+            // Dispatch global event for other components
+            $this->dispatch('schedule-updated');
+            
             $this->dispatch('alert', type: 'success', message: 'Jadwal berhasil dipublish!');
             
         } catch (\Exception $e) {
@@ -153,6 +171,9 @@ class Index extends Component
             $schedule->delete();
             
             DB::commit();
+            
+            // Dispatch global event for other components
+            $this->dispatch('schedule-updated');
             
             $this->dispatch('alert', type: 'success', message: 'Jadwal berhasil dihapus!');
             

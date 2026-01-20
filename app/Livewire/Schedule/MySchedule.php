@@ -5,6 +5,7 @@ namespace App\Livewire\Schedule;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Livewire\Attributes\Title;
+use Livewire\Attributes\On;
 use App\Models\{Schedule, ScheduleAssignment};
 use Carbon\Carbon;
 
@@ -16,6 +17,16 @@ class MySchedule extends Component
     public $weekOffset = 0;
     public $currentWeekStart;
     public $currentWeekEnd;
+
+    /**
+     * Listen for schedule-updated event to refresh data
+     */
+    #[On('schedule-updated')]
+    public function onScheduleUpdated(): void
+    {
+        // Reset pagination and refresh data
+        $this->resetPage();
+    }
 
     public function mount()
     {

@@ -585,6 +585,9 @@ class CreateSchedule extends Component
             
             DB::commit();
             
+            // Dispatch global event for other components to listen
+            $this->dispatch('schedule-updated');
+            
             $this->dispatch('alert', type: 'success', message: 'Jadwal berhasil disimpan sebagai draft!');
             return $this->redirect(route('admin.schedule.index'), navigate: true);
             
@@ -631,6 +634,9 @@ class CreateSchedule extends Component
             $this->saveAssignments($schedule);
             
             DB::commit();
+            
+            // Dispatch global event for other components to listen
+            $this->dispatch('schedule-updated');
             
             $this->dispatch('alert', type: 'success', message: 'Jadwal berhasil dipublish!');
             return $this->redirect(route('admin.schedule.index'), navigate: true);

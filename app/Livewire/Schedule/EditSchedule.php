@@ -622,6 +622,9 @@ class EditSchedule extends Component
             // Refresh data
             $this->refreshData();
 
+            // Dispatch global event for other components (Dashboard, MySchedule, etc.)
+            $this->dispatch('schedule-updated');
+
             // Show success message
             $this->dispatch('notify', type: 'success', message: 'Perubahan berhasil disimpan.');
 
