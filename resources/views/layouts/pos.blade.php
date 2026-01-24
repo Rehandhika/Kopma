@@ -17,6 +17,9 @@
     </style>
 </head>
 <body class="bg-gray-50 dark:bg-gray-900 antialiased">
+    {{-- Maintenance Mode Warning Banner for Admins --}}
+    <x-layout.maintenance-banner />
+    
     {{ $slot }}
     
     @livewireScripts

@@ -22,6 +22,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'role_or_permission' => RoleOrPermissionMiddleware::class,
             'active' => \App\Http\Middleware\EnsureUserIsActive::class,
             'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
+            'maintenance' => \App\Http\Middleware\MaintenanceMiddleware::class,
         ]);
 
         // Global middleware for security
@@ -39,6 +40,7 @@ return Application::configure(basePath: dirname(__DIR__))
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             \App\Http\Middleware\SanitizeInput::class,
             \App\Http\Middleware\SetTimezone::class,
+            \App\Http\Middleware\MaintenanceMiddleware::class,
         ]);
 
         // Rate limiting for sensitive routes
@@ -48,6 +50,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->group('throttle-api', [
             'throttle:60,1', // 60 requests per minute
+            \App\Http\Middleware\MaintenanceMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

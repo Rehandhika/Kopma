@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="scroll-smooth">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="robots" content="noindex, nofollow">
+    
+    {{-- Auto-refresh every 60 seconds to check if maintenance ended --}}
+    <meta http-equiv="refresh" content="60">
+
+    <title>{{ config('app.name', 'SIKOPMA') }} - Maintenance</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600,700" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    
+    <!-- Styles -->
+    @vite(['resources/css/app.css'])
+    <style>
+        .font-grotesk { font-family: 'Space Grotesk', sans-serif; }
+        .glass-card {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+        .glow-pulse {
+            animation: glow-pulse 2s ease-in-out infinite;
+        }
+        @keyframes glow-pulse {
+            0%, 100% { box-shadow: 0 0 20px rgba(251, 191, 36, 0.3); }
+            50% { box-shadow: 0 0 40px rgba(251, 191, 36, 0.5); }
+        }
+        .gear-spin {
+            animation: gear-spin 8s linear infinite;
+        }
+        @keyframes gear-spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .gear-spin-reverse {
+            animation: gear-spin-reverse 6s linear infinite;
+        }
+        @keyframes gear-spin-reverse {
+            from { transform: rotate(360deg); }
+            to { transform: rotate(0deg); }
+        }
+    </style>
+</head>
+<body class="bg-slate-950 font-sans antialiased text-slate-300 selection:bg-amber-500/30 selection:text-amber-200">
+    
+    <!-- Ambient Dynamic Background -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none -z-10">
+        <div class="absolute top-[-10%] left-1/4 w-[600px] h-[600px] bg-amber-900/10 rounded-full blur-[120px] animate-pulse"></div>
+        <div class="absolute bottom-[-10%] right-1/4 w-[500px] h-[500px] bg-orange-900/10 rounded-full blur-[100px]"></div>
+        <div class="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.03]"></div>
+    </div>
+
+    <div class="min-h-screen flex flex-col">
+        
+        <!-- Minimal Navbar -->
+        <div class="sticky top-6 z-50 px-4 mb-8">
+            <div class="max-w-7xl mx-auto">
+                <nav class="glass-card rounded-2xl px-4 md:px-6 py-3 md:py-4 flex items-center justify-between">
+                    
+                    <!-- Brand / Logo -->
+                    <div class="flex items-center gap-3 group">
+                        <div class="relative w-10 h-10 flex items-center justify-center">
+                            <div class="absolute inset-0 bg-gradient-to-tr from-amber-600 to-orange-600 rounded-xl rotate-3"></div>
+                            <div class="absolute inset-0 bg-slate-950 rounded-xl rotate-3 scale-[0.9]"></div>
+                            <span class="relative font-grotesk font-bold text-xl text-white">S</span>
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="font-grotesk font-bold text-lg text-white tracking-tight leading-none">SIKOPMA</span>
+                            <span class="text-[10px] uppercase tracking-[0.2em] text-slate-500 hidden sm:block">Maintenance</span>
+                        </div>
+                    </div>
+
+                    <!-- Status Badge -->
+                    <div class="hidden md:flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-500/10 border border-amber-500/20">
+                        <span class="w-2 h-2 bg-amber-500 rounded-full animate-pulse"></span>
+                        <span class="text-xs font-medium text-amber-400 uppercase tracking-wider">Maintenance Mode</span>
+                    </div>
+
+                    <!-- Login Button -->
+                    <a href="{{ route('login') }}" 
+                       class="relative group px-5 py-2 rounded-xl overflow-hidden">
+                        <div class="absolute inset-0 bg-indigo-600/20 group-hover:bg-indigo-600/30 transition-colors"></div>
+                        <div class="absolute inset-0 border border-indigo-500/30 rounded-xl"></div>
+                        <span class="relative text-sm font-medium text-indigo-300 group-hover:text-white transition-colors flex items-center gap-2">
+                            <i class="fas fa-sign-in-alt"></i>
+                            <span class="hidden sm:inline">Login Admin</span>
+                            <span class="sm:hidden">Login</span>
+                        </span>
+                    </a>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <main class="flex-1 flex items-center justify-center px-4 py-12">
+            <div class="w-full max-w-lg text-center">
+                
+                <!-- Animated Gear Icon -->
+                <div class="relative w-32 h-32 mx-auto mb-8">
+                    <!-- Outer gear -->
+                    <div class="absolute inset-0 gear-spin">
+                        <svg class="w-full h-full text-amber-500/30" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 15.5A3.5 3.5 0 0 1 8.5 12 3.5 3.5 0 0 1 12 8.5a3.5 3.5 0 0 1 3.5 3.5 3.5 3.5 0 0 1-3.5 3.5m7.43-2.53c.04-.32.07-.64.07-.97 0-.33-.03-.66-.07-1l2.11-1.63c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.31-.61-.22l-2.49 1c-.52-.39-1.06-.73-1.69-.98l-.37-2.65A.506.506 0 0 0 14 2h-4c-.25 0-.46.18-.5.42l-.37 2.65c-.63.25-1.17.59-1.69.98l-2.49-1c-.22-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64L4.57 11c-.04.34-.07.67-.07 1 0 .33.03.65.07.97l-2.11 1.66c-.19.15-.25.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1.01c.52.4 1.06.74 1.69.99l.37 2.65c.04.24.25.42.5.42h4c.25 0 .46-.18.5-.42l.37-2.65c.63-.26 1.17-.59 1.69-.99l2.49 1.01c.22.08.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.66Z"/>
+                        </svg>
+                    </div>
+                    <!-- Inner gear -->
+                    <div class="absolute inset-4 gear-spin-reverse">
+                        <svg class="w-full h-full text-amber-500/50" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 15.5A3.5 3.5 0 0 1 8.5 12 3.5 3.5 0 0 1 12 8.5a3.5 3.5 0 0 1 3.5 3.5 3.5 3.5 0 0 1-3.5 3.5m7.43-2.53c.04-.32.07-.64.07-.97 0-.33-.03-.66-.07-1l2.11-1.63c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.31-.61-.22l-2.49 1c-.52-.39-1.06-.73-1.69-.98l-.37-2.65A.506.506 0 0 0 14 2h-4c-.25 0-.46.18-.5.42l-.37 2.65c-.63.25-1.17.59-1.69.98l-2.49-1c-.22-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64L4.57 11c-.04.34-.07.67-.07 1 0 .33.03.65.07.97l-2.11 1.66c-.19.15-.25.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1.01c.52.4 1.06.74 1.69.99l.37 2.65c.04.24.25.42.5.42h4c.25 0 .46-.18.5-.42l.37-2.65c.63-.26 1.17-.59 1.69-.99l2.49 1.01c.22.08.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.66Z"/>
+                        </svg>
+                    </div>
+                    <!-- Center icon -->
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <div class="w-12 h-12 bg-amber-500/20 rounded-full flex items-center justify-center glow-pulse">
+                            <i class="fas fa-wrench text-amber-400 text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Glass Card -->
+                <div class="glass-card rounded-2xl p-8 md:p-10">
+                    
+                    <!-- Title -->
+                    <h1 class="font-grotesk text-2xl md:text-3xl font-bold text-white mb-3">
+                        Sedang Dalam Pemeliharaan
+                    </h1>
+
+                    <!-- Message -->
+                    <p class="text-slate-400 mb-8 leading-relaxed">
+                        {{ $message ?? 'Sistem sedang dalam pemeliharaan untuk meningkatkan layanan. Silakan coba beberapa saat lagi.' }}
+                    </p>
+
+                    <!-- Estimated End Time -->
+                    @if(!empty($estimated_end))
+                        <div class="bg-slate-800/50 rounded-xl p-5 mb-8 border border-slate-700/50">
+                            <div class="flex items-center justify-center gap-3 mb-2">
+                                <i class="fas fa-clock text-amber-400"></i>
+                                <span class="text-sm text-slate-500 uppercase tracking-wider">Estimasi Selesai</span>
+                            </div>
+                            <p class="font-grotesk text-xl font-semibold text-white">
+                                {{ \Carbon\Carbon::parse($estimated_end)->locale('id')->isoFormat('dddd, D MMMM Y') }}
+                            </p>
+                            <p class="text-amber-400 font-mono text-lg">
+                                {{ \Carbon\Carbon::parse($estimated_end)->format('H:i') }} WIB
+                            </p>
+                        </div>
+                    @endif
+
+                    <!-- Auto-refresh notice -->
+                    <div class="flex items-center justify-center gap-2 text-sm text-slate-500">
+                        <div class="w-4 h-4 border-2 border-slate-600 border-t-amber-500 rounded-full animate-spin"></div>
+                        <span>Halaman akan refresh otomatis setiap 60 detik</span>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+
+        <!-- Minimal Footer -->
+        <footer class="mt-auto border-t border-white/5 bg-slate-950/80 backdrop-blur-lg">
+            <div class="max-w-7xl mx-auto px-6 py-6">
+                <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                    <div class="flex items-center gap-2">
+                        <span class="w-2 h-2 bg-amber-500 rounded-full animate-pulse"></span>
+                        <span class="text-xs font-grotesk text-slate-500 tracking-widest uppercase">SIKOPMA System v3.0</span>
+                    </div>
+                    
+                    <p class="text-xs text-slate-600 font-mono">
+                        {{ date('Y') }} &copy; Developed for Students
+                    </p>
+                </div>
+            </div>
+        </footer>
+    </div>
+</body>
+</html>

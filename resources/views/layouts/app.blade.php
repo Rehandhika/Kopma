@@ -97,6 +97,9 @@
 
         <!-- Main content -->
         <div class="flex-1 md:ml-64 flex flex-col min-h-screen min-w-0 overflow-x-hidden">
+            {{-- Maintenance Mode Warning Banner for Admins (inside main content area) --}}
+            <x-layout.maintenance-banner />
+            
             <!-- Top bar for mobile -->
             <header class="sticky top-0 z-10 bg-white border-b border-gray-200 md:hidden shadow-sm">
                 <div class="flex items-center justify-between px-4 py-3">
