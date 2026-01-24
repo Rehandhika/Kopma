@@ -31,12 +31,12 @@ class AuthenticationAuditTest extends AuditTestCase
 
     /**
      * Test login page renders correctly with NIM and password fields.
-     * Requirement 2.1: WHEN a guest accesses the login page (/admin/login) 
+     * Requirement 2.1: WHEN a guest accesses the login page (/admin/masuk) 
      * THEN the System SHALL display the login form with NIM and password fields
      */
     public function test_login_page_renders_correctly(): void
     {
-        $response = $this->get('/admin/login');
+        $response = $this->get('/admin/masuk');
         
         $response->assertStatus(200);
         // Verify the page contains login form elements
@@ -276,8 +276,8 @@ class AuthenticationAuditTest extends AuditTestCase
             ->post(route('admin.logout'));
 
         // After logout, trying to access protected route should redirect to login
-        $response = $this->get('/admin/dashboard');
-        $response->assertRedirect('/admin/login');
+        $response = $this->get('/admin/beranda');
+        $response->assertRedirect('/admin/masuk');
     }
 
     /**
@@ -289,17 +289,17 @@ class AuthenticationAuditTest extends AuditTestCase
     {
         // Test various protected routes
         $protectedRoutes = [
-            '/admin/dashboard',
-            '/admin/attendance',
-            '/admin/schedule',
-            '/admin/products',
-            '/admin/users',
-            '/admin/reports/attendance',
+            '/admin/beranda',
+            '/admin/absensi',
+            '/admin/jadwal',
+            '/admin/produk',
+            '/admin/pengguna',
+            '/admin/laporan/absensi',
         ];
 
         foreach ($protectedRoutes as $route) {
             $response = $this->get($route);
-            $response->assertRedirect('/admin/login');
+            $response->assertRedirect('/admin/masuk');
         }
     }
 
@@ -308,7 +308,7 @@ class AuthenticationAuditTest extends AuditTestCase
      */
     public function test_authenticated_user_can_access_dashboard(): void
     {
-        $response = $this->actingAs($this->anggota)->get('/admin/dashboard');
+        $response = $this->actingAs($this->anggota)->get('/admin/beranda');
         
         $response->assertStatus(200);
     }
@@ -318,9 +318,9 @@ class AuthenticationAuditTest extends AuditTestCase
      */
     public function test_authenticated_user_redirected_from_login_page(): void
     {
-        $response = $this->actingAs($this->anggota)->get('/admin/login');
+        $response = $this->actingAs($this->anggota)->get('/admin/masuk');
         
-        $response->assertRedirect('/admin/dashboard');
+        $response->assertRedirect('/admin/beranda');
     }
 
     /**

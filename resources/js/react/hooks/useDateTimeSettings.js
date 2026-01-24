@@ -114,7 +114,7 @@ let settingsPromise = null
 async function fetchSettings() {
     if (settingsPromise) return settingsPromise
     
-    settingsPromise = api.get('/api/public/datetime-settings')
+    settingsPromise = api.get('/api/publik/pengaturan-waktu')
         .then(response => {
             globalSettings = response.data?.data || DEFAULT_SETTINGS
             return globalSettings

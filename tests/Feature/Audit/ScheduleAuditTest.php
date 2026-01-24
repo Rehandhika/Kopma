@@ -161,9 +161,9 @@ class ScheduleAuditTest extends AuditTestCase
      */
     public function test_schedule_index_requires_authentication(): void
     {
-        $response = $this->get('/admin/schedule');
+        $response = $this->get('/admin/jadwal');
 
-        $response->assertRedirect('/admin/login');
+        $response->assertRedirect('/admin/masuk');
     }
 
     /**
@@ -174,7 +174,7 @@ class ScheduleAuditTest extends AuditTestCase
     public function test_schedule_creation_page_accessible(): void
     {
         $response = $this->actingAs($this->ketua)
-            ->get('/admin/schedule/create');
+            ->get('/admin/jadwal/buat');
 
         $response->assertStatus(200);
     }
@@ -413,9 +413,9 @@ class ScheduleAuditTest extends AuditTestCase
      */
     public function test_my_schedule_requires_authentication(): void
     {
-        $response = $this->get('/admin/schedule/my-schedule');
+        $response = $this->get('/admin/jadwal/jadwal-saya');
 
-        $response->assertRedirect('/admin/login');
+        $response->assertRedirect('/admin/masuk');
     }
 
     /**

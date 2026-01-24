@@ -369,9 +369,9 @@ class AttendanceAuditTest extends AuditTestCase
      */
     public function test_check_in_page_requires_authentication(): void
     {
-        $response = $this->get('/admin/attendance/check-in-out');
+        $response = $this->get('/admin/absensi/masuk-keluar');
         
-        $response->assertRedirect('/admin/login');
+        $response->assertRedirect('/admin/masuk');
     }
 
     /**
@@ -380,7 +380,7 @@ class AttendanceAuditTest extends AuditTestCase
     public function test_authenticated_user_can_access_check_in_page(): void
     {
         $response = $this->actingAs($this->anggota)
-            ->get('/admin/attendance/check-in-out');
+            ->get('/admin/absensi/masuk-keluar');
         
         $response->assertStatus(200);
     }

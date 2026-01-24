@@ -88,7 +88,7 @@ export function DateTimeProvider({ children, initialSettings = null }) {
     const fetchSettings = useCallback(async () => {
         try {
             setLoading(true)
-            const response = await api.get('/api/public/datetime-settings')
+            const response = await api.get('/api/publik/pengaturan-waktu')
             const data = response.data?.data || DEFAULT_SETTINGS
             setSettings(data)
             setError(null)

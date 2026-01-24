@@ -20,7 +20,7 @@ function useActivePath() {
 
 export default function PublicNavbar() {
     const path = useActivePath()
-    const isAbout = path === '/about'
+    const isAbout = path === '/tentang'
 
     return (
         <div className="sticky top-6 z-50 px-4 mb-8">
@@ -67,7 +67,7 @@ export default function PublicNavbar() {
                                 'text-muted-foreground hover:text-foreground',
                             ].join(' ')}
                         >
-                            <a href="/about">Tentang</a>
+                            <a href="/tentang">Tentang</a>
                         </Button>
                         <ThemeToggle />
                         <Button
@@ -75,7 +75,7 @@ export default function PublicNavbar() {
                             className="rounded-xl bg-indigo-600/15 hover:bg-indigo-600/25 text-indigo-700 dark:text-indigo-200 hover:text-indigo-900 dark:hover:text-white border border-indigo-500/30"
                             variant="outline"
                         >
-                            <a href="/admin/login">Login</a>
+                            <a href="/admin/masuk">Login</a>
                         </Button>
                     </div>
 
@@ -94,13 +94,13 @@ export default function PublicNavbar() {
                                         </a>
                                     </MenubarItem>
                                     <MenubarItem asChild>
-                                        <a href="/about" className="flex items-center gap-2">
+                                        <a href="/tentang" className="flex items-center gap-2">
                                             <Info className="h-4 w-4 text-muted-foreground" />
                                             Tentang
                                         </a>
                                     </MenubarItem>
                                     <MenubarItem asChild>
-                                        <a href="/admin/login" className="flex items-center gap-2">
+                                        <a href="/admin/masuk" className="flex items-center gap-2">
                                             <LogIn className="h-4 w-4 text-muted-foreground" />
                                             Login
                                         </a>

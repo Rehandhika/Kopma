@@ -37,7 +37,7 @@ class DashboardAuditTest extends AuditTestCase
      */
     public function test_dashboard_loads_for_authenticated_users(): void
     {
-        $response = $this->actingAs($this->anggota)->get('/admin/dashboard');
+        $response = $this->actingAs($this->anggota)->get('/admin/beranda');
         
         $response->assertStatus(200);
         $response->assertSee('Selamat datang');
@@ -49,7 +49,7 @@ class DashboardAuditTest extends AuditTestCase
      */
     public function test_dashboard_loads_for_super_admin(): void
     {
-        $response = $this->actingAs($this->superAdmin)->get('/admin/dashboard');
+        $response = $this->actingAs($this->superAdmin)->get('/admin/beranda');
         
         $response->assertStatus(200);
         $response->assertSee('Selamat datang');
@@ -61,7 +61,7 @@ class DashboardAuditTest extends AuditTestCase
      */
     public function test_dashboard_loads_for_ketua(): void
     {
-        $response = $this->actingAs($this->ketua)->get('/admin/dashboard');
+        $response = $this->actingAs($this->ketua)->get('/admin/beranda');
         
         $response->assertStatus(200);
         $response->assertSee('Selamat datang');
@@ -73,7 +73,7 @@ class DashboardAuditTest extends AuditTestCase
      */
     public function test_dashboard_loads_for_bph(): void
     {
-        $response = $this->actingAs($this->bph)->get('/admin/dashboard');
+        $response = $this->actingAs($this->bph)->get('/admin/beranda');
         
         $response->assertStatus(200);
         $response->assertSee('Selamat datang');
@@ -85,9 +85,9 @@ class DashboardAuditTest extends AuditTestCase
      */
     public function test_guest_cannot_access_dashboard(): void
     {
-        $response = $this->get('/admin/dashboard');
+        $response = $this->get('/admin/beranda');
         
-        $response->assertRedirect('/admin/login');
+        $response->assertRedirect('/admin/masuk');
     }
 
     /**
@@ -97,7 +97,7 @@ class DashboardAuditTest extends AuditTestCase
      */
     public function test_admin_sees_admin_statistics_section(): void
     {
-        $response = $this->actingAs($this->superAdmin)->get('/admin/dashboard');
+        $response = $this->actingAs($this->superAdmin)->get('/admin/beranda');
         
         $response->assertStatus(200);
         // Admin should see the admin stats section
@@ -113,7 +113,7 @@ class DashboardAuditTest extends AuditTestCase
      */
     public function test_ketua_sees_admin_statistics(): void
     {
-        $response = $this->actingAs($this->ketua)->get('/admin/dashboard');
+        $response = $this->actingAs($this->ketua)->get('/admin/beranda');
         
         $response->assertStatus(200);
         $response->assertSee('Statistik Hari Ini (Admin)');
@@ -124,7 +124,7 @@ class DashboardAuditTest extends AuditTestCase
      */
     public function test_wakil_ketua_sees_admin_statistics(): void
     {
-        $response = $this->actingAs($this->wakilKetua)->get('/admin/dashboard');
+        $response = $this->actingAs($this->wakilKetua)->get('/admin/beranda');
         
         $response->assertStatus(200);
         $response->assertSee('Statistik Hari Ini (Admin)');
@@ -135,7 +135,7 @@ class DashboardAuditTest extends AuditTestCase
      */
     public function test_bph_sees_admin_statistics(): void
     {
-        $response = $this->actingAs($this->bph)->get('/admin/dashboard');
+        $response = $this->actingAs($this->bph)->get('/admin/beranda');
         
         $response->assertStatus(200);
         $response->assertSee('Statistik Hari Ini (Admin)');
@@ -147,7 +147,7 @@ class DashboardAuditTest extends AuditTestCase
      */
     public function test_member_does_not_see_admin_statistics(): void
     {
-        $response = $this->actingAs($this->anggota)->get('/admin/dashboard');
+        $response = $this->actingAs($this->anggota)->get('/admin/beranda');
         
         $response->assertStatus(200);
         // Member should NOT see the admin stats section
@@ -161,7 +161,7 @@ class DashboardAuditTest extends AuditTestCase
      */
     public function test_member_sees_member_statistics(): void
     {
-        $response = $this->actingAs($this->anggota)->get('/admin/dashboard');
+        $response = $this->actingAs($this->anggota)->get('/admin/beranda');
         
         $response->assertStatus(200);
         // Member should see user stats cards
@@ -179,7 +179,7 @@ class DashboardAuditTest extends AuditTestCase
      */
     public function test_dashboard_displays_user_nim_and_role(): void
     {
-        $response = $this->actingAs($this->anggota)->get('/admin/dashboard');
+        $response = $this->actingAs($this->anggota)->get('/admin/beranda');
         
         $response->assertStatus(200);
         $response->assertSee('NIM: ' . $this->anggota->nim);
@@ -210,7 +210,7 @@ class DashboardAuditTest extends AuditTestCase
             'status' => 'present',
         ]);
 
-        $response = $this->actingAs($this->superAdmin)->get('/admin/dashboard');
+        $response = $this->actingAs($this->superAdmin)->get('/admin/beranda');
         
         $response->assertStatus(200);
         // Should show at least 1 present attendance
@@ -227,7 +227,7 @@ class DashboardAuditTest extends AuditTestCase
         $products = $this->seedProducts(2);
         $sale = $this->seedSale($this->ketua, $products);
 
-        $response = $this->actingAs($this->superAdmin)->get('/admin/dashboard');
+        $response = $this->actingAs($this->superAdmin)->get('/admin/beranda');
         
         $response->assertStatus(200);
         $response->assertSee('Penjualan');
@@ -239,7 +239,7 @@ class DashboardAuditTest extends AuditTestCase
      */
     public function test_admin_dashboard_displays_active_members_count(): void
     {
-        $response = $this->actingAs($this->superAdmin)->get('/admin/dashboard');
+        $response = $this->actingAs($this->superAdmin)->get('/admin/beranda');
         
         $response->assertStatus(200);
         // The dashboard should show active members count
@@ -258,7 +258,7 @@ class DashboardAuditTest extends AuditTestCase
             'status' => 'pending',
         ]);
 
-        $response = $this->actingAs($this->superAdmin)->get('/admin/dashboard');
+        $response = $this->actingAs($this->superAdmin)->get('/admin/beranda');
         
         $response->assertStatus(200);
         $response->assertSee('Persetujuan');
@@ -286,7 +286,7 @@ class DashboardAuditTest extends AuditTestCase
             'status' => 'present',
         ]);
 
-        $response = $this->actingAs($this->anggota)->get('/admin/dashboard');
+        $response = $this->actingAs($this->anggota)->get('/admin/beranda');
         
         $response->assertStatus(200);
         $response->assertSee('Kehadiran Bulan Ini');
@@ -302,7 +302,7 @@ class DashboardAuditTest extends AuditTestCase
         $penaltyTypes = $this->seedPenaltyTypes();
         $this->seedPenalty($this->anggota, $penaltyTypes[0]);
 
-        $response = $this->actingAs($this->anggota)->get('/admin/dashboard');
+        $response = $this->actingAs($this->anggota)->get('/admin/beranda');
         
         $response->assertStatus(200);
         $response->assertSee('Penalti Aktif');
@@ -346,7 +346,7 @@ class DashboardAuditTest extends AuditTestCase
      */
     public function test_dashboard_shows_empty_state_when_no_schedule(): void
     {
-        $response = $this->actingAs($this->anggota)->get('/admin/dashboard');
+        $response = $this->actingAs($this->anggota)->get('/admin/beranda');
         
         $response->assertStatus(200);
         $response->assertSee('Tidak ada jadwal hari ini');
@@ -357,7 +357,7 @@ class DashboardAuditTest extends AuditTestCase
      */
     public function test_dashboard_shows_empty_state_when_no_notifications(): void
     {
-        $response = $this->actingAs($this->anggota)->get('/admin/dashboard');
+        $response = $this->actingAs($this->anggota)->get('/admin/beranda');
         
         $response->assertStatus(200);
         $response->assertSee('Tidak ada notifikasi baru');
@@ -368,7 +368,7 @@ class DashboardAuditTest extends AuditTestCase
      */
     public function test_dashboard_displays_current_date(): void
     {
-        $response = $this->actingAs($this->anggota)->get('/admin/dashboard');
+        $response = $this->actingAs($this->anggota)->get('/admin/beranda');
         
         $response->assertStatus(200);
         // Check that the date is displayed

@@ -140,8 +140,8 @@ export default function ProductDetailPage({ slug, initialData }) {
             setLoading(true)
             try {
                 const [productRes, aboutRes] = await Promise.all([
-                    api.get(`/api/public/products/${encodeURIComponent(slug)}`),
-                    api.get('/api/public/about'),
+                    api.get(`/api/publik/produk/${encodeURIComponent(slug)}`),
+                    api.get('/api/publik/tentang'),
                 ])
                 if (!cancelled) {
                     setProduct(productRes.data?.data ?? null)
@@ -380,7 +380,7 @@ export default function ProductDetailPage({ slug, initialData }) {
                                     Lihat detail di halaman Tentang
                                 </div>
                                 <Button asChild variant="ghost" className="text-primary">
-                                    <a href="/about">Buka Tentang</a>
+                                    <a href="/tentang">Buka Tentang</a>
                                 </Button>
                             </CardContent>
                         </Card>

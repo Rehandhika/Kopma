@@ -14,7 +14,7 @@ export default function StoreStatusPopover() {
 
     const load = React.useCallback(async (signal) => {
         try {
-            const res = await api.get('/api/public/store-status', { signal })
+            const res = await api.get('/api/publik/status-toko', { signal })
             setStatus(res.data?.data ?? null)
             setError(false)
             lastFetchedAtRef.current = Date.now()

@@ -77,13 +77,13 @@ class RouteAccessTest extends TestCase
 
         // Test core admin routes
         $this->actingAs($admin)
-            ->get('/admin/dashboard')->assertOk();
+            ->get('/admin/beranda')->assertOk();
         $this->actingAs($admin)
-            ->get('/admin/users')->assertOk();
+            ->get('/admin/pengguna')->assertOk();
         $this->actingAs($admin)
-            ->get('/admin/reports/attendance')->assertOk();
+            ->get('/admin/laporan/absensi')->assertOk();
         $this->actingAs($admin)
-            ->get('/admin/reports/sales')->assertOk();
+            ->get('/admin/laporan/penjualan')->assertOk();
     }
 
     public function test_member_can_access_member_routes(): void
@@ -92,21 +92,21 @@ class RouteAccessTest extends TestCase
 
         // Members can access dashboard and their own data
         $this->actingAs($member)
-            ->get('/admin/dashboard')->assertOk();
+            ->get('/admin/beranda')->assertOk();
         $this->actingAs($member)
-            ->get('/admin/attendance')->assertOk();
+            ->get('/admin/absensi')->assertOk();
         $this->actingAs($member)
-            ->get('/admin/schedule/my-schedule')->assertOk();
+            ->get('/admin/jadwal/jadwal-saya')->assertOk();
         $this->actingAs($member)
-            ->get('/admin/penalties/my-penalties')->assertOk();
+            ->get('/admin/penalti/penalti-saya')->assertOk();
     }
 
     public function test_guest_cannot_access_admin_routes(): void
     {
         // Guest should be redirected to login
-        $this->get('/admin/dashboard')->assertRedirect('/admin/login');
-        $this->get('/admin/users')->assertRedirect('/admin/login');
-        $this->get('/admin/products')->assertRedirect('/admin/login');
+        $this->get('/admin/beranda')->assertRedirect('/admin/masuk');
+        $this->get('/admin/pengguna')->assertRedirect('/admin/masuk');
+        $this->get('/admin/produk')->assertRedirect('/admin/masuk');
     }
 
     public function test_store_settings_requires_specific_roles(): void
@@ -117,10 +117,10 @@ class RouteAccessTest extends TestCase
 
         // Admin can access store settings
         $this->actingAs($admin)
-            ->get('/admin/settings/store')->assertOk();
+            ->get('/admin/pengaturan/toko')->assertOk();
 
         // Member cannot access store settings (has role middleware)
         $this->actingAs($member)
-            ->get('/admin/settings/store')->assertForbidden();
+            ->get('/admin/pengaturan/toko')->assertForbidden();
     }
 }

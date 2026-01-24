@@ -90,7 +90,7 @@ export default function AboutPage({ initialData }) {
         if (seeded) return
         ;(async () => {
             try {
-                const res = await api.get('/api/public/about')
+                const res = await api.get('/api/publik/tentang')
                 setData(res.data?.data ?? null)
             } finally {
                 setLoading(false)

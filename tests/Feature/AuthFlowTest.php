@@ -13,13 +13,13 @@ class AuthFlowTest extends TestCase
 
     public function test_guest_is_redirected_to_login_when_accessing_protected_route(): void
     {
-        $this->get('/admin/dashboard')
-            ->assertRedirect('/admin/login');
+        $this->get('/admin/beranda')
+            ->assertRedirect('/admin/masuk');
     }
 
     public function test_login_page_loads(): void
     {
-        $this->get('/admin/login')->assertOk();
+        $this->get('/admin/masuk')->assertOk();
     }
 
     public function test_authenticated_user_can_access_dashboard(): void
@@ -33,7 +33,7 @@ class AuthFlowTest extends TestCase
         ]);
 
         $this->actingAs($user)
-            ->get('/admin/dashboard')
+            ->get('/admin/beranda')
             ->assertOk();
     }
 }

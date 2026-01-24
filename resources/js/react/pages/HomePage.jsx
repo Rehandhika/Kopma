@@ -52,7 +52,7 @@ function BannerSection({ initialBanners }) {
         if (Array.isArray(initialBanners)) return
         ;(async () => {
             try {
-                const res = await api.get('/api/public/banners')
+                const res = await api.get('/api/publik/banner')
                 setBanners(res.data?.data ?? [])
             } finally {
                 setLoading(false)
@@ -128,7 +128,7 @@ function ProductsSection({ initialCategories, initialProducts }) {
     React.useEffect(() => {
         if (Array.isArray(initialCategories)) return
         ;(async () => {
-            const res = await api.get('/api/public/categories')
+            const res = await api.get('/api/publik/kategori')
             setCategories(res.data?.data ?? [])
         })()
     }, [initialCategories])
@@ -157,7 +157,7 @@ function ProductsSection({ initialCategories, initialProducts }) {
         ;(async () => {
             setLoading(true)
             try {
-                const res = await api.get('/api/public/products', {
+                const res = await api.get('/api/publik/produk', {
                     params: {
                         search: debouncedSearch || undefined,
                         category: category || undefined,
@@ -261,7 +261,7 @@ function ProductsSection({ initialCategories, initialProducts }) {
                             return (
                                 <a
                                     key={p.id}
-                                    href={`/products/${p.slug}`}
+                                    href={`/produk/${p.slug}`}
                                     className="group relative flex flex-col overflow-hidden bg-card/40 hover:bg-card/60 border border-border/40 hover:border-primary/30 rounded-2xl transition-all duration-300 ease-out hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-0.5 active:scale-[0.98]"
                                 >
                                     {/* Image Container */}

@@ -14,18 +14,18 @@ use App\Livewire\Dashboard\Index as DashboardIndex;
 */
 
 Route::middleware(['signed'])->group(function () {
-    Route::get('/file/download/{path}/{disk?}', [FileDownloadController::class, 'download'])
+    Route::get('/berkas/unduh/{path}/{disk?}', [FileDownloadController::class, 'download'])
         ->name('file.download')
         ->where('path', '.*');
     
-    Route::get('/file/view/{path}/{disk?}', [FileDownloadController::class, 'view'])
+    Route::get('/berkas/lihat/{path}/{disk?}', [FileDownloadController::class, 'view'])
         ->name('file.view')
         ->where('path', '.*');
 });
 
 // Authenticated file access (for private files that require login)
 Route::middleware(['auth', 'signed'])->group(function () {
-    Route::get('/file/secure/{path}/{disk?}', [FileDownloadController::class, 'download'])
+    Route::get('/berkas/aman/{path}/{disk?}', [FileDownloadController::class, 'download'])
         ->name('file.secure.download')
         ->where('path', '.*');
 });
@@ -40,26 +40,26 @@ Route::middleware(['auth', 'signed'])->group(function () {
 Route::get('/', [PublicPageController::class, 'home'])->name('home');
 
 // Public Products
-Route::get('/products', [PublicPageController::class, 'home'])->name('public.products');
+Route::get('/produk', [PublicPageController::class, 'home'])->name('public.products');
 
 // Public Product Detail
-Route::get('/products/{slug}', [PublicPageController::class, 'product'])->name('public.products.show');
+Route::get('/produk/{slug}', [PublicPageController::class, 'product'])->name('public.products.show');
 
 // Public About page
-Route::get('/about', [PublicPageController::class, 'about'])->name('public.about');
+Route::get('/tentang', [PublicPageController::class, 'about'])->name('public.about');
 
 // Public JSON API (for React public pages)
-Route::prefix('api/public')
+Route::prefix('api/publik')
     ->middleware('throttle-api')
     ->name('api.public.')
     ->group(function () {
-        Route::get('/about', [PublicHomeApiController::class, 'about'])->name('about');
-        Route::get('/banners', [PublicHomeApiController::class, 'banners'])->name('banners');
-        Route::get('/categories', [PublicHomeApiController::class, 'categories'])->name('categories');
-        Route::get('/products', [PublicHomeApiController::class, 'products'])->name('products');
-        Route::get('/products/{slug}', [PublicHomeApiController::class, 'product'])->name('products.show');
-        Route::get('/store-status', [PublicHomeApiController::class, 'storeStatus'])->name('store-status');
-        Route::get('/datetime-settings', [PublicHomeApiController::class, 'dateTimeSettings'])->name('datetime-settings');
+        Route::get('/tentang', [PublicHomeApiController::class, 'about'])->name('about');
+        Route::get('/banner', [PublicHomeApiController::class, 'banners'])->name('banners');
+        Route::get('/kategori', [PublicHomeApiController::class, 'categories'])->name('categories');
+        Route::get('/produk', [PublicHomeApiController::class, 'products'])->name('products');
+        Route::get('/produk/{slug}', [PublicHomeApiController::class, 'product'])->name('products.show');
+        Route::get('/status-toko', [PublicHomeApiController::class, 'storeStatus'])->name('store-status');
+        Route::get('/pengaturan-waktu', [PublicHomeApiController::class, 'dateTimeSettings'])->name('datetime-settings');
     });
 
 // Temporary test route for public layout
@@ -148,7 +148,7 @@ Route::get('/alpine-test', function () {
 */
 
 Route::middleware('guest')->group(function () {
-    Route::get('/admin/login', \App\Livewire\Auth\LoginForm::class)->name('login');
+    Route::get('/admin/masuk', \App\Livewire\Auth\LoginForm::class)->name('login');
 });
 
 /*
@@ -157,22 +157,27 @@ Route::middleware('guest')->group(function () {
 |--------------------------------------------------------------------------
 */
 
-Route::redirect('/login', '/admin/login');
-Route::redirect('/dashboard', '/admin/dashboard');
-Route::redirect('/attendance', '/admin/attendance');
-Route::redirect('/schedule', '/admin/schedule');
-Route::redirect('/cashier', '/admin/cashier');
-Route::redirect('/stock', '/admin/stock');
-Route::redirect('/purchase', '/admin/purchase');
-Route::redirect('/leave', '/admin/leave');
-Route::redirect('/swap', '/admin/swap');
-Route::redirect('/penalties', '/admin/penalties');
-Route::redirect('/reports', '/admin/reports');
-Route::redirect('/users', '/admin/users');
-Route::redirect('/roles', '/admin/roles');
-Route::redirect('/settings', '/admin/settings');
-Route::redirect('/profile', '/admin/profile');
-Route::redirect('/notifications', '/admin/notifications');
+Route::redirect('/login', '/admin/masuk');
+Route::redirect('/admin/login', '/admin/masuk');
+Route::redirect('/dashboard', '/admin/beranda');
+Route::redirect('/attendance', '/admin/absensi');
+Route::redirect('/schedule', '/admin/jadwal');
+Route::redirect('/cashier', '/admin/kasir');
+Route::redirect('/stock', '/admin/stok');
+Route::redirect('/purchase', '/admin/pembelian');
+Route::redirect('/leave', '/admin/cuti');
+Route::redirect('/swap', '/admin/tukar-jadwal');
+Route::redirect('/penalties', '/admin/penalti');
+Route::redirect('/reports', '/admin/laporan');
+Route::redirect('/users', '/admin/pengguna');
+Route::redirect('/roles', '/admin/peran');
+Route::redirect('/settings', '/admin/pengaturan');
+Route::redirect('/profile', '/admin/profil');
+Route::redirect('/notifications', '/admin/notifikasi');
+
+// Old English routes redirect to new Indonesian routes
+Route::redirect('/products', '/produk');
+Route::redirect('/about', '/tentang');
 
 /*
 |--------------------------------------------------------------------------
@@ -184,127 +189,127 @@ Route::prefix('admin')
     ->middleware(['auth'])
     ->name('admin.')
     ->group(function () {
-        // Dashboard
-        Route::get('/dashboard', DashboardIndex::class)->name('dashboard');
+        // Dashboard (Beranda)
+        Route::get('/beranda', DashboardIndex::class)->name('dashboard');
         
-        // Logout
-        Route::post('/logout', [LogoutController::class, 'logout'])->name('logout');
+        // Logout (Keluar)
+        Route::post('/keluar', [LogoutController::class, 'logout'])->name('logout');
         
-        // Attendance
-        Route::prefix('attendance')->name('attendance.')->group(function () {
-            Route::get('/check-in-out', \App\Livewire\Attendance\CheckInOut::class)->name('check-in-out');
+        // Attendance (Absensi)
+        Route::prefix('absensi')->name('attendance.')->group(function () {
+            Route::get('/masuk-keluar', \App\Livewire\Attendance\CheckInOut::class)->name('check-in-out');
             Route::get('/', \App\Livewire\Admin\AttendanceManagement::class)->name('index');
-            Route::get('/history', \App\Livewire\Attendance\History::class)->name('history');
+            Route::get('/riwayat', \App\Livewire\Attendance\History::class)->name('history');
         });
         
-        // Schedule
-        Route::prefix('schedule')->name('schedule.')->group(function () {
+        // Schedule (Jadwal)
+        Route::prefix('jadwal')->name('schedule.')->group(function () {
             Route::get('/', \App\Livewire\Schedule\Index::class)->name('index');
-            Route::get('/create', \App\Livewire\Schedule\CreateSchedule::class)->name('create');
-            Route::get('/my-schedule', \App\Livewire\Schedule\MySchedule::class)->name('my-schedule');
-            Route::get('/availability', \App\Livewire\Schedule\AvailabilityManager::class)->name('availability');
-            Route::get('/test-availability', \App\Livewire\Schedule\TestAvailability::class)->name('test-availability');
-            Route::get('/calendar', \App\Livewire\Schedule\ScheduleCalendar::class)->name('calendar');
+            Route::get('/buat', \App\Livewire\Schedule\CreateSchedule::class)->name('create');
+            Route::get('/jadwal-saya', \App\Livewire\Schedule\MySchedule::class)->name('my-schedule');
+            Route::get('/ketersediaan', \App\Livewire\Schedule\AvailabilityManager::class)->name('availability');
+            Route::get('/test-ketersediaan', \App\Livewire\Schedule\TestAvailability::class)->name('test-availability');
+            Route::get('/kalender', \App\Livewire\Schedule\ScheduleCalendar::class)->name('calendar');
             Route::get('/generator', \App\Livewire\Schedule\ScheduleGenerator::class)->name('generator');
-            Route::get('/{schedule}/edit', \App\Livewire\Schedule\EditSchedule::class)->name('edit');
-            Route::get('/{schedule}/history', \App\Livewire\Schedule\EditHistory::class)->name('history');
+            Route::get('/{schedule}/ubah', \App\Livewire\Schedule\EditSchedule::class)->name('edit');
+            Route::get('/{schedule}/riwayat', \App\Livewire\Schedule\EditHistory::class)->name('history');
         });
         
-        // Cashier / POS
-        Route::prefix('cashier')->name('cashier.')->group(function () {
+        // Cashier / POS (Kasir)
+        Route::prefix('kasir')->name('cashier.')->group(function () {
             Route::get('/pos', \App\Livewire\Cashier\Pos::class)->name('pos');
             
             // POS Entry - restricted to admin roles only (Requirements 10.1, 10.2)
-            Route::get('/pos-entry', \App\Livewire\Cashier\PosEntry::class)
+            Route::get('/entri-pos', \App\Livewire\Cashier\PosEntry::class)
                 ->middleware('role:Super Admin|Ketua|Wakil Ketua')
                 ->name('pos-entry');
         });
         
-        // Products
-        Route::prefix('products')->name('products.')->group(function () {
+        // Products (Produk)
+        Route::prefix('produk')->name('products.')->group(function () {
             Route::get('/', \App\Livewire\Product\Index::class)->name('index');
-            Route::get('/list', \App\Livewire\Product\ProductList::class)->name('list');
-            Route::get('/create', \App\Livewire\Product\CreateProduct::class)->name('create');
-            Route::get('/{product}/edit', \App\Livewire\Product\EditProduct::class)->name('edit');
+            Route::get('/daftar', \App\Livewire\Product\ProductList::class)->name('list');
+            Route::get('/buat', \App\Livewire\Product\CreateProduct::class)->name('create');
+            Route::get('/{product}/ubah', \App\Livewire\Product\EditProduct::class)->name('edit');
         });
         
-        // Stock - Unified single page management
-        Route::prefix('stock')->name('stock.')->group(function () {
+        // Stock (Stok) - Unified single page management
+        Route::prefix('stok')->name('stock.')->group(function () {
             Route::get('/', \App\Livewire\Stock\StockManager::class)->name('index');
             // Legacy routes redirect to new unified page
-            Route::redirect('/adjustment', '/admin/stock?activeTab=history')->name('adjustment');
+            Route::redirect('/penyesuaian', '/admin/stok?activeTab=history')->name('adjustment');
         });
         
-        // Purchase
-        Route::prefix('purchase')->name('purchase.')->group(function () {
+        // Purchase (Pembelian)
+        Route::prefix('pembelian')->name('purchase.')->group(function () {
             Route::get('/', \App\Livewire\Purchase\Index::class)->name('index');
-            Route::get('/list', \App\Livewire\Purchase\PurchaseList::class)->name('list');
+            Route::get('/daftar', \App\Livewire\Purchase\PurchaseList::class)->name('list');
         });
         
-        // Leave Requests - Redesigned Single Page
-        Route::prefix('leave')->name('leave.')->group(function () {
+        // Leave Requests (Cuti) - Redesigned Single Page
+        Route::prefix('cuti')->name('leave.')->group(function () {
             Route::get('/', \App\Livewire\Leave\LeaveManager::class)->name('index');
             // Legacy routes redirect to new unified page
-            Route::redirect('/my-requests', '/admin/leave')->name('my-requests');
-            Route::redirect('/create', '/admin/leave')->name('create');
-            Route::redirect('/approvals', '/admin/leave?tab=approvals')->name('approvals');
+            Route::redirect('/permintaan-saya', '/admin/cuti')->name('my-requests');
+            Route::redirect('/buat', '/admin/cuti')->name('create');
+            Route::redirect('/persetujuan', '/admin/cuti?tab=approvals')->name('approvals');
         });
         
-        // Schedule Change Requests (formerly Swap) - Unified Single Page
-        Route::prefix('swap')->name('swap.')->group(function () {
+        // Schedule Change Requests (Tukar Jadwal) - Unified Single Page
+        Route::prefix('tukar-jadwal')->name('swap.')->group(function () {
             Route::get('/', \App\Livewire\Schedule\ScheduleChangeManager::class)->name('index');
             // Legacy routes redirect
-            Route::redirect('/my-requests', '/admin/swap')->name('my-requests');
-            Route::redirect('/create', '/admin/swap')->name('create');
-            Route::redirect('/approvals', '/admin/swap?tab=admin')->name('approvals');
+            Route::redirect('/permintaan-saya', '/admin/tukar-jadwal')->name('my-requests');
+            Route::redirect('/buat', '/admin/tukar-jadwal')->name('create');
+            Route::redirect('/persetujuan', '/admin/tukar-jadwal?tab=admin')->name('approvals');
         });
         
-        // Penalties
-        Route::prefix('penalties')->name('penalties.')->group(function () {
+        // Penalties (Penalti)
+        Route::prefix('penalti')->name('penalties.')->group(function () {
             Route::get('/', \App\Livewire\Penalty\Index::class)->name('index');
-            Route::get('/my-penalties', \App\Livewire\Penalty\MyPenalties::class)->name('my-penalties');
-            Route::get('/manage', \App\Livewire\Penalty\ManagePenalties::class)->name('manage');
+            Route::get('/penalti-saya', \App\Livewire\Penalty\MyPenalties::class)->name('my-penalties');
+            Route::get('/kelola', \App\Livewire\Penalty\ManagePenalties::class)->name('manage');
         });
         
-        // Reports
-        Route::prefix('reports')->name('reports.')->group(function () {
-            Route::get('/attendance', \App\Livewire\Report\AttendanceReport::class)->name('attendance');
-            Route::get('/sales', \App\Livewire\Report\SalesReport::class)->name('sales');
-            Route::get('/penalties', \App\Livewire\Report\PenaltyReport::class)->name('penalties');
+        // Reports (Laporan)
+        Route::prefix('laporan')->name('reports.')->group(function () {
+            Route::get('/absensi', \App\Livewire\Report\AttendanceReport::class)->name('attendance');
+            Route::get('/penjualan', \App\Livewire\Report\SalesReport::class)->name('sales');
+            Route::get('/penalti', \App\Livewire\Report\PenaltyReport::class)->name('penalties');
         });
         
 
-        // Users Management
-        Route::prefix('users')->name('users.')->group(function () {
+        // Users Management (Pengguna)
+        Route::prefix('pengguna')->name('users.')->group(function () {
             Route::get('/', \App\Livewire\User\Index::class)->name('index');
-            Route::get('/management', \App\Livewire\User\UserManagement::class)->name('management');
+            Route::get('/manajemen', \App\Livewire\User\UserManagement::class)->name('management');
         });
         
-        // Roles & Permissions
-        Route::prefix('roles')->name('roles.')->group(function () {
+        // Roles & Permissions (Peran)
+        Route::prefix('peran')->name('roles.')->group(function () {
             Route::get('/', \App\Livewire\Role\Index::class)->name('index');
         });
         
-        // Settings
-        Route::prefix('settings')->name('settings.')->group(function () {
-            Route::get('/general', \App\Livewire\Settings\General::class)->name('general');
-            Route::get('/system', \App\Livewire\Settings\SystemSettings::class)->name('system');
-            Route::get('/store', \App\Livewire\Admin\Settings\StoreSettings::class)
+        // Settings (Pengaturan)
+        Route::prefix('pengaturan')->name('settings.')->group(function () {
+            Route::get('/umum', \App\Livewire\Settings\General::class)->name('general');
+            Route::get('/sistem', \App\Livewire\Settings\SystemSettings::class)->name('system');
+            Route::get('/toko', \App\Livewire\Admin\Settings\StoreSettings::class)
                 ->middleware('role:Super Admin|Ketua|Wakil Ketua')
                 ->name('store');
-            Route::get('/banners', \App\Livewire\Admin\BannerManagement::class)
+            Route::get('/banner', \App\Livewire\Admin\BannerManagement::class)
                 ->middleware('role:Super Admin|Ketua')
                 ->name('banners');
         });
         
-        // Profile
-        Route::prefix('profile')->name('profile.')->group(function () {
-            Route::get('/edit', \App\Livewire\Profile\Edit::class)->name('edit');
+        // Profile (Profil)
+        Route::prefix('profil')->name('profile.')->group(function () {
+            Route::get('/ubah', \App\Livewire\Profile\Edit::class)->name('edit');
         });
         
-        // Notifications
-        Route::prefix('notifications')->name('notifications.')->group(function () {
+        // Notifications (Notifikasi)
+        Route::prefix('notifikasi')->name('notifications.')->group(function () {
             Route::get('/', \App\Livewire\Notification\Index::class)->name('index');
-            Route::get('/my-notifications', \App\Livewire\Notification\MyNotifications::class)->name('my-notifications');
+            Route::get('/notifikasi-saya', \App\Livewire\Notification\MyNotifications::class)->name('my-notifications');
         });
     });

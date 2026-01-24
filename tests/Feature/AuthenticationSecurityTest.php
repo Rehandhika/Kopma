@@ -163,16 +163,16 @@ class AuthenticationSecurityTest extends TestCase
             'status' => 'active',
         ]);
 
-        $response = $this->actingAs($user)->get('/admin/login');
+        $response = $this->actingAs($user)->get('/admin/masuk');
 
-        $response->assertRedirect('/admin/dashboard');
+        $response->assertRedirect('/admin/beranda');
     }
 
     public function test_guest_cannot_access_dashboard(): void
     {
-        $response = $this->get('/admin/dashboard');
+        $response = $this->get('/admin/beranda');
 
-        $response->assertRedirect('/admin/login');
+        $response->assertRedirect('/admin/masuk');
     }
 
     public function test_authenticated_user_can_logout(): void
@@ -208,9 +208,9 @@ class AuthenticationSecurityTest extends TestCase
             ->post(route('admin.logout'));
 
         // Try to access protected route after logout
-        $response = $this->get('/admin/dashboard');
+        $response = $this->get('/admin/beranda');
 
-        $response->assertRedirect('/admin/login');
+        $response->assertRedirect('/admin/masuk');
     }
 
     public function test_active_user_can_access_dashboard(): void
@@ -223,7 +223,7 @@ class AuthenticationSecurityTest extends TestCase
             'status' => 'active',
         ]);
 
-        $response = $this->actingAs($user)->get('/admin/dashboard');
+        $response = $this->actingAs($user)->get('/admin/beranda');
 
         $response->assertStatus(200);
     }
@@ -244,7 +244,7 @@ class AuthenticationSecurityTest extends TestCase
 
         // Suspended users can still access dashboard if already authenticated
         // (middleware 'active' is not applied to admin routes)
-        $response = $this->actingAs($user)->get('/admin/dashboard');
+        $response = $this->actingAs($user)->get('/admin/beranda');
 
         // Current behavior: suspended users can access if already authenticated
         $response->assertStatus(200);
