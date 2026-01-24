@@ -292,7 +292,6 @@ Route::prefix('admin')
         
         // Settings (Pengaturan)
         Route::prefix('pengaturan')->name('settings.')->group(function () {
-            Route::get('/umum', \App\Livewire\Settings\General::class)->name('general');
             Route::get('/sistem', \App\Livewire\Settings\SystemSettings::class)->name('system');
             Route::get('/toko', \App\Livewire\Admin\Settings\StoreSettings::class)
                 ->middleware('role:Super Admin|Ketua|Wakil Ketua')

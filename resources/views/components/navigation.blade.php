@@ -263,12 +263,6 @@ $dropdownButtonBaseClasses = 'w-full flex items-center justify-between px-3 py-2
          id="settings-submenu"
          class="ml-8 mt-1 space-y-1"
          role="menu">
-        <a href="{{ route('admin.settings.general') }}" 
-           class="{{ $submenuLinkBaseClasses }} {{ request()->routeIs('admin.settings.general') ? $submenuLinkActiveClasses : $submenuLinkInactiveClasses }}"
-           role="menuitem"
-           aria-current="{{ request()->routeIs('admin.settings.general') ? 'page' : 'false' }}">
-            Pengaturan Umum
-        </a>
         <a href="{{ route('admin.settings.system') }}" 
            class="{{ $submenuLinkBaseClasses }} {{ request()->routeIs('admin.settings.system') ? $submenuLinkActiveClasses : $submenuLinkInactiveClasses }}"
            role="menuitem"

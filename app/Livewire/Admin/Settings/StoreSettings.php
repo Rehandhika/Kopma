@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Admin\Settings;
 
+use App\Models\AcademicHoliday;
 use App\Services\StoreStatusService;
 use Carbon\Carbon;
 use Livewire\Component;
@@ -10,14 +11,24 @@ class StoreSettings extends Component
 {
     public $currentStatus = [];
     public $statusLoaded = false;
-    public $operatingHours = [];
-    
-    // Contact information properties
-    public $contactPhone = '';
-    public $contactEmail = '';
-    public $contactWhatsapp = '';
-    public $contactAddress = '';
-    public $aboutText = '';
+
+    // Next Open Mode properties
+    public $nextOpenMode = 'default';
+    public $customClosedMessage = '';
+    public $customNextOpenDate = '';
+    public $academicHolidayStart = '';
+    public $academicHolidayEnd = '';
+    public $academicHolidayName = '';
+
+    // Academic Holidays list
+    public $academicHolidays = [];
+    public $showHolidayForm = false;
+    public $editingHolidayId = null;
+    public $holidayForm = [
+        'name' => '',
+        'start_date' => '',
+        'end_date' => '',
+    ];
 
     protected StoreStatusService $storeStatusService;
 
@@ -28,34 +39,35 @@ class StoreSettings extends Component
 
     public function mount()
     {
-        // Check authorization
         if (!auth()->user()->hasAnyRole(['Super Admin', 'Ketua', 'Wakil Ketua'])) {
             abort(403, 'Anda tidak memiliki akses ke halaman ini.');
         }
 
         $this->refreshStatus();
-        $this->loadOperatingHours();
-        $this->loadContactInfo();
+        $this->loadNextOpenSettings();
+        $this->loadAcademicHolidays();
     }
 
-    public function loadOperatingHours()
+    public function loadNextOpenSettings()
     {
         $setting = \App\Models\StoreSetting::first();
         
-        if ($setting && $setting->operating_hours) {
-            $this->operatingHours = $setting->operating_hours;
-        } else {
-            // Default operating hours
-            $this->operatingHours = [
-                'monday' => ['open' => '07:30', 'close' => '16:00', 'is_open' => true],
-                'tuesday' => ['open' => '07:30', 'close' => '16:00', 'is_open' => true],
-                'wednesday' => ['open' => '07:30', 'close' => '16:00', 'is_open' => true],
-                'thursday' => ['open' => '07:30', 'close' => '16:00', 'is_open' => true],
-                'friday' => ['open' => null, 'close' => null, 'is_open' => false],
-                'saturday' => ['open' => null, 'close' => null, 'is_open' => false],
-                'sunday' => ['open' => null, 'close' => null, 'is_open' => false],
-            ];
+        if ($setting) {
+            $this->nextOpenMode = $setting->next_open_mode ?? 'default';
+            $this->customClosedMessage = $setting->custom_closed_message ?? '';
+            $this->customNextOpenDate = $setting->custom_next_open_date?->format('Y-m-d') ?? '';
+            $this->academicHolidayStart = $setting->academic_holiday_start?->format('Y-m-d') ?? '';
+            $this->academicHolidayEnd = $setting->academic_holiday_end?->format('Y-m-d') ?? '';
+            $this->academicHolidayName = $setting->academic_holiday_name ?? '';
         }
+    }
+
+    public function loadAcademicHolidays()
+    {
+        $this->academicHolidays = AcademicHoliday::orderBy('start_date', 'desc')
+            ->take(20)
+            ->get()
+            ->toArray();
     }
 
     public function refreshStatus()
@@ -64,28 +76,7 @@ class StoreSettings extends Component
         $this->statusLoaded = true;
     }
 
-    public function closeFor(int $hours)
-    {
-        $reason = "Tutup sementara selama {$hours} jam";
-        $until = Carbon::now()->addHours($hours);
-        
-        $this->storeStatusService->manualClose($reason, $until);
-        $this->refreshStatus();
-        
-        $this->dispatch('alert', type: 'success', message: "Koperasi ditutup sementara selama {$hours} jam");
-    }
-
-    public function closeUntilTomorrow()
-    {
-        $tomorrow = Carbon::tomorrow()->setTime(8, 0);
-        $reason = "Tutup hingga besok pagi";
-        
-        $this->storeStatusService->manualClose($reason, $tomorrow);
-        $this->refreshStatus();
-        
-        $this->dispatch('alert', type: 'success', message: 'Koperasi ditutup hingga besok pagi (07:30)');
-    }
-
+    // Override Buka methods
     public function enableOpenOverride()
     {
         $this->storeStatusService->manualOpenOverride(true);
@@ -102,6 +93,7 @@ class StoreSettings extends Component
         $this->dispatch('alert', type: 'success', message: 'Override buka dinonaktifkan - kembali ke jadwal normal');
     }
 
+    // Manual Mode methods
     public function enableManualMode()
     {
         $reason = 'Mode manual diaktifkan oleh admin';
@@ -132,139 +124,152 @@ class StoreSettings extends Component
     public function resetToAuto()
     {
         $this->storeStatusService->backToAutoMode();
+        $this->storeStatusService->resetToDefaultMode();
+        $this->loadNextOpenSettings();
         $this->refreshStatus();
         
         $this->dispatch('alert', type: 'success', message: 'Semua pengaturan manual direset - kembali ke mode otomatis');
     }
 
-    public function loadContactInfo()
+    // Next Open Mode methods
+    public function saveNextOpenSettings()
     {
-        $setting = \App\Models\StoreSetting::first();
-        
-        if ($setting) {
-            $this->contactPhone = $setting->contact_phone ?? '';
-            $this->contactEmail = $setting->contact_email ?? '';
-            $this->contactWhatsapp = $setting->contact_whatsapp ?? '';
-            $this->contactAddress = $setting->contact_address ?? '';
-            $this->aboutText = $setting->about_text ?? '';
-        }
-    }
+        if ($this->nextOpenMode === 'custom') {
+            // Validate
+            if (empty($this->academicHolidayName) && empty($this->customClosedMessage)) {
+                $this->dispatch('alert', type: 'error', message: 'Harap isi nama libur atau pesan kustom');
+                return;
+            }
 
-    public function saveOperatingHours()
-    {
-        // Validate operating hours
-        $errors = [];
-        
-        foreach (['monday', 'tuesday', 'wednesday', 'thursday'] as $day) {
-            if (!isset($this->operatingHours[$day])) {
-                continue;
-            }
-            
-            $dayData = $this->operatingHours[$day];
-            
-            // Skip validation if day is not open
-            if (!($dayData['is_open'] ?? false)) {
-                continue;
-            }
-            
-            $open = $dayData['open'] ?? null;
-            $close = $dayData['close'] ?? null;
-            
-            // Validate time format (HH:MM)
-            if ($open && !preg_match('/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/', $open)) {
-                $errors[$day . '_open'] = 'Format waktu buka tidak valid (gunakan format HH:MM)';
-            }
-            
-            if ($close && !preg_match('/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/', $close)) {
-                $errors[$day . '_close'] = 'Format waktu tutup tidak valid (gunakan format HH:MM)';
-            }
-            
-            // Validate close time is after open time
-            if ($open && $close) {
-                $openTime = strtotime($open);
-                $closeTime = strtotime($close);
+            if (!empty($this->academicHolidayStart) && !empty($this->academicHolidayEnd)) {
+                $start = Carbon::parse($this->academicHolidayStart);
+                $end = Carbon::parse($this->academicHolidayEnd);
                 
-                if ($closeTime <= $openTime) {
-                    $errors[$day . '_time'] = 'Waktu tutup harus setelah waktu buka';
+                if ($end->lt($start)) {
+                    $this->dispatch('alert', type: 'error', message: 'Tanggal akhir harus setelah tanggal mulai');
+                    return;
                 }
             }
-        }
-        
-        if (!empty($errors)) {
-            foreach ($errors as $error) {
-                $this->dispatch('alert', type: 'error', message: $error);
-            }
-            return;
-        }
-        
-        // Save operating hours
-        $setting = \App\Models\StoreSetting::first();
-        
-        if (!$setting) {
-            $setting = \App\Models\StoreSetting::create([
-                'operating_hours' => $this->operatingHours,
-            ]);
+
+            $this->storeStatusService->setCustomNextOpenMode(
+                $this->customClosedMessage ?: null,
+                !empty($this->customNextOpenDate) ? Carbon::parse($this->customNextOpenDate) : null,
+                !empty($this->academicHolidayStart) ? Carbon::parse($this->academicHolidayStart) : null,
+                !empty($this->academicHolidayEnd) ? Carbon::parse($this->academicHolidayEnd) : null,
+                $this->academicHolidayName ?: null
+            );
+
+            $this->dispatch('alert', type: 'success', message: 'Mode kustom berhasil diaktifkan');
         } else {
-            $setting->update([
-                'operating_hours' => $this->operatingHours,
-            ]);
+            $this->storeStatusService->resetToDefaultMode();
+            $this->dispatch('alert', type: 'success', message: 'Kembali ke mode default');
         }
-        
-        // Trigger status update to apply new operating hours
-        $this->storeStatusService->forceUpdate();
+
         $this->refreshStatus();
-        
-        $this->dispatch('alert', type: 'success', message: 'Jam operasional berhasil disimpan');
     }
 
-    public function saveContactInfo()
+    public function resetNextOpenMode()
     {
-        // Validate email format
-        if (!empty($this->contactEmail) && !filter_var($this->contactEmail, FILTER_VALIDATE_EMAIL)) {
-            $this->dispatch('alert', type: 'error', message: 'Format email tidak valid');
+        $this->storeStatusService->resetToDefaultMode();
+        $this->loadNextOpenSettings();
+        $this->refreshStatus();
+        
+        $this->dispatch('alert', type: 'success', message: 'Mode keterangan buka direset ke default');
+    }
+
+    // Academic Holiday CRUD methods
+    public function openHolidayForm()
+    {
+        $this->showHolidayForm = true;
+        $this->editingHolidayId = null;
+        $this->holidayForm = [
+            'name' => '',
+            'start_date' => '',
+            'end_date' => '',
+        ];
+    }
+
+    public function editHoliday($id)
+    {
+        $holiday = AcademicHoliday::find($id);
+        if ($holiday) {
+            $this->editingHolidayId = $id;
+            $this->showHolidayForm = true;
+            $this->holidayForm = [
+                'name' => $holiday->name,
+                'start_date' => $holiday->start_date->format('Y-m-d'),
+                'end_date' => $holiday->end_date->format('Y-m-d'),
+            ];
+        }
+    }
+
+    public function saveHoliday()
+    {
+        if (empty($this->holidayForm['name'])) {
+            $this->dispatch('alert', type: 'error', message: 'Nama libur harus diisi');
             return;
         }
-        
-        // Validate phone number format (Indonesian format)
-        if (!empty($this->contactPhone)) {
-            $phone = preg_replace('/[^0-9+]/', '', $this->contactPhone);
-            if (!preg_match('/^(\+62|62|0)[0-9]{8,12}$/', $phone)) {
-                $this->dispatch('alert', type: 'error', message: 'Format nomor telepon tidak valid (gunakan format Indonesia)');
-                return;
-            }
+
+        if (empty($this->holidayForm['start_date']) || empty($this->holidayForm['end_date'])) {
+            $this->dispatch('alert', type: 'error', message: 'Tanggal mulai dan akhir harus diisi');
+            return;
         }
-        
-        // Validate WhatsApp number format (Indonesian format)
-        if (!empty($this->contactWhatsapp)) {
-            $whatsapp = preg_replace('/[^0-9+]/', '', $this->contactWhatsapp);
-            if (!preg_match('/^(\+62|62|0)[0-9]{8,12}$/', $whatsapp)) {
-                $this->dispatch('alert', type: 'error', message: 'Format nomor WhatsApp tidak valid (gunakan format Indonesia)');
-                return;
-            }
+
+        $start = Carbon::parse($this->holidayForm['start_date']);
+        $end = Carbon::parse($this->holidayForm['end_date']);
+
+        if ($end->lt($start)) {
+            $this->dispatch('alert', type: 'error', message: 'Tanggal akhir harus setelah tanggal mulai');
+            return;
         }
-        
-        // Save contact information
-        $setting = \App\Models\StoreSetting::first();
-        
-        if (!$setting) {
-            $setting = \App\Models\StoreSetting::create([
-                'contact_phone' => $this->contactPhone,
-                'contact_email' => $this->contactEmail,
-                'contact_whatsapp' => $this->contactWhatsapp,
-                'contact_address' => $this->contactAddress,
-                'about_text' => $this->aboutText,
-            ]);
+
+        $data = [
+            'name' => $this->holidayForm['name'],
+            'start_date' => $start,
+            'end_date' => $end,
+            'is_active' => true,
+        ];
+
+        if ($this->editingHolidayId) {
+            AcademicHoliday::where('id', $this->editingHolidayId)->update($data);
+            $this->dispatch('alert', type: 'success', message: 'Libur berhasil diperbarui');
         } else {
-            $setting->update([
-                'contact_phone' => $this->contactPhone,
-                'contact_email' => $this->contactEmail,
-                'contact_whatsapp' => $this->contactWhatsapp,
-                'contact_address' => $this->contactAddress,
-                'about_text' => $this->aboutText,
-            ]);
+            $data['created_by'] = auth()->id();
+            AcademicHoliday::create($data);
+            $this->dispatch('alert', type: 'success', message: 'Libur berhasil ditambahkan');
         }
-        
-        $this->dispatch('alert', type: 'success', message: 'Informasi kontak berhasil disimpan');
+
+        $this->showHolidayForm = false;
+        $this->editingHolidayId = null;
+        $this->loadAcademicHolidays();
+        $this->storeStatusService->forceUpdate();
+        $this->refreshStatus();
+    }
+
+    public function cancelHolidayForm()
+    {
+        $this->showHolidayForm = false;
+        $this->editingHolidayId = null;
+    }
+
+    public function toggleHolidayStatus($id)
+    {
+        $holiday = AcademicHoliday::find($id);
+        if ($holiday) {
+            $holiday->update(['is_active' => !$holiday->is_active]);
+            $this->loadAcademicHolidays();
+            $this->storeStatusService->forceUpdate();
+            $this->refreshStatus();
+        }
+    }
+
+    public function deleteHoliday($id)
+    {
+        AcademicHoliday::where('id', $id)->delete();
+        $this->loadAcademicHolidays();
+        $this->storeStatusService->forceUpdate();
+        $this->refreshStatus();
+        $this->dispatch('alert', type: 'success', message: 'Libur berhasil dihapus');
     }
 
     public function render()

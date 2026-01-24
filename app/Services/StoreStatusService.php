@@ -217,6 +217,9 @@ class StoreStatusService
                     'attendees' => [],
                     'mode' => 'auto',
                     'next_open_time' => null,
+                    'next_open_mode' => 'default',
+                    'academic_holiday' => null,
+                    'custom_message' => null,
                 ];
             }
 
@@ -236,12 +239,35 @@ class StoreStatusService
                 $mode = 'override';
             }
 
+            // Get academic holiday info
+            $academicHoliday = null;
+            $activeHoliday = \App\Models\AcademicHoliday::active()->current()->first();
+            if ($activeHoliday) {
+                $academicHoliday = [
+                    'name' => $activeHoliday->name,
+                    'start_date' => $activeHoliday->start_date->toDateString(),
+                    'end_date' => $activeHoliday->end_date->toDateString(),
+                    'formatted_period' => $activeHoliday->getFormattedPeriod(),
+                ];
+            } elseif ($setting->isInAcademicHoliday()) {
+                $academicHoliday = [
+                    'name' => $setting->academic_holiday_name,
+                    'start_date' => $setting->academic_holiday_start->toDateString(),
+                    'end_date' => $setting->academic_holiday_end->toDateString(),
+                    'formatted_period' => $setting->academic_holiday_start->locale('id')->isoFormat('D MMMM') . ' - ' . 
+                                         $setting->academic_holiday_end->locale('id')->isoFormat('D MMMM YYYY'),
+                ];
+            }
+
             return [
                 'is_open' => $setting->is_open,
                 'reason' => $this->getStatusReason($setting),
                 'attendees' => $attendees,
                 'mode' => $mode,
                 'next_open_time' => $this->getNextOpenTime($setting),
+                'next_open_mode' => $setting->next_open_mode ?? 'default',
+                'academic_holiday' => $academicHoliday,
+                'custom_message' => $this->getClosedMessage($setting),
             ];
         });
     }
@@ -272,19 +298,43 @@ class StoreStatusService
         }
 
         $now = $this->now();
-        $operatingHours = $setting->operating_hours ?? $this->getDefaultOperatingHours();
         $locale = $this->dateTimeService->getLocale();
 
-        // If temporarily closed, return when it expires
+        // Priority 1: Check for custom mode (academic holidays)
+        if ($setting->next_open_mode === StoreSetting::MODE_CUSTOM) {
+            // If custom next open date is set
+            if ($setting->custom_next_open_date && $setting->custom_next_open_date->isFuture()) {
+                return $setting->custom_next_open_date->locale($locale)->isoFormat('dddd, D MMMM YYYY');
+            }
+            
+            // If in academic holiday period
+            if ($setting->isInAcademicHoliday()) {
+                $endDate = $setting->academic_holiday_end;
+                // Next open is the day after holiday ends
+                $nextOpenDate = $endDate->copy()->addDay();
+                return $nextOpenDate->locale($locale)->isoFormat('dddd, D MMMM YYYY');
+            }
+        }
+
+        // Priority 2: Check academic_holidays table for active holiday
+        $activeHoliday = \App\Models\AcademicHoliday::active()->current()->first();
+        if ($activeHoliday) {
+            $nextOpenDate = $activeHoliday->end_date->copy()->addDay();
+            return $nextOpenDate->locale($locale)->isoFormat('dddd, D MMMM YYYY');
+        }
+
+        // Priority 3: If temporarily closed, return when it expires
         if ($setting->manual_close_until && $setting->manual_close_until->isFuture()) {
             return $setting->manual_close_until->locale($locale)->isoFormat('dddd, D MMM YYYY [pukul] HH:mm');
         }
 
-        // If in manual mode, no predictable next open time
+        // Priority 4: If in manual mode, no predictable next open time
         if ($setting->manual_mode) {
             return null;
         }
 
+        // Priority 5: Calculate based on operating hours (default mode)
+        $operatingHours = $setting->operating_hours ?? $this->getDefaultOperatingHours();
         $dayOfWeek = strtolower($now->format('l'));
         $todaySchedule = $operatingHours[$dayOfWeek] ?? null;
 
@@ -297,8 +347,6 @@ class StoreStatusService
             if ($now->lt($openTime)) {
                 return $openTime->locale($locale)->isoFormat('dddd, D MMM YYYY [pukul] HH:mm');
             }
-
-            // If after closing time today, find next operating day
         }
 
         // Find next operating day
@@ -312,12 +360,132 @@ class StoreStatusService
 
             if ($nextSchedule && $nextSchedule['is_open']) {
                 $nextDate = $now->copy()->addDays($i);
+                
+                // Check if next date falls within academic holiday
+                $holidayOnDate = \App\Models\AcademicHoliday::active()->inRange($nextDate)->first();
+                if ($holidayOnDate) {
+                    // Skip to after holiday
+                    $nextDate = $holidayOnDate->end_date->copy()->addDay();
+                    // Find next operating day after holiday
+                    $postHolidayDay = strtolower($nextDate->format('l'));
+                    $postHolidaySchedule = $operatingHours[$postHolidayDay] ?? null;
+                    
+                    if ($postHolidaySchedule && $postHolidaySchedule['is_open']) {
+                        $nextOpenTime = Carbon::parse($postHolidaySchedule['open'], $this->dateTimeService->getTimezone())->setDateFrom($nextDate);
+                        return $nextOpenTime->locale($locale)->isoFormat('dddd, D MMMM YYYY [pukul] HH:mm');
+                    }
+                    continue;
+                }
+                
                 $nextOpenTime = Carbon::parse($nextSchedule['open'], $this->dateTimeService->getTimezone())->setDateFrom($nextDate);
                 return $nextOpenTime->locale($locale)->isoFormat('dddd, D MMM YYYY [pukul] HH:mm');
             }
         }
 
         return null;
+    }
+
+    /**
+     * Get custom closed message for display
+     */
+    public function getClosedMessage(StoreSetting $setting): ?string
+    {
+        // Check for custom message
+        if ($setting->next_open_mode === StoreSetting::MODE_CUSTOM && $setting->custom_closed_message) {
+            return $setting->custom_closed_message;
+        }
+
+        // Check for active academic holiday
+        $activeHoliday = \App\Models\AcademicHoliday::active()->current()->first();
+        if ($activeHoliday) {
+            return "Tutup karena {$activeHoliday->name}";
+        }
+
+        // Check inline academic holiday
+        if ($setting->isInAcademicHoliday() && $setting->academic_holiday_name) {
+            return "Tutup karena {$setting->academic_holiday_name}";
+        }
+
+        return null;
+    }
+
+    /**
+     * Set custom next open mode for academic holidays
+     */
+    public function setCustomNextOpenMode(
+        ?string $message = null,
+        ?\Carbon\Carbon $nextOpenDate = null,
+        ?\Carbon\Carbon $holidayStart = null,
+        ?\Carbon\Carbon $holidayEnd = null,
+        ?string $holidayName = null
+    ): void {
+        $setting = StoreSetting::firstOrCreate(
+            ['id' => 1],
+            [
+                'is_open' => false,
+                'auto_status' => true,
+                'manual_mode' => false,
+                'operating_hours' => $this->getDefaultOperatingHours(),
+            ]
+        );
+
+        $setting->update([
+            'next_open_mode' => StoreSetting::MODE_CUSTOM,
+            'custom_closed_message' => $message,
+            'custom_next_open_date' => $nextOpenDate,
+            'academic_holiday_start' => $holidayStart,
+            'academic_holiday_end' => $holidayEnd,
+            'academic_holiday_name' => $holidayName,
+            'manual_set_by' => auth()->id(),
+            'manual_set_at' => $this->now(),
+        ]);
+
+        Log::channel('store')->info('Custom next open mode activated', [
+            'admin' => auth()->user()?->name ?? 'System',
+            'message' => $message,
+            'next_open_date' => $nextOpenDate?->toDateString(),
+            'holiday_period' => $holidayStart && $holidayEnd 
+                ? "{$holidayStart->toDateString()} - {$holidayEnd->toDateString()}" 
+                : null,
+            'holiday_name' => $holidayName,
+            'timestamp' => $this->now()->toDateTimeString(),
+        ]);
+
+        $this->forceUpdate();
+    }
+
+    /**
+     * Reset to default next open mode
+     */
+    public function resetToDefaultMode(): void
+    {
+        $setting = StoreSetting::firstOrCreate(
+            ['id' => 1],
+            [
+                'is_open' => false,
+                'auto_status' => true,
+                'manual_mode' => false,
+                'operating_hours' => $this->getDefaultOperatingHours(),
+            ]
+        );
+
+        $setting->update([
+            'next_open_mode' => StoreSetting::MODE_DEFAULT,
+            'custom_closed_message' => null,
+            'custom_next_open_date' => null,
+            'academic_holiday_start' => null,
+            'academic_holiday_end' => null,
+            'academic_holiday_name' => null,
+            'manual_set_by' => auth()->id(),
+            'manual_set_at' => $this->now(),
+        ]);
+
+        Log::channel('store')->info('Reset to default next open mode', [
+            'admin' => auth()->user()?->name ?? 'System',
+            'timestamp' => $this->now()->toDateTimeString(),
+        ]);
+
+        $this->forceUpdate();
     }
 
     /**
