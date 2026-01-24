@@ -67,9 +67,9 @@
                     <!-- Login Button -->
                     <a href="{{ route('login') }}" 
                        class="relative group px-5 py-2 rounded-xl overflow-hidden">
-                        <div class="absolute inset-0 bg-indigo-600/20 group-hover:bg-indigo-600/30 transition-colors"></div>
-                        <div class="absolute inset-0 border border-indigo-500/30 rounded-xl"></div>
-                        <span class="relative text-sm font-medium text-indigo-300 group-hover:text-white transition-colors flex items-center gap-2">
+                        <div class="absolute inset-0 bg-blue-600/20 group-hover:bg-blue-600/30 transition-colors"></div>
+                        <div class="absolute inset-0 border border-blue-500/30 rounded-xl"></div>
+                        <span class="relative text-sm font-medium text-blue-300 group-hover:text-white transition-colors flex items-center gap-2">
                             <i class="fas fa-sign-in-alt"></i>
                             <span class="hidden sm:inline">Login Admin</span>
                             <span class="sm:hidden">Login</span>

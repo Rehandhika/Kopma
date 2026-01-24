@@ -6,13 +6,13 @@
                     {!! __('pagination.previous') !!}
                 </span>
             @else
-                <a href="{{ $paginator->previousPageUrl() }}" class="relative inline-flex items-center px-4 py-2 text-sm font-medium text-slate-300 bg-slate-900/50 border border-white/10 rounded-md leading-5 hover:text-white hover:bg-slate-800 focus:outline-none focus:ring ring-indigo-500/50 focus:border-indigo-500 active:bg-slate-800 transition ease-in-out duration-150 backdrop-blur-sm">
+                <a href="{{ $paginator->previousPageUrl() }}" class="relative inline-flex items-center px-4 py-2 text-sm font-medium text-slate-300 bg-slate-900/50 border border-white/10 rounded-md leading-5 hover:text-white hover:bg-slate-800 focus:outline-none focus:ring ring-blue-500/50 focus:border-blue-500 active:bg-slate-800 transition ease-in-out duration-150 backdrop-blur-sm">
                     {!! __('pagination.previous') !!}
                 </a>
             @endif
 
             @if ($paginator->hasMorePages())
-                <a href="{{ $paginator->nextPageUrl() }}" class="relative inline-flex items-center px-4 py-2 ml-3 text-sm font-medium text-slate-300 bg-slate-900/50 border border-white/10 rounded-md leading-5 hover:text-white hover:bg-slate-800 focus:outline-none focus:ring ring-indigo-500/50 focus:border-indigo-500 active:bg-slate-800 transition ease-in-out duration-150 backdrop-blur-sm">
+                <a href="{{ $paginator->nextPageUrl() }}" class="relative inline-flex items-center px-4 py-2 ml-3 text-sm font-medium text-slate-300 bg-slate-900/50 border border-white/10 rounded-md leading-5 hover:text-white hover:bg-slate-800 focus:outline-none focus:ring ring-blue-500/50 focus:border-blue-500 active:bg-slate-800 transition ease-in-out duration-150 backdrop-blur-sm">
                     {!! __('pagination.next') !!}
                 </a>
             @else
@@ -47,7 +47,7 @@
                             </span>
                         </span>
                     @else
-                        <a href="{{ $paginator->previousPageUrl() }}" rel="prev" class="relative inline-flex items-center px-2 py-2 text-sm font-medium text-slate-400 bg-slate-900/30 border border-white/10 rounded-l-md leading-5 hover:text-white hover:bg-slate-800 focus:z-10 focus:outline-none focus:ring ring-indigo-500/50 focus:border-indigo-500 active:bg-slate-800 transition ease-in-out duration-150 backdrop-blur-sm" aria-label="{{ __('pagination.previous') }}">
+                        <a href="{{ $paginator->previousPageUrl() }}" rel="prev" class="relative inline-flex items-center px-2 py-2 text-sm font-medium text-slate-400 bg-slate-900/30 border border-white/10 rounded-l-md leading-5 hover:text-white hover:bg-slate-800 focus:z-10 focus:outline-none focus:ring ring-blue-500/50 focus:border-blue-500 active:bg-slate-800 transition ease-in-out duration-150 backdrop-blur-sm" aria-label="{{ __('pagination.previous') }}">
                             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
                             </svg>
@@ -68,10 +68,10 @@
                             @foreach ($element as $page => $url)
                                 @if ($page == $paginator->currentPage())
                                     <span aria-current="page">
-                                        <span class="relative inline-flex items-center px-4 py-2 -ml-px text-sm font-bold text-indigo-400 bg-indigo-900/20 border border-indigo-500/50 cursor-default leading-5 shadow-[0_0_10px_rgba(99,102,241,0.3)] backdrop-blur-sm">{{ $page }}</span>
+                                        <span class="relative inline-flex items-center px-4 py-2 -ml-px text-sm font-bold text-blue-400 bg-blue-900/20 border border-blue-500/50 cursor-default leading-5 shadow-[0_0_10px_rgba(59,130,246,0.3)] backdrop-blur-sm">{{ $page }}</span>
                                     </span>
                                 @else
-                                    <a href="{{ $url }}" class="relative inline-flex items-center px-4 py-2 -ml-px text-sm font-medium text-slate-400 bg-slate-900/30 border border-white/10 leading-5 hover:text-white hover:bg-slate-800 focus:z-10 focus:outline-none focus:ring ring-indigo-500/50 focus:border-indigo-500 active:bg-slate-800 transition ease-in-out duration-150 backdrop-blur-sm" aria-label="{{ __('Go to page :page', ['page' => $page]) }}">
+                                    <a href="{{ $url }}" class="relative inline-flex items-center px-4 py-2 -ml-px text-sm font-medium text-slate-400 bg-slate-900/30 border border-white/10 leading-5 hover:text-white hover:bg-slate-800 focus:z-10 focus:outline-none focus:ring ring-blue-500/50 focus:border-blue-500 active:bg-slate-800 transition ease-in-out duration-150 backdrop-blur-sm" aria-label="{{ __('Go to page :page', ['page' => $page]) }}">
                                         {{ $page }}
                                     </a>
                                 @endif
@@ -81,7 +81,7 @@
 
                     {{-- Next Page Link --}}
                     @if ($paginator->hasMorePages())
-                        <a href="{{ $paginator->nextPageUrl() }}" rel="next" class="relative inline-flex items-center px-2 py-2 -ml-px text-sm font-medium text-slate-400 bg-slate-900/30 border border-white/10 rounded-r-md leading-5 hover:text-white hover:bg-slate-800 focus:z-10 focus:outline-none focus:ring ring-indigo-500/50 focus:border-indigo-500 active:bg-slate-800 transition ease-in-out duration-150 backdrop-blur-sm" aria-label="{{ __('pagination.next') }}">
+                        <a href="{{ $paginator->nextPageUrl() }}" rel="next" class="relative inline-flex items-center px-2 py-2 -ml-px text-sm font-medium text-slate-400 bg-slate-900/30 border border-white/10 rounded-r-md leading-5 hover:text-white hover:bg-slate-800 focus:z-10 focus:outline-none focus:ring ring-blue-500/50 focus:border-blue-500 active:bg-slate-800 transition ease-in-out duration-150 backdrop-blur-sm" aria-label="{{ __('pagination.next') }}">
                             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
                             </svg>

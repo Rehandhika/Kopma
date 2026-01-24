@@ -77,26 +77,58 @@ export default function StoreStatusPopover() {
     const attendees = Array.isArray(status?.attendees) ? status.attendees : []
     const nextOpenTime = status?.next_open_time ?? null
 
+    // Cinematic glow styles based on status with smooth transition
+    const glowStyle = React.useMemo(() => {
+        const baseTransition = 'box-shadow 0.8s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.8s cubic-bezier(0.4, 0, 0.2, 1)'
+        if (loading || error) return { transition: baseTransition }
+        return isOpen
+            ? {
+                  boxShadow: '0 0 15px rgba(16, 185, 129, 0.3), 0 0 30px rgba(16, 185, 129, 0.15), 0 0 45px rgba(16, 185, 129, 0.08)',
+                  transition: baseTransition,
+              }
+            : {
+                  boxShadow: '0 0 15px rgba(244, 63, 94, 0.3), 0 0 30px rgba(244, 63, 94, 0.15), 0 0 45px rgba(244, 63, 94, 0.08)',
+                  transition: baseTransition,
+              }
+    }, [loading, error, isOpen])
+
     return (
         <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
                 <Button
                     variant="outline"
+                    style={glowStyle}
                     className={[
-                        'h-9 rounded-full border-border bg-background/60 hover:bg-accent',
+                        'h-9 rounded-full bg-background/70 backdrop-blur-sm',
+                        'transition-all duration-700 ease-out',
                         error
-                            ? 'text-muted-foreground'
+                            ? 'text-muted-foreground border-border'
                             : isOpen
-                              ? 'text-emerald-600 dark:text-emerald-300'
-                              : 'text-rose-600 dark:text-red-300',
+                              ? 'text-emerald-600 dark:text-emerald-300 border-emerald-500/40 hover:border-emerald-500/60 hover:bg-emerald-500/5'
+                              : 'text-rose-600 dark:text-red-300 border-rose-500/40 hover:border-rose-500/60 hover:bg-rose-500/5',
                     ].join(' ')}
                 >
-                    <span
-                        className={[
-                            'inline-flex h-2 w-2 rounded-full',
-                            error ? 'bg-muted-foreground/50' : isOpen ? 'bg-emerald-500' : 'bg-rose-500',
-                        ].join(' ')}
-                    />
+                    <span className="relative flex h-2 w-2">
+                        {!loading && !error && (
+                            <span
+                                className={[
+                                    'absolute inline-flex h-full w-full rounded-full opacity-75',
+                                    'animate-[ping_2s_cubic-bezier(0,0,0.2,1)_infinite]',
+                                    isOpen ? 'bg-emerald-400' : 'bg-rose-400',
+                                ].join(' ')}
+                            />
+                        )}
+                        <span
+                            className={[
+                                'relative inline-flex h-2 w-2 rounded-full transition-colors duration-700',
+                                error 
+                                    ? 'bg-muted-foreground/50' 
+                                    : isOpen 
+                                        ? 'bg-emerald-500' 
+                                        : 'bg-rose-500',
+                            ].join(' ')}
+                        />
+                    </span>
                     <span className="text-xs font-mono tracking-widest">
                         {loading ? 'LOADING' : error ? 'OFFLINE' : isOpen ? 'BUKA' : 'TUTUP'}
                     </span>
@@ -163,7 +195,7 @@ export default function StoreStatusPopover() {
                     ) : null}
 
                     <div className="text-[10px] text-center text-muted-foreground font-mono border-t border-border pt-3">
-                        LIVE SYSTEM STATUS
+                        Diperbarui setiap 30 detik
                     </div>
                 </div>
             </PopoverContent>

@@ -2,19 +2,19 @@ import React from 'react'
 
 export default function PublicFooter() {
     return (
-        <footer className="mt-auto border-t border-border bg-background/80 backdrop-blur-lg">
-            <div className="max-w-7xl mx-auto px-6 py-10">
-                <div className="flex flex-col md:flex-row justify-between items-center gap-6">
+        <footer className="mt-auto border-t border-border/50 bg-background/60 backdrop-blur-sm">
+            <div className="max-w-7xl mx-auto px-4 py-6">
+                <div className="flex flex-col sm:flex-row justify-between items-center gap-3 text-xs text-muted-foreground">
                     <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 bg-indigo-500 rounded-full animate-pulse" />
-                        <span className="text-xs text-muted-foreground tracking-widest uppercase">
-                            SIKOPMA System
-                        </span>
+                        <span className="w-1.5 h-1.5 bg-primary/60 rounded-full" />
+                        <span className="tracking-wide">SIKOPMA</span>
+                        <span className="text-border">•</span>
+                        <span>Divisi IT UKM Kewirausahaan STIS</span>
                     </div>
-
-                    <p className="text-xs text-muted-foreground font-mono">
-                        {new Date().getFullYear()} © Developed for Students
-                    </p>
+                    
+                    <span className="font-mono text-muted-foreground/70">
+                        © {new Date().getFullYear()}
+                    </span>
                 </div>
             </div>
         </footer>

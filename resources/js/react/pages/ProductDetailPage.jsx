@@ -86,14 +86,14 @@ function VariantSelector({ variants, selectedVariant, onSelect }) {
                             className={`
                                 relative p-3 rounded-xl border-2 transition-all duration-200 text-left
                                 ${isSelected 
-                                    ? 'border-indigo-500 bg-indigo-500/10 ring-2 ring-indigo-500/20' 
-                                    : 'border-border/60 bg-background/40 hover:border-indigo-500/50 hover:bg-background/60'
+                                    ? 'border-blue-500 bg-blue-500/10 ring-2 ring-blue-500/20' 
+                                    : 'border-border/60 bg-background/40 hover:border-blue-500/50 hover:bg-background/60'
                                 }
                                 ${isOutOfStock ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
                             `}
                         >
                             {isSelected && (
-                                <div className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-indigo-500 rounded-full flex items-center justify-center">
+                                <div className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center">
                                     <Check className="w-3 h-3 text-white" />
                                 </div>
                             )}
@@ -103,7 +103,7 @@ function VariantSelector({ variants, selectedVariant, onSelect }) {
                             </div>
                             
                             <div className="mt-1 flex items-center justify-between gap-2">
-                                <span className="text-xs font-semibold text-indigo-400">
+                                <span className="text-xs font-semibold text-blue-400">
                                     Rp {formatRupiah(variant.price)}
                                 </span>
                                 {isOutOfStock ? (
@@ -245,7 +245,7 @@ export default function ProductDetailPage({ slug, initialData }) {
                                 {/* Variant count badge */}
                                 {!loading && product?.has_variants && product?.variant_count > 0 && (
                                     <div className="absolute bottom-4 left-4">
-                                        <Badge className="bg-indigo-500/20 border-indigo-500/30 text-indigo-300">
+                                        <Badge className="bg-blue-500/20 border-blue-500/30 text-blue-300">
                                             <Package className="h-3 w-3 mr-1.5" />
                                             {product.variant_count} Varian
                                         </Badge>
@@ -256,7 +256,7 @@ export default function ProductDetailPage({ slug, initialData }) {
 
                         <div className="lg:col-span-7">
                             <Card className="bg-card/60 backdrop-blur-xl border-border rounded-2xl lg:rounded-3xl shadow-xl relative overflow-hidden">
-                                <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/10 rounded-full blur-[80px] -z-10" />
+                                <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 rounded-full blur-[80px] -z-10" />
 
                                 <CardHeader className="p-5 lg:p-8 pb-4">
                                     <div className="flex items-center justify-between gap-4 mb-2">
@@ -283,7 +283,7 @@ export default function ProductDetailPage({ slug, initialData }) {
                                     
                                     {/* Selected variant name */}
                                     {product?.has_variants && selectedVariant && (
-                                        <p className="text-sm text-indigo-400 mt-2">
+                                        <p className="text-sm text-blue-400 mt-2">
                                             Varian: {selectedVariant.variant_name.split(' - ').pop()}
                                         </p>
                                     )}
@@ -297,7 +297,7 @@ export default function ProductDetailPage({ slug, initialData }) {
                                                 <p className="text-sm text-muted-foreground mb-1">
                                                     {product?.has_variants ? 'Harga Varian' : 'Harga Satuan'}
                                                 </p>
-                                                <div className="text-3xl lg:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400">
+                                                <div className="text-3xl lg:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">
                                                     {loading ? '—' : `Rp ${formatRupiah(displayPrice)}`}
                                                 </div>
                                                 {/* Price range for variant products */}
@@ -338,11 +338,11 @@ export default function ProductDetailPage({ slug, initialData }) {
                                         </div>
                                     )}
 
-                                    <div className="bg-indigo-900/20 border border-indigo-500/20 rounded-xl p-4 flex items-start gap-3">
-                                        <span className="text-indigo-400 mt-0.5">
+                                    <div className="bg-blue-900/20 border border-blue-500/20 rounded-xl p-4 flex items-start gap-3">
+                                        <span className="text-blue-400 mt-0.5">
                                             <BadgeCheck className="h-4 w-4" />
                                         </span>
-                                        <p className="text-sm text-indigo-700 dark:text-indigo-200/90 leading-relaxed">
+                                        <p className="text-sm text-blue-700 dark:text-blue-200/90 leading-relaxed">
                                             Pembelian dilakukan secara langsung di Koperasi. Silakan kunjungi kami pada jam operasional.
                                         </p>
                                     </div>
@@ -374,7 +374,7 @@ export default function ProductDetailPage({ slug, initialData }) {
                     <div className="mt-8 lg:mt-12 grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6">
                         <Card className="bg-card/40 border-border/60 rounded-2xl text-center">
                             <CardContent className="p-6 space-y-2">
-                                <Clock className="h-6 w-6 text-indigo-400 mx-auto" />
+                                <Clock className="h-6 w-6 text-blue-400 mx-auto" />
                                 <div className="text-foreground font-medium">Jam Operasional</div>
                                 <div className="text-sm text-muted-foreground">
                                     Lihat detail di halaman Tentang
@@ -387,7 +387,7 @@ export default function ProductDetailPage({ slug, initialData }) {
 
                         <Card className="bg-card/40 border-border/60 rounded-2xl text-center">
                             <CardContent className="p-6 space-y-2">
-                                <MapPin className="h-6 w-6 text-indigo-400 mx-auto" />
+                                <MapPin className="h-6 w-6 text-blue-400 mx-auto" />
                                 <div className="text-foreground font-medium">Lokasi</div>
                                 <div className="text-sm text-muted-foreground">
                                     {address ?? 'Alamat belum tersedia'}
@@ -397,7 +397,7 @@ export default function ProductDetailPage({ slug, initialData }) {
 
                         <Card className="bg-card/40 border-border/60 rounded-2xl text-center">
                             <CardContent className="p-6 space-y-2">
-                                <Headset className="h-6 w-6 text-indigo-400 mx-auto" />
+                                <Headset className="h-6 w-6 text-blue-400 mx-auto" />
                                 <div className="text-foreground font-medium">Bantuan</div>
                                 <div className="text-sm text-muted-foreground">
                                     {whatsapp ? `WhatsApp: ${whatsapp}` : 'Hubungi admin'}

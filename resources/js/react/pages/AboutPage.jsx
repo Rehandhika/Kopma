@@ -115,7 +115,7 @@ export default function AboutPage({ initialData }) {
                 <Card className="bg-card/60 backdrop-blur-xl border-border rounded-3xl shadow-2xl mb-12">
                     <CardHeader className="p-8 md:p-10 pb-6">
                         <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 flex items-center justify-center border border-indigo-500/20 text-indigo-400">
+                            <div className="w-12 h-12 rounded-2xl bg-blue-500/10 flex items-center justify-center border border-blue-500/20 text-blue-400">
                                 <Building2 className="h-6 w-6" />
                             </div>
                             <CardTitle className="text-2xl font-bold text-foreground">
@@ -170,10 +170,10 @@ export default function AboutPage({ initialData }) {
                             <OperatingHoursGrid operatingHours={data?.operating_hours} />
                         )}
 
-                        <div className="p-4 bg-indigo-500/10 border border-indigo-500/20 rounded-xl flex items-start gap-3">
-                            <Info className="h-4 w-4 text-indigo-400 mt-0.5" />
-                            <p className="text-sm text-indigo-700 dark:text-indigo-200">
-                                <strong className="text-indigo-800 dark:text-indigo-100">Catatan:</strong> Jam operasional dapat berubah sewaktu-waktu. Silakan cek status toko secara real-time di indikator HUD bagian atas halaman.
+                        <div className="p-4 bg-blue-500/10 border border-blue-500/20 rounded-xl flex items-start gap-3">
+                            <Info className="h-4 w-4 text-blue-400 mt-0.5" />
+                            <p className="text-sm text-blue-700 dark:text-blue-200">
+                                <strong className="text-blue-800 dark:text-blue-100">Catatan:</strong> Jam operasional dapat berubah sewaktu-waktu. Silakan cek status toko secara real-time di indikator HUD bagian atas halaman.
                             </p>
                         </div>
 

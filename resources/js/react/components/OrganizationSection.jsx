@@ -343,9 +343,9 @@ export default function OrganizationSection() {
 
     return (
         <div className="relative overflow-hidden rounded-3xl border border-border bg-card/20 backdrop-blur-2xl shadow-[0_24px_90px_rgba(0,0,0,0.18)]">
-            <div className="absolute inset-0 bg-gradient-to-b from-indigo-50 via-background to-indigo-50 dark:from-[#0b1633] dark:via-[#122453] dark:to-[#0b1633]" />
-            <div className="absolute -top-24 -left-24 h-72 w-72 rounded-full bg-fuchsia-500/15 blur-3xl dark:bg-fuchsia-500/25" />
-            <div className="absolute -bottom-24 -right-24 h-72 w-72 rounded-full bg-indigo-500/12 blur-3xl dark:bg-indigo-500/25" />
+            <div className="absolute inset-0 bg-gradient-to-b from-blue-50 via-background to-blue-50 dark:from-[#0b1633] dark:via-[#122453] dark:to-[#0b1633]" />
+            <div className="absolute -top-24 -left-24 h-72 w-72 rounded-full bg-blue-500/15 blur-3xl dark:bg-blue-500/25" />
+            <div className="absolute -bottom-24 -right-24 h-72 w-72 rounded-full bg-blue-500/12 blur-3xl dark:bg-blue-500/25" />
             <div className="absolute inset-0 pointer-events-none">
                 <div className="absolute -top-32 left-1/2 h-64 w-[760px] -translate-x-1/2 rounded-full bg-foreground/5 blur-3xl dark:bg-white/10" />
                 <div className="absolute inset-0 bg-gradient-to-b from-foreground/5 via-transparent to-transparent opacity-60 dark:from-white/10" />
@@ -366,7 +366,7 @@ export default function OrganizationSection() {
                 <div className="mt-8 flex justify-center">
                     <Tabs value={tab} onValueChange={setTab} className="w-full">
                         <div className="mx-auto max-w-5xl">
-                            <div className="rounded-[28px] bg-gradient-to-r from-fuchsia-600 via-pink-600 to-violet-600 p-1 shadow-[0_12px_30px_rgba(0,0,0,0.28)]">
+                            <div className="rounded-[28px] bg-gradient-to-r from-blue-600 via-blue-500 to-cyan-500 p-1 shadow-[0_12px_30px_rgba(0,0,0,0.28)]">
                                 <TabsList
                                     className={cn(
                                         'w-full h-auto bg-background/10 backdrop-blur-xl p-1.5 rounded-[24px]',

@@ -23,35 +23,41 @@ export default function PublicNavbar() {
     const isAbout = path === '/tentang'
 
     return (
-        <div className="sticky top-6 z-50 px-4 mb-8">
+        <div className="sticky top-3 sm:top-6 z-50 px-3 sm:px-4 mb-4 sm:mb-8">
             <div className="max-w-7xl mx-auto">
-                <div className="relative rounded-2xl border border-border bg-background/70 backdrop-blur-xl shadow-[0_4px_30px_rgba(0,0,0,0.1)] px-4 md:px-6 py-3 md:py-4 flex items-center justify-between">
-                    <a href="/" className="flex items-center gap-3 group">
-                        <img 
-                            src="/images/logo.png" 
-                            alt="SIKOPMA" 
-                            className="h-9 w-auto object-contain transition-transform group-hover:scale-105"
-                        />
-                        <div className="hidden sm:flex flex-col">
-                            <span className="font-semibold text-lg text-foreground tracking-tight leading-none group-hover:text-primary transition-colors">
+                <div className="relative rounded-xl sm:rounded-2xl border border-border bg-background/80 backdrop-blur-xl shadow-[0_4px_30px_rgba(0,0,0,0.1)] px-3 sm:px-4 md:px-6 py-2 sm:py-3 md:py-4 flex items-center justify-between gap-2">
+                    {/* Logo - Left */}
+                    <a href="/" className="flex items-center gap-1.5 sm:gap-2 group shrink-0 min-w-0 z-10">
+                        <div className="h-6 w-6 sm:h-7 sm:w-7 md:h-8 md:w-8 flex items-center justify-center flex-shrink-0 bg-transparent">
+                            <img 
+                                src="/images/logo.png" 
+                                alt="SIKOPMA" 
+                                className="h-full w-full object-contain"
+                            />
+                        </div>
+                        <div className="flex flex-col min-w-0">
+                            <span className="font-semibold text-xs sm:text-sm md:text-base text-foreground tracking-tight leading-none group-hover:text-primary transition-colors truncate">
                                 SIKOPMA
                             </span>
-                            <span className="text-[10px] uppercase tracking-[0.15em] text-muted-foreground hidden sm:block">
+                            <span className="hidden sm:block text-[8px] md:text-[9px] uppercase tracking-[0.08em] md:tracking-[0.1em] text-muted-foreground truncate">
                                 UKM Kewirausahaan STIS
                             </span>
                         </div>
                     </a>
 
-                    <div className="absolute inset-y-0 left-1/2 -translate-x-1/2 flex items-center">
-                        <div className="scale-90 md:scale-100">
+                    {/* Store Status - Always Center (absolute positioning) */}
+                    <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+                        <div className="scale-[0.7] sm:scale-90 md:scale-100">
                             <StoreStatusPopover />
                         </div>
                     </div>
 
-                    <div className="hidden md:flex items-center justify-end gap-2">
+                    {/* Desktop Menu - Right */}
+                    <div className="hidden md:flex items-center justify-end gap-2 shrink-0 z-10">
                         <Button
                             asChild
                             variant="ghost"
+                            size="sm"
                             className={[
                                 isAbout ? '' : 'bg-accent text-accent-foreground',
                                 'text-muted-foreground hover:text-foreground',
@@ -62,6 +68,7 @@ export default function PublicNavbar() {
                         <Button
                             asChild
                             variant="ghost"
+                            size="sm"
                             className={[
                                 isAbout ? 'bg-accent text-accent-foreground' : '',
                                 'text-muted-foreground hover:text-foreground',
@@ -72,21 +79,23 @@ export default function PublicNavbar() {
                         <ThemeToggle />
                         <Button
                             asChild
-                            className="rounded-xl bg-indigo-600/15 hover:bg-indigo-600/25 text-indigo-700 dark:text-indigo-200 hover:text-indigo-900 dark:hover:text-white border border-indigo-500/30"
+                            size="sm"
+                            className="rounded-lg bg-primary/10 hover:bg-primary/20 text-primary border border-primary/30"
                             variant="outline"
                         >
                             <a href="/admin/masuk">Login</a>
                         </Button>
                     </div>
 
-                    <div className="flex md:hidden items-center gap-2">
+                    {/* Mobile Menu - Right */}
+                    <div className="flex md:hidden items-center gap-1.5 shrink-0 z-10">
                         <ThemeToggle />
-                        <Menubar className="border-border bg-background/60">
+                        <Menubar className="border-border bg-background/60 h-8">
                             <MenubarMenu>
-                                <MenubarTrigger className="px-2.5 data-[state=open]:bg-accent">
+                                <MenubarTrigger className="px-2 h-7 data-[state=open]:bg-accent">
                                     <Menu className="h-4 w-4" />
                                 </MenubarTrigger>
-                                <MenubarContent align="end" className="min-w-44">
+                                <MenubarContent align="end" className="min-w-40">
                                     <MenubarItem asChild>
                                         <a href="/" className="flex items-center gap-2">
                                             <Home className="h-4 w-4 text-muted-foreground" />
