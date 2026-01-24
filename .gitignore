@@ -1,25 +1,130 @@
-*.log
-.DS_Store
-.env
-.env.backup
-.env.production
-.phpactor.json
-.phpunit.result.cache
-/.fleet
-/.idea
-/.nova
-/.phpunit.cache
-/.vscode
-/.zed
-/auth.json
+# ================================
+# Laravel Framework
+# ================================
+/vendor
 /node_modules
 /public/build
 /public/hot
 /public/storage
 /storage/*.key
 /storage/pail
-/vendor
+bootstrap/cache/*.php
+
+# ================================
+# Environment Files
+# ================================
+.env
+.env.backup
+.env.local
+.env.*.local
+.env.production
+.env.staging
+
+# ================================
+# IDE & Editors
+# ================================
+/.idea
+/.vscode
+/.fleet
+/.nova
+/.zed
+*.sublime-project
+*.sublime-workspace
+*.code-workspace
+
+# ================================
+# PHP Tools
+# ================================
+.phpactor.json
+.phpunit.result.cache
+.phpunit.cache
+.php-cs-fixer.cache
+.phpcs-cache
+phpstan.neon
+_ide_helper.php
+_ide_helper_models.php
+.phpstorm.meta.php
+
+# ================================
+# Testing & Coverage
+# ================================
+/coverage
+/.nyc_output
+/cypress/screenshots
+/cypress/videos
+/cypress/downloads
+.pest-mutate-cache
+
+# ================================
+# Build & Cache
+# ================================
+*.cache
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ================================
+# OS Generated Files
+# ================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# ================================
+# Composer
+# ================================
+/auth.json
+composer.phar
+
+# ================================
+# Homestead & Vagrant
+# ================================
 Homestead.json
 Homestead.yaml
-Thumbs.db
+Vagrantfile
+.vagrant
+
+# ================================
+# Docker
+# ================================
+.docker-sync*
+docker-compose.override.yml
+
+# ================================
+# Kiro AI Assistant
+# ================================
 /.kiro
+
+# ================================
+# Temporary & Backup Files
+# ================================
+*.bak
+*.swp
+*.swo
+*~
+*.tmp
+*.temp
+
+# ================================
+# Debug & Profiling
+# ================================
+/storage/debugbar
+clockwork.json
+.clockwork
+
+# ================================
+# Laravel Specific
+# ================================
+/storage/framework/cache/data/*
+/storage/framework/sessions/*
+/storage/framework/views/*
+!/storage/framework/cache/.gitignore
+!/storage/framework/sessions/.gitignore
+!/storage/framework/views/.gitignore
