@@ -189,6 +189,11 @@ Route::prefix('admin')
     ->middleware(['auth'])
     ->name('admin.')
     ->group(function () {
+        // Access Denied Page (Akses Ditolak)
+        Route::get('/akses-ditolak', function () {
+            return view('admin.access-denied');
+        })->name('access-denied');
+        
         // Dashboard (Beranda)
         Route::get('/beranda', DashboardIndex::class)->name('dashboard');
         

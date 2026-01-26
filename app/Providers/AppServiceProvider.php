@@ -2,11 +2,18 @@
 
 namespace App\Providers;
 
+use App\Listeners\InvalidatePermissionCacheOnPermissionChange;
+use App\Listeners\InvalidatePermissionCacheOnRoleChange;
 use App\Models\Attendance;
 use App\Observers\AttendanceObserver;
 use App\Services\DateTimeSettingsService;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
+use Spatie\Permission\Events\PermissionAttached;
+use Spatie\Permission\Events\PermissionDetached;
+use Spatie\Permission\Events\RoleAttached;
+use Spatie\Permission\Events\RoleDetached;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -27,6 +34,17 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Attendance::observe(AttendanceObserver::class);
+        
+        // Register event listeners for permission cache invalidation
+        // These handle Spatie Permission events when roles/permissions change
+        // @see Requirements 2.3, 8.1, 8.2
+        Event::listen(RoleAttached::class, InvalidatePermissionCacheOnRoleChange::class);
+        Event::listen(RoleDetached::class, InvalidatePermissionCacheOnRoleChange::class);
+        Event::listen(PermissionAttached::class, InvalidatePermissionCacheOnPermissionChange::class);
+        Event::listen(PermissionDetached::class, InvalidatePermissionCacheOnPermissionChange::class);
+        
+        // Register User observer for additional cache invalidation coverage
+        \App\Models\User::observe(\App\Observers\UserRoleObserver::class);
         
         // Register Blade directives for datetime formatting
         $this->registerDateTimeDirectives();

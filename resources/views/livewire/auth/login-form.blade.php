@@ -1,4 +1,4 @@
-<div class="w-4/5 max-w-sm">
+<div class="w-[90%] sm:w-[60%] md:w-[45%] lg:w-[35%] xl:w-[28%]">
     <!-- Card -->
     <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
       <!-- Header -->

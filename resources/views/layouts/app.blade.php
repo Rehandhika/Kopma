@@ -159,6 +159,7 @@
         }
     }"
     @alert.window="display($event.detail.message, $event.detail.type)"
+    @show-access-denied.window="display('Anda tidak memiliki akses ke menu ' + $event.detail.menu, 'warning')"
     x-show="show"
     x-transition:enter="transition ease-out duration-300"
     x-transition:enter-start="opacity-0 transform translate-y-2"

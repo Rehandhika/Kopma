@@ -23,6 +23,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'active' => \App\Http\Middleware\EnsureUserIsActive::class,
             'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
             'maintenance' => \App\Http\Middleware\MaintenanceMiddleware::class,
+            'menu_access' => \App\Http\Middleware\CheckMenuAccess::class,
         ]);
 
         // Global middleware for security

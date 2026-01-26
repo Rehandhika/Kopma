@@ -70,14 +70,11 @@ function MemberDetailModal({ person, division, open, onOpenChange }) {
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-md p-0 gap-0 overflow-hidden border-border bg-background/95 backdrop-blur-xl">
-                <DialogHeader className="p-0">
-                    <DialogTitle className="sr-only">Detail Anggota: {person.name}</DialogTitle>
-                    <div className="relative h-24 bg-gradient-to-br from-primary/10 via-background to-background">
-                        <div className="absolute inset-0 bg-grid-white/5 [mask-image:linear-gradient(0deg,transparent,black)]" />
-                    </div>
+                <DialogHeader className="sr-only">
+                    <DialogTitle>Detail Anggota: {person.name}</DialogTitle>
                 </DialogHeader>
 
-                <div className="px-6 pb-6 -mt-12 relative">
+                <div className="px-6 pb-6 pt-10 relative">
                     {/* Header Profile */}
                     <div className="flex flex-col items-center text-center mb-6">
                         <div className={cn('relative rounded-full p-1 ring-4 ring-background mb-4 bg-background', division.ringClass)}>
