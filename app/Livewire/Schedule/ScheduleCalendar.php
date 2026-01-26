@@ -5,6 +5,7 @@ namespace App\Livewire\Schedule;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\ScheduleAssignment;
+use App\Services\ActivityLogService;
 use Carbon\Carbon;
 
 class ScheduleCalendar extends Component
@@ -193,6 +194,10 @@ class ScheduleCalendar extends Component
 
     public function exportCalendar()
     {
+        // Log activity
+        $monthName = Carbon::create($this->currentYear, $this->currentMonth, 1)->locale('id')->format('F Y');
+        ActivityLogService::logReportExported('Kalender Jadwal', $monthName);
+        
         // Implementation for calendar export
         $this->dispatch('export-calendar', [
             'month' => $this->currentMonth,

@@ -4,6 +4,7 @@ namespace App\Livewire\Admin;
 
 use App\Models\Banner;
 use App\Services\BannerService;
+use App\Services\ActivityLogService;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Livewire\WithFileUploads;
@@ -88,6 +89,9 @@ class BannerManagement extends Component
                     'priority' => $this->priority,
                 ], $this->image);
                 
+                // Log activity
+                ActivityLogService::logBannerUpdated($this->title);
+                
                 $this->dispatch('alert', type: 'success', message: 'Banner berhasil diperbarui');
             } else {
                 // Create new banner
@@ -95,6 +99,9 @@ class BannerManagement extends Component
                     'title' => $this->title,
                     'priority' => $this->priority,
                 ], $this->image);
+                
+                // Log activity
+                ActivityLogService::logBannerCreated($this->title);
                 
                 $this->dispatch('alert', type: 'success', message: 'Banner berhasil dibuat');
             }
@@ -111,7 +118,11 @@ class BannerManagement extends Component
     {
         try {
             $banner = Banner::findOrFail($id);
+            $bannerTitle = $banner->title;
             $this->bannerService->delete($banner);
+            
+            // Log activity
+            ActivityLogService::logBannerDeleted($bannerTitle);
             
             $this->dispatch('alert', type: 'success', message: 'Banner berhasil dihapus');
             
@@ -126,7 +137,12 @@ class BannerManagement extends Component
             $banner = Banner::findOrFail($id);
             $this->bannerService->toggleStatus($banner);
             
-            $statusText = $banner->fresh()->is_active ? 'diaktifkan' : 'dinonaktifkan';
+            $freshBanner = $banner->fresh();
+            
+            // Log activity
+            ActivityLogService::logBannerStatusChanged($freshBanner->title, $freshBanner->is_active);
+            
+            $statusText = $freshBanner->is_active ? 'diaktifkan' : 'dinonaktifkan';
             $this->dispatch('alert', type: 'success', message: "Banner berhasil {$statusText}");
             
         } catch (\Exception $e) {

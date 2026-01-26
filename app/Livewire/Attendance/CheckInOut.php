@@ -7,6 +7,7 @@ use Livewire\WithFileUploads;
 use App\Models\ScheduleAssignment;
 use App\Models\Attendance;
 use App\Services\NotificationService;
+use App\Services\ActivityLogService;
 use App\Services\Storage\FileStorageServiceInterface;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
@@ -180,6 +181,10 @@ class CheckInOut extends Component
 
             $this->checkInTime = $now->format('H:i');
 
+            // Log activity
+            $sessionLabel = $this->currentSchedule->session_label ?? 'Sesi ' . $this->currentSchedule->session;
+            ActivityLogService::logCheckIn($sessionLabel, $now->format('H:i'));
+
             // Send notification
             NotificationService::send(
                 auth()->user(),
@@ -262,6 +267,10 @@ class CheckInOut extends Component
             ]);
 
             $this->checkOutTime = $now->format('H:i');
+
+            // Log activity
+            $sessionLabel = $this->currentSchedule->session_label ?? 'Sesi ' . $this->currentSchedule->session;
+            ActivityLogService::logCheckOut($sessionLabel, $now->format('H:i'), number_format($workingHours, 2));
 
             // Send notification
             NotificationService::send(

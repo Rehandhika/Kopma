@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use App\Models\LoginHistory;
+use App\Services\ActivityLogService;
 
 #[Title('Login - SIKOPMA')]
 #[Layout('layouts.guest')]
@@ -66,6 +67,9 @@ class LoginForm extends Component
                 'logged_in_at' => now(),
                 'status' => 'success',
             ]);
+            
+            // Log activity for activity log
+            ActivityLogService::logLogin();
             
             // Redirect to dashboard
             return redirect()->intended(route('admin.dashboard'));

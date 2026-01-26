@@ -8,6 +8,7 @@ use App\Models\ScheduleAssignment;
 use App\Models\User;
 use App\Repositories\ScheduleRepository;
 use App\Services\ScheduleService;
+use App\Services\ActivityLogService;
 use App\Exceptions\ScheduleConflictException;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
@@ -345,6 +346,10 @@ class InteractiveCalendar extends Component
                 $dateRange['start'],
                 $dateRange['end']
             );
+
+            // Log activity
+            $period = $dateRange['start']->format('d/m/Y') . ' - ' . $dateRange['end']->format('d/m/Y');
+            ActivityLogService::logReportExported('Jadwal Interaktif', $period);
 
             // Generate CSV or PDF export
             $this->dispatch('scheduleExported', 'Jadwal berhasil diekspor');

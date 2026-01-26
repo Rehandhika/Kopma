@@ -5,6 +5,7 @@ namespace App\Livewire\Role;
 use Livewire\Component;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Computed;
+use App\Services\ActivityLogService;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 
@@ -101,12 +102,18 @@ class Index extends Component
                 $role = Role::findOrFail($this->roleId);
                 $role->update(['name' => $this->name]);
                 $message = 'Role berhasil diperbarui';
+                
+                // Log activity
+                ActivityLogService::logRoleUpdated($this->name);
             } else {
                 $role = Role::create([
                     'name' => $this->name,
                     'guard_name' => 'web',
                 ]);
                 $message = 'Role berhasil ditambahkan';
+                
+                // Log activity
+                ActivityLogService::logRoleCreated($this->name);
             }
 
             $role->syncPermissions($this->selectedPermissions);
@@ -134,6 +141,10 @@ class Index extends Component
             }
 
             $role->delete();
+            
+            // Log activity
+            ActivityLogService::logRoleDeleted($role->name);
+            
             $this->dispatch('alert', type: 'success', message: 'Role berhasil dihapus');
         } catch (\Exception $e) {
             $this->dispatch('alert', type: 'error', message: 'Terjadi kesalahan: ' . $e->getMessage());

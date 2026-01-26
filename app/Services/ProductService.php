@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Product;
 use App\Models\StockAdjustment;
+use App\Services\ActivityLogService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Collection;
 
@@ -69,6 +70,7 @@ class ProductService
     public function delete(int $id): bool
     {
         $product = Product::findOrFail($id);
+        $productName = $product->name;
         
         // Check if product has been sold
         if ($product->saleItems()->exists()) {
@@ -76,6 +78,9 @@ class ProductService
         }
 
         log_audit('delete', $product);
+        
+        // Log activity
+        ActivityLogService::logProductDeleted($productName);
 
         return $product->delete();
     }
@@ -174,6 +179,10 @@ class ProductService
             ]);
 
             log_audit('stock_adjustment', $product, ['type' => $type, 'quantity' => $quantity]);
+
+            // Log activity
+            $typeText = $type === 'in' ? 'masuk' : 'keluar';
+            ActivityLogService::logStockAdjusted($product->name, $quantity, $typeText);
 
             return $product->fresh();
         });

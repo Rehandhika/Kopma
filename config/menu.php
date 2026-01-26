@@ -100,6 +100,14 @@ return [
         ],
         ['key' => 'divider.admin', 'type' => 'divider'],
         [
+            'key' => 'activity-log',
+            'label' => 'Log Aktivitas',
+            'icon' => 'clipboard-document-list',
+            'route' => 'admin.activity-log',
+            'permissions' => [],
+            'roles' => ['Super Admin', 'Ketua'],
+        ],
+        [
             'key' => 'users',
             'label' => 'Manajemen User',
             'icon' => 'user-group',

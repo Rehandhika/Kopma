@@ -5,6 +5,7 @@ namespace App\Livewire\Profile;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use App\Services\Storage\FileStorageServiceInterface;
+use App\Services\ActivityLogService;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
@@ -92,6 +93,9 @@ class Edit extends Component
             }
 
             $this->user->update($data);
+
+            // Log activity
+            ActivityLogService::logProfileUpdated();
 
             $this->dispatch('alert', type: 'success', message: 'Profil berhasil diperbarui');
             $this->photo = null;
@@ -183,6 +187,9 @@ class Edit extends Component
             // Reset password fields
             $this->reset(['current_password', 'new_password', 'new_password_confirmation']);
 
+            // Log activity
+            ActivityLogService::logPasswordChanged();
+
             $this->dispatch('alert', type: 'success', message: 'Password berhasil diubah');
         } catch (\Exception $e) {
             $this->dispatch('alert', type: 'error', message: 'Terjadi kesalahan: ' . $e->getMessage());
@@ -203,6 +210,9 @@ class Edit extends Component
 
                 $this->user->update(['photo' => null]);
                 $this->current_photo = null;
+                
+                // Log activity
+                ActivityLogService::logProfilePhotoDeleted();
                 
                 $this->dispatch('alert', type: 'success', message: 'Foto profil berhasil dihapus');
             }

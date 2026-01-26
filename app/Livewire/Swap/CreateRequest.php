@@ -5,6 +5,7 @@ namespace App\Livewire\Swap;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\{SwapRequest, ScheduleAssignment, User};
+use App\Services\ActivityLogService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
@@ -194,6 +195,13 @@ class CreateRequest extends Component
             ]);
 
             DB::commit();
+
+            // Log activity
+            $requesterAssignment = ScheduleAssignment::find($this->selectedAssignment);
+            ActivityLogService::logSwapCreated(
+                $requesterAssignment->date->format('d M Y'),
+                Carbon::parse($this->targetDate)->format('d M Y')
+            );
 
             $this->dispatch('alert', type: 'success', message: 'Permintaan tukar shift berhasil dikirim.');
             $this->resetForm();

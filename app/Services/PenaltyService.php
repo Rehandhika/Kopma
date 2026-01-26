@@ -45,6 +45,9 @@ class PenaltyService
             route('penalty.my-penalties')
         );
 
+        // Log activity
+        ActivityLogService::logPenaltyCreated($user->name, $penaltyType->points, $penaltyType->name);
+
         // Check if threshold reached
         $this->checkThresholds($user);
 

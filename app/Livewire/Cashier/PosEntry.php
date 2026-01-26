@@ -8,6 +8,7 @@ use Livewire\Attributes\On;
 use App\Models\Product;
 use App\Models\Sale;
 use App\Models\SaleItem;
+use App\Services\ActivityLogService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
@@ -258,6 +259,7 @@ class PosEntry extends Component
         try {
             DB::transaction(function () use ($id) {
                 $sale = Sale::with('items:id,sale_id,product_id,quantity')->findOrFail($id);
+                $invoiceNumber = $sale->invoice_number;
                 
                 // Restore stock
                 foreach ($sale->items as $item) {
@@ -267,6 +269,9 @@ class PosEntry extends Component
                 // Delete items and sale
                 $sale->items()->delete();
                 $sale->delete();
+                
+                // Log activity
+                ActivityLogService::logSaleDeleted($invoiceNumber);
             });
             
             Cache::forget('pos_products_active');

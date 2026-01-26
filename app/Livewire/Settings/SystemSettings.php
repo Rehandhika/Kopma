@@ -5,6 +5,7 @@ namespace App\Livewire\Settings;
 use Livewire\Component;
 use App\Models\Setting;
 use App\Services\DateTimeSettingsService;
+use App\Services\ActivityLogService;
 use Illuminate\Support\Facades\Cache;
 
 class SystemSettings extends Component
@@ -105,6 +106,9 @@ class SystemSettings extends Component
         // Clear cache immediately
         Cache::forget('maintenance_mode');
         
+        // Log activity
+        ActivityLogService::logMaintenanceModeChanged($newState);
+        
         $message = $newState ? 'Mode maintenance diaktifkan' : 'Mode maintenance dinonaktifkan';
         $this->dispatch('alert', type: $newState ? 'warning' : 'success', message: $message);
     }
@@ -174,6 +178,9 @@ class SystemSettings extends Component
         Setting::set('maintenance_estimated_end', $this->maintenance_estimated_end ?? '');
 
         Cache::flush();
+
+        // Log activity
+        ActivityLogService::logSettingsUpdated('Sistem');
 
         $this->dispatch('alert', type: 'success', message: 'Pengaturan berhasil disimpan');
     }

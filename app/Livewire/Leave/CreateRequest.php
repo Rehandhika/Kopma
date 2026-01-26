@@ -7,6 +7,7 @@ use Livewire\WithFileUploads;
 use Livewire\Attributes\Title;
 use App\Models\LeaveRequest;
 use App\Services\Storage\FileStorageServiceInterface;
+use App\Services\ActivityLogService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -74,6 +75,13 @@ class CreateRequest extends Component
             'attachment' => $attachmentPath,
             'status' => 'pending',
         ]);
+
+        // Log activity
+        ActivityLogService::logLeaveCreated(
+            auth()->user()->name,
+            Carbon::parse($this->start_date)->format('d M Y'),
+            Carbon::parse($this->end_date)->format('d M Y')
+        );
 
         session()->flash('success', 'Pengajuan cuti/izin berhasil dibuat dan menunggu persetujuan');
         

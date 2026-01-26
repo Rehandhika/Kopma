@@ -6,6 +6,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use Livewire\Attributes\{Title, Layout, Computed, On};
 use App\Models\{Schedule, User, Availability};
+use App\Services\ActivityLogService;
 use Illuminate\Support\Facades\{DB, Cache};
 use Carbon\Carbon;
 
@@ -147,6 +148,10 @@ class Index extends Component
             
             $schedule->update(['status' => 'published']);
             
+            // Log activity
+            $weekDate = Carbon::parse($schedule->week_start_date)->locale('id')->isoFormat('D MMMM YYYY');
+            ActivityLogService::logSchedulePublished($weekDate);
+            
             // Dispatch global event for other components
             $this->dispatch('schedule-updated');
             
@@ -163,12 +168,16 @@ class Index extends Component
             DB::beginTransaction();
             
             $schedule = Schedule::findOrFail($scheduleId);
+            $weekDate = Carbon::parse($schedule->week_start_date)->locale('id')->isoFormat('D MMMM YYYY');
             
             // Delete assignments first
             $schedule->assignments()->delete();
             
             // Delete schedule
             $schedule->delete();
+            
+            // Log activity
+            ActivityLogService::logScheduleDeleted('Jadwal', $weekDate);
             
             DB::commit();
             

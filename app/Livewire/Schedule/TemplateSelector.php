@@ -5,6 +5,7 @@ namespace App\Livewire\Schedule;
 use Livewire\Component;
 use App\Models\ScheduleTemplate;
 use App\Models\User;
+use App\Services\ActivityLogService;
 
 class TemplateSelector extends Component
 {
@@ -138,7 +139,12 @@ class TemplateSelector extends Component
         $template = ScheduleTemplate::find($templateId);
         
         if ($template && $template->created_by === auth()->id()) {
+            $templateName = $template->name;
             $template->delete();
+            
+            // Log activity
+            ActivityLogService::log("Menghapus template jadwal '{$templateName}'");
+            
             $this->loadTemplates();
             $this->dispatch('alert', type: 'success', message: 'Template berhasil dihapus.');
             

@@ -7,6 +7,7 @@ use Livewire\Attributes\{Title, Layout};
 use App\Models\{Schedule, ScheduleAssignment, User};
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use App\Services\ActivityLogService;
 
 #[Title('Buat Jadwal Baru')]
 #[Layout('layouts.app')]
@@ -585,6 +586,9 @@ class CreateSchedule extends Component
             
             DB::commit();
             
+            // Log activity
+            ActivityLogService::logScheduleCreated('Draft', Carbon::parse($this->weekStartDate)->format('d M Y'));
+            
             // Dispatch global event for other components to listen
             $this->dispatch('schedule-updated');
             
@@ -634,6 +638,9 @@ class CreateSchedule extends Component
             $this->saveAssignments($schedule);
             
             DB::commit();
+            
+            // Log activity
+            ActivityLogService::logScheduleCreated('Published', Carbon::parse($this->weekStartDate)->format('d M Y'));
             
             // Dispatch global event for other components to listen
             $this->dispatch('schedule-updated');

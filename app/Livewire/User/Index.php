@@ -8,6 +8,7 @@ use Livewire\Attributes\Title;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Url;
 use App\Models\User;
+use App\Services\ActivityLogService;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
 
@@ -171,6 +172,9 @@ class Index extends Component
 
                 $user->syncRoles($this->selectedRoles);
                 $message = 'Anggota berhasil diperbarui';
+                
+                // Log activity
+                ActivityLogService::logUserUpdated($this->name);
             } else {
                 $user = User::create([
                     'nim' => $this->nim,
@@ -184,6 +188,9 @@ class Index extends Component
 
                 $user->syncRoles($this->selectedRoles);
                 $message = 'Anggota berhasil ditambahkan';
+                
+                // Log activity
+                ActivityLogService::logUserCreated($this->name);
             }
 
             $this->dispatch('alert', type: 'success', message: $message);
@@ -209,6 +216,10 @@ class Index extends Component
             }
 
             $user->delete();
+            
+            // Log activity
+            ActivityLogService::logUserDeleted($user->name);
+            
             $this->dispatch('alert', type: 'success', message: 'Anggota berhasil dihapus');
         } catch (\Exception $e) {
             $this->dispatch('alert', type: 'error', message: 'Terjadi kesalahan: ' . $e->getMessage());
@@ -228,6 +239,9 @@ class Index extends Component
             $user->update([
                 'status' => $user->status === 'active' ? 'inactive' : 'active'
             ]);
+
+            // Log activity
+            ActivityLogService::logUserStatusChanged($user->name, $user->status);
 
             $this->dispatch('alert', type: 'success', message: 'Status berhasil diubah');
         } catch (\Exception $e) {

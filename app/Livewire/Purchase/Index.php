@@ -5,6 +5,7 @@ namespace App\Livewire\Purchase;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\Purchase;
+use App\Services\ActivityLogService;
 
 class Index extends Component
 {
@@ -21,6 +22,9 @@ class Index extends Component
             $purchase->update([
                 'payment_status' => 'paid',
             ]);
+            
+            // Log activity
+            ActivityLogService::logPurchaseApproved($purchase->invoice_number);
             
             $this->dispatch('alert', type: 'success', message: 'Purchase order disetujui');
         }

@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\VariantOption;
 use App\Services\ProductImageService;
 use App\Services\ProductVariantService;
+use App\Services\ActivityLogService;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Illuminate\Support\Str;
@@ -238,6 +239,9 @@ class CreateProduct extends Component
 
             $product->variantOptions()->sync($this->selectedVariantOptions);
         }
+
+        // Log activity
+        ActivityLogService::logProductCreated($this->name);
 
         session()->flash('message', 'Produk berhasil ditambahkan.');
         return redirect()->route('admin.products.index');

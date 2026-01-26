@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\VariantOption;
 use App\Services\ProductImageService;
 use App\Services\ProductVariantService;
+use App\Services\ActivityLogService;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Illuminate\Validation\Rule;
@@ -323,6 +324,9 @@ class EditProduct extends Component
                 $this->product->variantOptions()->detach();
             }
         }
+
+        // Log activity
+        ActivityLogService::logProductUpdated($this->name);
 
         session()->flash('message', 'Produk berhasil diperbarui.');
         return redirect()->route('admin.products.index');

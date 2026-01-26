@@ -5,6 +5,7 @@ namespace App\Livewire\Attendance;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\Attendance;
+use App\Services\ActivityLogService;
 use Carbon\Carbon;
 
 class History extends Component
@@ -48,6 +49,9 @@ class History extends Component
 
     public function export()
     {
+        // Log activity
+        ActivityLogService::logAttendanceExported($this->dateFrom, $this->dateTo);
+        
         // Export logic will be implemented
         $this->dispatch('alert', type: 'info', message: 'Export sedang diproses...');
     }

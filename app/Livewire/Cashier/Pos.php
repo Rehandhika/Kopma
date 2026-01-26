@@ -10,6 +10,7 @@ use Livewire\Attributes\Locked;
 use App\Models\{Product, ProductVariant, Sale, SaleItem};
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
+use App\Services\ActivityLogService;
 
 #[Title('Point of Sale')]
 class Pos extends Component
@@ -552,6 +553,9 @@ class Pos extends Component
                     'change' => $this->paymentAmount - $total,
                     'method' => $this->paymentMethod,
                 ]);
+                
+                // Log activity
+                ActivityLogService::logSaleCreated($sale->invoice_number, $total);
             });
 
             $this->dispatch('alert', type: 'success', message: 'Transaksi berhasil!');

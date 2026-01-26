@@ -5,6 +5,7 @@ namespace App\Livewire\Schedule;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\Schedule;
+use App\Services\ActivityLogService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
@@ -102,6 +103,9 @@ class ScheduleTemplates extends Component
                     'is_active' => $this->isActive,
                 ]);
 
+                // Log activity
+                ActivityLogService::log("Mengubah template jadwal '{$this->name}'");
+
                 $message = 'Template jadwal berhasil diperbarui!';
             } else {
                 // Check for duplicate
@@ -125,6 +129,9 @@ class ScheduleTemplates extends Component
                     'description' => $this->description,
                     'is_active' => $this->isActive,
                 ]);
+
+                // Log activity
+                ActivityLogService::log("Membuat template jadwal '{$this->name}'");
 
                 $message = 'Template jadwal berhasil dibuat!';
             }
@@ -155,7 +162,12 @@ class ScheduleTemplates extends Component
                     return;
                 }
 
+                $templateName = $template->name;
                 $template->delete();
+                
+                // Log activity
+                ActivityLogService::log("Menghapus template jadwal '{$templateName}'");
+                
                 $this->dispatch('alert', type: 'success', message: 'Template berhasil dihapus!');
                 $this->loadTemplates();
 

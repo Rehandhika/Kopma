@@ -7,6 +7,7 @@ use Livewire\WithPagination;
 use Livewire\Attributes\{Lazy, Computed, Url, On};
 use App\Models\Attendance;
 use App\Exports\AttendanceExport;
+use App\Services\ActivityLogService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\{DB, Cache};
 use Maatwebsite\Excel\Facades\Excel;
@@ -236,6 +237,13 @@ class AttendanceManagement extends Component
 
         $attendance->update($updateData);
 
+        // Log activity
+        $user = $attendance->user;
+        ActivityLogService::logAttendanceEdited(
+            $user ? $user->name : 'Unknown',
+            $attendance->date->format('d M Y')
+        );
+
         $this->closeEditModal();
         $this->clearStatsCache();
         $this->dispatch('alert', type: 'success', message: 'Data berhasil diperbarui');
@@ -244,6 +252,9 @@ class AttendanceManagement extends Component
     // === Export Excel ===
     public function export()
     {
+        // Log activity
+        ActivityLogService::logAttendanceExported($this->dateFrom, $this->dateTo);
+        
         $filename = 'absensi_' . $this->dateFrom . '_' . $this->dateTo . '.xlsx';
         
         return Excel::download(

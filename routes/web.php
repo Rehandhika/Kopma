@@ -218,6 +218,11 @@ Route::prefix('admin')
             Route::get('/', \App\Livewire\Role\Index::class)->name('index');
         });
         
+        // Activity Log (Log Aktivitas) - Requirements 3.1, 3.2
+        Route::get('/log-aktivitas', \App\Livewire\Admin\ActivityLogViewer::class)
+            ->middleware('role:Super Admin|Ketua')
+            ->name('activity-log');
+        
         // Settings (Pengaturan)
         Route::prefix('pengaturan')->name('settings.')->group(function () {
             Route::get('/sistem', \App\Livewire\Settings\SystemSettings::class)->name('system');

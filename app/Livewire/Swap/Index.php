@@ -5,6 +5,7 @@ namespace App\Livewire\Swap;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\{SwapRequest, ScheduleAssignment, User};
+use App\Services\ActivityLogService;
 
 class Index extends Component
 {
@@ -15,20 +16,29 @@ class Index extends Component
 
     public function cancelRequest($id)
     {
-        $swap = SwapRequest::find($id);
+        $swap = SwapRequest::with(['requesterAssignment', 'targetAssignment'])->find($id);
         
         if ($swap && $swap->requester_id === auth()->id() && $swap->status === 'pending') {
             $swap->update(['status' => 'cancelled']);
+            
+            // Log activity
+            $date = $swap->requesterAssignment?->date?->format('d/m/Y') ?? 'N/A';
+            ActivityLogService::log("Membatalkan permintaan tukar shift tanggal {$date}");
+            
             $this->dispatch('alert', type: 'success', message: 'Permintaan tukar shift dibatalkan');
         }
     }
 
     public function acceptRequest($id)
     {
-        $swap = SwapRequest::find($id);
+        $swap = SwapRequest::with(['requester', 'requesterAssignment'])->find($id);
         
         if ($swap && $swap->target_id === auth()->id() && $swap->status === 'pending') {
             $swap->update(['status' => 'target_approved', 'target_responded_at' => now()]);
+            
+            // Log activity
+            $date = $swap->requesterAssignment?->date?->format('d/m/Y') ?? 'N/A';
+            ActivityLogService::logSwapApproved($swap->requester->name, $date);
             
             // Create notification for requester
             $this->createNotification($swap->requester_id, 'swap_accepted', [
@@ -46,7 +56,7 @@ class Index extends Component
 
     public function rejectRequest($id)
     {
-        $swap = SwapRequest::find($id);
+        $swap = SwapRequest::with(['requester', 'requesterAssignment'])->find($id);
         
         if ($swap && $swap->target_id === auth()->id() && $swap->status === 'pending') {
             $swap->update([
@@ -54,6 +64,10 @@ class Index extends Component
                 'target_responded_at' => now(),
                 'target_response' => 'Ditolak oleh target user'
             ]);
+            
+            // Log activity
+            $date = $swap->requesterAssignment?->date?->format('d/m/Y') ?? 'N/A';
+            ActivityLogService::logSwapRejected($swap->requester->name, $date);
             
             // Create notification for requester
             $this->createNotification($swap->requester_id, 'swap_rejected', [

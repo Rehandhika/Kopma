@@ -1,0 +1,78 @@
+id,name,guard_name,group,description
+1,view.users,web,User Management,Lihat daftar pengguna
+2,create.users,web,User Management,Buat pengguna baru
+3,edit.users,web,User Management,Edit data pengguna
+4,delete.users,web,User Management,Hapus pengguna
+5,view.roles,web,Role Management,Lihat daftar role
+6,create.roles,web,Role Management,Buat role baru
+7,edit.roles,web,Role Management,Edit role
+8,delete.roles,web,Role Management,Hapus role
+9,view.attendance.all,web,Attendance,Lihat semua absensi
+10,view.attendance.own,web,Attendance,Lihat absensi sendiri
+11,checkin.attendance,web,Attendance,Check-in dan check-out
+12,manage.attendance,web,Attendance,Kelola data absensi
+13,view.schedule.all,web,Schedule,Lihat semua jadwal
+14,view.schedule.own,web,Schedule,Lihat jadwal sendiri
+15,create.schedule,web,Schedule,Buat jadwal baru
+16,edit.schedule,web,Schedule,Edit jadwal
+17,delete.schedule,web,Schedule,Hapus jadwal
+18,generate.schedule,web,Schedule,Generate jadwal otomatis
+19,publish.schedule,web,Schedule,Publish jadwal
+20,input.availability,web,Schedule,Input ketersediaan
+21,view.swap.all,web,Swap Request,Lihat semua permintaan tukar
+22,view.swap.own,web,Swap Request,Lihat permintaan tukar sendiri
+23,create.swap.request,web,Swap Request,Buat permintaan tukar jadwal
+24,approve.swap.target,web,Swap Request,Approve sebagai target tukar
+25,approve.swap.admin,web,Swap Request,Approve sebagai admin
+26,view.leave.all,web,Leave Request,Lihat semua permintaan cuti
+27,view.leave.own,web,Leave Request,Lihat permintaan cuti sendiri
+28,create.leave.request,web,Leave Request,Buat permintaan cuti
+29,approve.leave.request,web,Leave Request,Approve permintaan cuti
+30,view.penalty.all,web,Penalty,Lihat semua penalti
+31,view.penalty.own,web,Penalty,Lihat penalti sendiri
+32,create.penalty,web,Penalty,Buat penalti
+33,edit.penalty,web,Penalty,Edit penalti
+34,delete.penalty,web,Penalty,Hapus penalti
+35,appeal.penalty,web,Penalty,Ajukan banding penalti
+36,manage.penalty,web,Penalty,Kelola penalti
+37,view.sales.all,web,Sales,Lihat semua penjualan
+38,view.sales.own,web,Sales,Lihat penjualan sendiri
+39,create.sales,web,Sales,Buat transaksi penjualan
+40,edit.sales,web,Sales,Edit penjualan
+41,delete.sales,web,Sales,Hapus penjualan
+42,view.products,web,Products,Lihat produk
+43,create.products,web,Products,Buat produk baru
+44,edit.products,web,Products,Edit produk
+45,delete.products,web,Products,Hapus produk
+46,view.purchases,web,Purchases,Lihat pembelian/pengadaan
+47,create.purchases,web,Purchases,Buat pembelian baru
+48,edit.purchases,web,Purchases,Edit pembelian
+49,delete.purchases,web,Purchases,Hapus pembelian
+50,manage.stock,web,Stock,Kelola stok
+
+51,view.reports,web,Reports,Lihat laporan
+52,view.reports.finance,web,Reports,Lihat laporan keuangan
+53,view.reports.sales,web,Reports,Lihat laporan penjualan
+54,view.reports.attendance,web,Reports,Lihat laporan absensi
+55,export.reports,web,Reports,Export laporan
+56,view.finance,web,Finance,Lihat keuangan
+57,manage.finance,web,Finance,Kelola keuangan
+58,approve.finance,web,Finance,Approve keuangan
+59,manage.toko,web,Toko,Kelola toko
+60,view.toko.reports,web,Toko,Lihat laporan toko
+61,manage.psda,web,PSDA,Kelola PSDA
+62,view.psda.reports,web,PSDA,Lihat laporan PSDA
+63,manage.humsar,web,Humsar,Kelola Humsar
+64,view.humsar.reports,web,Humsar,Lihat laporan Humsar
+65,manage.produksi,web,Produksi,Kelola produksi dan pengadaan
+66,view.produksi.reports,web,Produksi,Lihat laporan produksi
+67,manage.it,web,IT,Kelola IT
+68,manage.system,web,IT,Kelola sistem
+69,view.system.logs,web,IT,Lihat log sistem
+70,manage.desain,web,Desain,Kelola desain dan banner
+71,view.desain.assets,web,Desain,Lihat aset desain
+72,manage.settings,web,Settings,Kelola pengaturan sistem
+73,view.audit.logs,web,Audit,Lihat audit log
+74,send.notifications,web,Notifications,Kirim notifikasi
+75,manage.notifications,web,Notifications,Kelola notifikasi
+76,manage.banners,web,Desain,Kelola banner

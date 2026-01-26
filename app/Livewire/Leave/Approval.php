@@ -6,6 +6,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\LeaveRequest;
 use Illuminate\Support\Facades\DB;
+use App\Services\ActivityLogService;
 
 class Approval extends Component
 {
@@ -24,7 +25,7 @@ class Approval extends Component
 
     public function approve($id)
     {
-        $leave = LeaveRequest::find($id);
+        $leave = LeaveRequest::with('user')->find($id);
         
         if ($leave && $leave->status === 'pending') {
             DB::transaction(function () use ($leave) {
@@ -39,6 +40,12 @@ class Approval extends Component
                 $this->updateSchedules($leave);
             });
 
+            // Log activity
+            ActivityLogService::logLeaveApproved(
+                $leave->user->name,
+                $leave->date_from->format('d M Y')
+            );
+
             $this->dispatch('alert', type: 'success', message: 'Cuti disetujui');
             $this->reset(['showModal', 'approvalNotes', 'selectedLeave']);
         }
@@ -46,7 +53,7 @@ class Approval extends Component
 
     public function reject($id)
     {
-        $leave = LeaveRequest::find($id);
+        $leave = LeaveRequest::with('user')->find($id);
         
         if ($leave && $leave->status === 'pending') {
             $leave->update([
@@ -55,6 +62,12 @@ class Approval extends Component
                 'approved_at' => now(),
                 'approval_notes' => $this->approvalNotes,
             ]);
+
+            // Log activity
+            ActivityLogService::logLeaveRejected(
+                $leave->user->name,
+                $leave->date_from->format('d M Y')
+            );
 
             $this->dispatch('alert', type: 'success', message: 'Cuti ditolak');
             $this->reset(['showModal', 'approvalNotes', 'selectedLeave']);

@@ -5,6 +5,7 @@ namespace App\Livewire\Product;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\Product;
+use App\Services\ActivityLogService;
 
 /**
  * Product Index Component
@@ -40,7 +41,12 @@ class Index extends Component
         $product = Product::find($id);
         
         if ($product) {
+            $productName = $product->name;
             $product->delete();
+            
+            // Log activity
+            ActivityLogService::logProductDeleted($productName);
+            
             $this->dispatch('alert', type: 'success', message: 'Produk berhasil dihapus');
         }
     }

@@ -5,6 +5,7 @@ namespace App\Livewire\Swap;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\SwapRequest;
+use App\Services\ActivityLogService;
 use Illuminate\Support\Facades\DB;
 
 class Approval extends Component
@@ -48,6 +49,12 @@ class Approval extends Component
                 ]);
             });
 
+            // Log activity
+            ActivityLogService::logSwapApproved(
+                $swap->requester->name,
+                $swap->requesterAssignment->date->format('d M Y')
+            );
+
             $this->dispatch('alert', type: 'success', message: 'Tukar shift disetujui dan jadwal telah diperbarui');
             $this->reset(['showModal', 'approvalNotes', 'selectedSwap']);
         }
@@ -55,7 +62,7 @@ class Approval extends Component
 
     public function reject($id)
     {
-        $swap = SwapRequest::find($id);
+        $swap = SwapRequest::with(['requester', 'requesterAssignment'])->find($id);
         
         if ($swap && $swap->status === 'target_approved') {
             $swap->update([
@@ -64,6 +71,12 @@ class Approval extends Component
                 'admin_responded_at' => now(),
                 'admin_response' => $this->approvalNotes,
             ]);
+
+            // Log activity
+            ActivityLogService::logSwapRejected(
+                $swap->requester->name,
+                $swap->requesterAssignment->date->format('d M Y')
+            );
 
             $this->dispatch('alert', type: 'success', message: 'Tukar shift ditolak');
             $this->reset(['showModal', 'approvalNotes', 'selectedSwap']);

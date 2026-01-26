@@ -6,6 +6,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use Livewire\Attributes\Title;
 use App\Models\LeaveRequest;
+use App\Services\ActivityLogService;
 use Illuminate\Support\Facades\DB;
 
 #[Title('Persetujuan Cuti/Izin')]
@@ -35,7 +36,7 @@ class PendingApprovals extends Component
 
         DB::beginTransaction();
         try {
-            $request = LeaveRequest::findOrFail($this->reviewId);
+            $request = LeaveRequest::with('user')->findOrFail($this->reviewId);
             
             $request->update([
                 'status' => $this->reviewAction,
@@ -43,6 +44,15 @@ class PendingApprovals extends Component
                 'reviewed_at' => now(),
                 'review_notes' => $this->review_notes,
             ]);
+
+            // Log activity
+            $userName = $request->user->name;
+            $startDate = $request->start_date->format('d/m/Y');
+            if ($this->reviewAction === 'approved') {
+                ActivityLogService::logLeaveApproved($userName, $startDate);
+            } else {
+                ActivityLogService::logLeaveRejected($userName, $startDate);
+            }
 
             DB::commit();
             

@@ -1,0 +1,17 @@
+id,name,guard_name,description
+1,Super Admin,web,Full akses ke seluruh sistem (Koordinator IT)
+2,Ketua,web,Pimpinan tertinggi organisasi - akses semua laporan dan dashboard
+3,Wakil Ketua,web,Pendamping Ketua - akses semua laporan dan dashboard
+4,Sekretaris,web,Administrasi organisasi (Sekretaris I & II - permission sama)
+5,Bendahara Umum,web,Keuangan utama - bisa lihat semua keuangan
+6,Bendahara Kegiatan,web,Keuangan kegiatan - bisa lihat semua keuangan
+7,Bendahara Toko,web,Keuangan toko - bisa lihat semua keuangan
+8,Koordinator Toko,web,Pengelola toko - produk stok transaksi penjualan
+9,Koordinator PSDA,web,Pengembangan SDM - daftar absensi dan data pengurus
+10,Koordinator Produksi,web,Produksi dan Pengadaan - kelola supplier produksi inventory
+11,Koordinator Desain,web,Kelola banner dan aset desain
+12,Anggota,web,Anggota biasa - check-in/out dan fitur dasar
+13,Anggota Toko,web,Anggota divisi Toko - permission terbatas dari koordinator
+14,Anggota PSDA,web,Anggota divisi PSDA - permission terbatas dari koordinator
+15,Anggota Produksi,web,Anggota divisi Produksi - permission terbatas dari koordinator
+16,Anggota Desain,web,Anggota divisi Desain - permission terbatas dari koordinator
