@@ -66,7 +66,7 @@ $isChildActive = !empty($routePatterns) && request()->routeIs($routePatterns);
         <div x-show="open" 
              x-collapse 
              id="{{ $item['key'] ?? 'submenu' }}-submenu"
-             class="ml-8 mt-1 space-y-1"
+             class="ml-6 mt-1 space-y-1 pl-3 border-l-2 border-gray-200"
              role="menu">
             @foreach($children as $child)
                 @php

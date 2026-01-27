@@ -152,21 +152,34 @@
         {{-- Mobile Cards --}}
         <div class="sm:hidden divide-y divide-gray-200 dark:divide-gray-700">
             @forelse($sales as $sale)
-                <div wire:click="showDetail({{ $sale->id }})" class="p-3 space-y-1 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 active:bg-gray-100">
+                <div class="p-3 space-y-1">
                     <div class="flex justify-between items-start">
-                        <span class="font-mono text-xs bg-gray-100 dark:bg-gray-700 px-1.5 py-0.5 rounded">{{ $sale->invoice_number }}</span>
-                        <span class="font-semibold text-sm text-gray-900 dark:text-white">{{ format_currency($sale->total_amount) }}</span>
+                        <div wire:click="showDetail({{ $sale->id }})" class="cursor-pointer flex-1">
+                            <span class="font-mono text-xs bg-gray-100 dark:bg-gray-700 px-1.5 py-0.5 rounded">{{ $sale->invoice_number }}</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="font-semibold text-sm text-gray-900 dark:text-white">{{ format_currency($sale->total_amount) }}</span>
+                            @can('delete.sales')
+                            <button wire:click="confirmDelete({{ $sale->id }})" class="p-1 text-gray-400 hover:text-red-600 dark:hover:text-red-400 rounded" title="Hapus">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                </svg>
+                            </button>
+                            @endcan
+                        </div>
                     </div>
-                    <div class="flex justify-between text-xs text-gray-500">
-                        <span>{{ $sale->created_at->format('d/m H:i') }}</span>
-                        <span class="px-1.5 py-0.5 rounded text-xs font-medium
-                            {{ $sale->payment_method === 'cash' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-400' : '' }}
-                            {{ $sale->payment_method === 'transfer' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-400' : '' }}
-                            {{ $sale->payment_method === 'qris' ? 'bg-violet-100 text-violet-700 dark:bg-violet-900/50 dark:text-violet-400' : '' }}">
-                            {{ strtoupper($sale->payment_method) }}
-                        </span>
+                    <div wire:click="showDetail({{ $sale->id }})" class="cursor-pointer">
+                        <div class="flex justify-between text-xs text-gray-500">
+                            <span>{{ $sale->created_at->format('d/m H:i') }}</span>
+                            <span class="px-1.5 py-0.5 rounded text-xs font-medium
+                                {{ $sale->payment_method === 'cash' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-400' : '' }}
+                                {{ $sale->payment_method === 'transfer' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-400' : '' }}
+                                {{ $sale->payment_method === 'qris' ? 'bg-violet-100 text-violet-700 dark:bg-violet-900/50 dark:text-violet-400' : '' }}">
+                                {{ strtoupper($sale->payment_method) }}
+                            </span>
+                        </div>
+                        <div class="text-xs text-gray-500">{{ $sale->cashier->name ?? '-' }} • {{ $sale->items_count }} item</div>
                     </div>
-                    <div class="text-xs text-gray-500">{{ $sale->cashier->name ?? '-' }} • {{ $sale->items_count }} item</div>
                 </div>
             @empty
                 <div class="p-8 text-center text-gray-400 text-sm">Tidak ada transaksi</div>
@@ -184,20 +197,23 @@
                         <th class="px-4 py-2.5 text-center">Item</th>
                         <th class="px-4 py-2.5 text-center">Metode</th>
                         <th class="px-4 py-2.5 text-right">Total</th>
+                        @can('delete.sales')
+                        <th class="px-4 py-2.5 text-center w-16">Aksi</th>
+                        @endcan
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
                     @forelse($sales as $sale)
-                        <tr wire:click="showDetail({{ $sale->id }})" class="hover:bg-gray-50 dark:hover:bg-gray-900/30 cursor-pointer">
-                            <td class="px-4 py-2.5">
+                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-900/30">
+                            <td wire:click="showDetail({{ $sale->id }})" class="px-4 py-2.5 cursor-pointer">
                                 <span class="font-mono text-xs bg-gray-100 dark:bg-gray-700 px-1.5 py-0.5 rounded">{{ $sale->invoice_number }}</span>
                             </td>
-                            <td class="px-4 py-2.5 text-gray-600 dark:text-gray-400 text-xs">
+                            <td wire:click="showDetail({{ $sale->id }})" class="px-4 py-2.5 text-gray-600 dark:text-gray-400 text-xs cursor-pointer">
                                 {{ $sale->created_at->format('d/m/Y H:i') }}
                             </td>
-                            <td class="px-4 py-2.5 text-gray-900 dark:text-white">{{ $sale->cashier->name ?? '-' }}</td>
-                            <td class="px-4 py-2.5 text-center text-xs">{{ $sale->items_count }}</td>
-                            <td class="px-4 py-2.5 text-center">
+                            <td wire:click="showDetail({{ $sale->id }})" class="px-4 py-2.5 text-gray-900 dark:text-white cursor-pointer">{{ $sale->cashier->name ?? '-' }}</td>
+                            <td wire:click="showDetail({{ $sale->id }})" class="px-4 py-2.5 text-center text-xs cursor-pointer">{{ $sale->items_count }}</td>
+                            <td wire:click="showDetail({{ $sale->id }})" class="px-4 py-2.5 text-center cursor-pointer">
                                 <span class="px-1.5 py-0.5 rounded text-xs font-medium
                                     {{ $sale->payment_method === 'cash' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-400' : '' }}
                                     {{ $sale->payment_method === 'transfer' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-400' : '' }}
@@ -205,13 +221,22 @@
                                     {{ strtoupper($sale->payment_method) }}
                                 </span>
                             </td>
-                            <td class="px-4 py-2.5 text-right font-semibold text-gray-900 dark:text-white">
+                            <td wire:click="showDetail({{ $sale->id }})" class="px-4 py-2.5 text-right font-semibold text-gray-900 dark:text-white cursor-pointer">
                                 {{ format_currency($sale->total_amount) }}
                             </td>
+                            @can('delete.sales')
+                            <td class="px-4 py-2.5 text-center">
+                                <button wire:click="confirmDelete({{ $sale->id }})" class="p-1.5 text-gray-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded transition" title="Hapus transaksi">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                    </svg>
+                                </button>
+                            </td>
+                            @endcan
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="px-4 py-12 text-center text-gray-400 text-sm">Tidak ada transaksi</td>
+                            <td colspan="@can('delete.sales')7@else 6 @endcan" class="px-4 py-12 text-center text-gray-400 text-sm">Tidak ada transaksi</td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -334,10 +359,61 @@
                     </div>
 
                     {{-- Footer --}}
-                    <div class="p-4 border-t border-gray-200 dark:border-gray-700">
-                        <button wire:click="closeDetail" class="w-full px-4 py-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 text-sm font-medium rounded-lg transition">
+                    <div class="p-4 border-t border-gray-200 dark:border-gray-700 flex gap-2">
+                        <button wire:click="closeDetail" class="flex-1 px-4 py-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 text-sm font-medium rounded-lg transition">
                             Tutup
                         </button>
+                        @can('delete.sales')
+                        <button wire:click="confirmDelete({{ $this->selectedSale->id }})" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-lg transition flex items-center gap-1.5">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                            </svg>
+                            Hapus
+                        </button>
+                        @endcan
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
+
+    {{-- Delete Confirmation Modal --}}
+    @if($showDeleteModal)
+        <div class="fixed inset-0 z-[60] overflow-y-auto" wire:keydown.escape.window="cancelDelete">
+            <div class="flex min-h-full items-center justify-center p-4">
+                {{-- Backdrop --}}
+                <div wire:click="cancelDelete" class="fixed inset-0 bg-black/50 transition-opacity"></div>
+                
+                {{-- Modal --}}
+                <div class="relative bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-sm transform transition-all">
+                    <div class="p-6 text-center">
+                        {{-- Icon --}}
+                        <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 dark:bg-red-900/30 mb-4">
+                            <svg class="h-6 w-6 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                            </svg>
+                        </div>
+                        
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Hapus Transaksi?</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">
+                            Transaksi akan dihapus dan stok produk akan dikembalikan. Tindakan ini tidak dapat dibatalkan.
+                        </p>
+                        
+                        <div class="flex gap-3">
+                            <button wire:click="cancelDelete" class="flex-1 px-4 py-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 text-sm font-medium rounded-lg transition">
+                                Batal
+                            </button>
+                            <button wire:click="deleteSale" class="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-lg transition">
+                                <span wire:loading.remove wire:target="deleteSale">Ya, Hapus</span>
+                                <span wire:loading wire:target="deleteSale" class="flex items-center justify-center gap-2">
+                                    <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                                    </svg>
+                                    Menghapus...
+                                </span>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>

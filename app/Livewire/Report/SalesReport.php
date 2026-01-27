@@ -8,8 +8,11 @@ use Livewire\Attributes\Title;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Locked;
 use App\Models\Sale;
+use App\Models\Product;
+use App\Services\ActivityLogService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 #[Title('Laporan Penjualan')]
 class SalesReport extends Component
@@ -20,6 +23,8 @@ class SalesReport extends Component
     public string $dateTo = '';
     public string $period = 'month';
     public ?int $selectedSaleId = null;
+    public ?int $saleToDelete = null;
+    public bool $showDeleteModal = false;
 
     // Cache key untuk invalidasi
     #[Locked]
@@ -103,6 +108,73 @@ class SalesReport extends Component
     public function closeDetail()
     {
         $this->selectedSaleId = null;
+    }
+
+    /**
+     * Tampilkan modal konfirmasi hapus
+     */
+    public function confirmDelete(int $saleId): void
+    {
+        $this->saleToDelete = $saleId;
+        $this->showDeleteModal = true;
+    }
+
+    /**
+     * Tutup modal konfirmasi hapus
+     */
+    public function cancelDelete(): void
+    {
+        $this->saleToDelete = null;
+        $this->showDeleteModal = false;
+    }
+
+    /**
+     * Hapus transaksi dan kembalikan stok
+     */
+    public function deleteSale(): void
+    {
+        if (!$this->saleToDelete) {
+            return;
+        }
+
+        try {
+            DB::transaction(function () {
+                $sale = Sale::with('items:id,sale_id,product_id,quantity')->findOrFail($this->saleToDelete);
+                $invoiceNumber = $sale->invoice_number;
+                
+                // Kembalikan stok produk
+                foreach ($sale->items as $item) {
+                    Product::where('id', $item->product_id)->increment('stock', $item->quantity);
+                }
+                
+                // Hapus items dan sale (soft delete)
+                $sale->items()->delete();
+                $sale->delete();
+                
+                // Log activity
+                ActivityLogService::logSaleDeleted($invoiceNumber);
+            });
+            
+            // Clear cache
+            Cache::forget('pos_products_active');
+            
+            // Reset state
+            $this->saleToDelete = null;
+            $this->showDeleteModal = false;
+            $this->selectedSaleId = null;
+            
+            // Update cache key untuk refresh computed properties
+            $this->updateCacheKey();
+            
+            $this->dispatch('alert', type: 'success', message: 'Transaksi berhasil dihapus');
+            
+        } catch (\Exception $e) {
+            Log::error('Delete Sale Error: ' . $e->getMessage(), ['sale_id' => $this->saleToDelete]);
+            $this->dispatch('alert', type: 'error', message: 'Gagal menghapus transaksi: ' . $e->getMessage());
+            
+            $this->saleToDelete = null;
+            $this->showDeleteModal = false;
+        }
     }
 
     #[Computed]

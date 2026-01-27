@@ -37,9 +37,9 @@
                :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'"
                role="navigation"
                aria-label="Main navigation">
-            <div class="flex flex-col h-full bg-white border-r border-gray-200 shadow-sm">
+            <div class="flex flex-col h-full bg-white border-r border-gray-200 shadow-sm overflow-hidden">
                 <!-- Logo -->
-                <div class="flex items-center justify-between px-4 py-5 border-b border-gray-200">
+                <div class="flex items-center justify-between px-4 py-5 border-b border-gray-200 flex-shrink-0">
                     <div class="flex items-center space-x-2">
                         <img src="{{ asset('images/logo.png') }}" alt="SIKOPMA" class="w-8 h-8 rounded-lg flex-shrink-0 object-cover">
                         <span class="text-xl font-semibold text-gray-900">SIKOPMA</span>
@@ -53,7 +53,7 @@
                 </div>
 
                 <!-- Navigation -->
-                <nav class="flex-1 px-2 py-4 space-y-1 overflow-y-auto" aria-label="Sidebar navigation">
+                <nav class="flex-1 px-2 py-4 space-y-1 overflow-y-auto overflow-x-hidden scrollbar-thin" aria-label="Sidebar navigation">
                     @include('components.navigation')
                 </nav>
 
