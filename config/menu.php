@@ -78,7 +78,7 @@ return [
         ],
         [
             'key' => 'penalties',
-            'label' => 'Sanksi',
+            'label' => 'Penalti',
             'icon' => 'exclamation-triangle',
             'route' => 'admin.penalties.index',
             'active_routes' => ['admin.penalties.*'],
@@ -95,7 +95,7 @@ return [
             'children' => [
                 ['key' => 'reports.attendance', 'label' => 'Laporan Absensi', 'route' => 'admin.reports.attendance', 'permissions' => ['view.reports.attendance', 'view.reports'], 'permission_logic' => 'any'],
                 ['key' => 'reports.sales', 'label' => 'Laporan Penjualan', 'route' => 'admin.reports.sales', 'permissions' => ['view.reports.sales', 'view.reports'], 'permission_logic' => 'any'],
-                ['key' => 'reports.penalties', 'label' => 'Laporan Sanksi', 'route' => 'admin.reports.penalties', 'permissions' => ['view.reports', 'view.penalty.all'], 'permission_logic' => 'any'],
+                ['key' => 'reports.penalties', 'label' => 'Laporan Penalti', 'route' => 'admin.reports.penalties', 'permissions' => ['view.reports', 'view.penalty.all'], 'permission_logic' => 'any'],
             ],
         ],
         ['key' => 'divider.admin', 'type' => 'divider'],
@@ -133,7 +133,7 @@ return [
             'children' => [
                 ['key' => 'settings.system', 'label' => 'Pengaturan Sistem', 'route' => 'admin.settings.system', 'permissions' => ['manage.settings', 'manage.system'], 'permission_logic' => 'any'],
                 ['key' => 'settings.store', 'label' => 'Pengaturan Toko', 'route' => 'admin.settings.store', 'permissions' => ['manage.settings', 'manage.toko'], 'permission_logic' => 'any', 'roles' => ['Super Admin', 'Ketua', 'Wakil Ketua']],
-                ['key' => 'settings.banners', 'label' => 'Kelola Banner', 'route' => 'admin.settings.banners', 'permissions' => ['manage.settings'], 'roles' => ['Super Admin', 'Ketua']],
+                ['key' => 'settings.banners', 'label' => 'Banner & Berita', 'route' => 'admin.settings.banners', 'permissions' => ['manage.settings'], 'roles' => ['Super Admin', 'Ketua']],
             ],
         ],
         [

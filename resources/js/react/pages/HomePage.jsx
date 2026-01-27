@@ -25,6 +25,7 @@ import { api } from '@/react/lib/api'
 import { formatRupiah } from '@/react/lib/format'
 
 const BannerCarousel = React.lazy(() => import('@/react/components/BannerCarousel'))
+const NewsPopup = React.lazy(() => import('@/react/components/NewsPopup'))
 
 function buildPageList(currentPage, lastPage) {
     const pages = []
@@ -109,6 +110,69 @@ function BannerSection({ initialBanners }) {
                 </React.Suspense>
             </div>
         </div>
+    )
+}
+
+function NewsSection({ initialNews }) {
+    const [news, setNews] = React.useState(() => (Array.isArray(initialNews) ? initialNews : []))
+    const [loading, setLoading] = React.useState(() => !Array.isArray(initialNews))
+    const [showPopup, setShowPopup] = React.useState(false)
+
+    React.useEffect(() => {
+        if (Array.isArray(initialNews)) {
+            // Check if there are unviewed news items
+            const hasUnviewedNews = checkForUnviewedNews(initialNews)
+            setShowPopup(hasUnviewedNews)
+            return
+        }
+
+        // Fetch news from API if not provided
+        ;(async () => {
+            try {
+                const res = await api.get('/api/publik/berita')
+                const fetchedNews = res.data?.data ?? []
+                setNews(fetchedNews)
+                
+                // Check if there are unviewed news items
+                const hasUnviewedNews = checkForUnviewedNews(fetchedNews)
+                setShowPopup(hasUnviewedNews)
+            } catch (error) {
+                console.error('Failed to fetch news:', error)
+            } finally {
+                setLoading(false)
+            }
+        })()
+    }, [initialNews])
+
+    // Check if there are any unviewed news items
+    const checkForUnviewedNews = (newsItems) => {
+        if (!newsItems || newsItems.length === 0) return false
+        
+        try {
+            const viewedIds = JSON.parse(sessionStorage.getItem('viewedNewsIds') || '[]')
+            return newsItems.some(item => !viewedIds.includes(item.id))
+        } catch {
+            return newsItems.length > 0
+        }
+    }
+
+    const handleClosePopup = () => {
+        setShowPopup(false)
+    }
+
+    // Don't render anything if loading or no news
+    if (loading || news.length === 0) {
+        return null
+    }
+
+    return (
+        <>
+            {showPopup && (
+                <React.Suspense fallback={null}>
+                    <NewsPopup news={news} onClose={handleClosePopup} />
+                </React.Suspense>
+            )}
+        </>
     )
 }
 
@@ -433,9 +497,11 @@ export default function HomePage({ initialData }) {
     const initialBanners = initialData?.banners
     const initialCategories = initialData?.categories
     const initialProducts = initialData?.products
+    const initialNews = initialData?.news
 
     return (
         <PublicLayout>
+            <NewsSection initialNews={initialNews} />
             <BannerSection initialBanners={initialBanners} />
             <ProductsSection initialCategories={initialCategories} initialProducts={initialProducts} />
         </PublicLayout>

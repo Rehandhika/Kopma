@@ -85,4 +85,11 @@ class HomeController extends Controller
             'data' => $dateTimeService->getForFrontend(),
         ], 60, 300);
     }
+
+    public function news(Request $request, PublicDataService $publicDataService): Response
+    {
+        return $this->respondCachedJson($request, [
+            'data' => $publicDataService->news(),
+        ], 60, 300);
+    }
 }

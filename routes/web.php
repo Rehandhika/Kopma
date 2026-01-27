@@ -55,6 +55,7 @@ Route::prefix('api/publik')
     ->group(function () {
         Route::get('/tentang', [PublicHomeApiController::class, 'about'])->name('about');
         Route::get('/banner', [PublicHomeApiController::class, 'banners'])->name('banners');
+        Route::get('/berita', [PublicHomeApiController::class, 'news'])->name('news');
         Route::get('/kategori', [PublicHomeApiController::class, 'categories'])->name('categories');
         Route::get('/produk', [PublicHomeApiController::class, 'products'])->name('products');
         Route::get('/produk/{slug}', [PublicHomeApiController::class, 'product'])->name('products.show');
@@ -229,7 +230,7 @@ Route::prefix('admin')
             Route::get('/toko', \App\Livewire\Admin\Settings\StoreSettings::class)
                 ->middleware('role:Super Admin|Ketua|Wakil Ketua')
                 ->name('store');
-            Route::get('/banner', \App\Livewire\Admin\BannerManagement::class)
+            Route::get('/banner', \App\Livewire\Admin\BannerNewsManagement::class)
                 ->middleware('role:Super Admin|Ketua')
                 ->name('banners');
         });

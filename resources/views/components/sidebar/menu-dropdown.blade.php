@@ -24,20 +24,13 @@ $submenuInactiveClasses = 'text-gray-600 hover:bg-gray-100 hover:text-gray-900';
 $submenuLockedClasses = 'text-gray-400 cursor-not-allowed opacity-60';
 
 // Build route patterns for active state detection
+// Only use explicit active_routes or exact route match - no wildcard fallback
 $routePatterns = collect($children)->map(function($child) {
     if (isset($child['active_routes']) && is_array($child['active_routes'])) {
         return $child['active_routes'];
     }
     $route = $child['route'] ?? null;
-    if ($route) {
-        $parts = explode('.', $route);
-        if (count($parts) >= 2) {
-            array_pop($parts);
-            return [implode('.', $parts) . '.*', $route];
-        }
-        return [$route];
-    }
-    return [];
+    return $route ? [$route] : [];
 })->flatten()->filter()->unique()->toArray();
 
 // Check if any child route pattern is active
@@ -76,17 +69,12 @@ $isChildActive = !empty($routePatterns) && request()->routeIs($routePatterns);
                     $childIsActive = false;
                     
                     if ($childActiveRoutes && is_array($childActiveRoutes)) {
+                        // Use explicit active_routes if defined
                         $childIsActive = request()->routeIs($childActiveRoutes);
                     } elseif ($childRoute) {
+                        // Only check exact route match - no wildcard fallback
+                        // This prevents multiple submenu items from being highlighted
                         $childIsActive = request()->routeIs($childRoute);
-                        if (!$childIsActive) {
-                            $parts = explode('.', $childRoute);
-                            if (count($parts) >= 2) {
-                                array_pop($parts);
-                                $wildcardPattern = implode('.', $parts) . '.*';
-                                $childIsActive = request()->routeIs($wildcardPattern);
-                            }
-                        }
                     }
                 @endphp
                 

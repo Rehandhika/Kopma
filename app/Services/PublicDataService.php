@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Banner;
+use App\Models\News;
 use App\Models\Product;
 use App\Models\StoreSetting;
 use App\Services\Storage\FileStorageServiceInterface;
@@ -238,6 +239,91 @@ class PublicDataService
         }
 
         return $data;
+    }
+
+    public function news(): array
+    {
+        $news = Cache::remember('api:public:news:active', 60, function () {
+            return News::query()
+                ->active()
+                ->notExpired()
+                ->published()
+                ->ordered()
+                ->limit(10)
+                ->get(['id', 'title', 'content', 'link', 'image_path', 'published_at']);
+        });
+
+        $fileStorageService = $this->fileStorageService;
+
+        return $news->map(function (News $newsItem) use ($fileStorageService) {
+            $imagePath = $newsItem->image_path;
+
+            // Default fallback URL - use relative path for cross-device compatibility
+            $defaultUrl = $imagePath
+                ? '/storage/' . ltrim($imagePath, '/')
+                : null;
+
+            $images = [
+                'default' => $defaultUrl,
+                'mobile' => null,
+                'tablet' => null,
+                'desktop' => null,
+            ];
+
+            if ($imagePath && $fileStorageService) {
+                // Try to use FileStorageService for new path format
+                try {
+                    // Get URLs using FileStorageService (handles new structure)
+                    $images['default'] = $fileStorageService->getUrl($imagePath) ?? $defaultUrl;
+                    $images['mobile'] = $fileStorageService->getUrl($imagePath, 'mobile');
+                    $images['tablet'] = $fileStorageService->getUrl($imagePath, 'tablet');
+                    $images['desktop'] = $fileStorageService->getUrl($imagePath, 'desktop');
+                } catch (\Exception $e) {
+                    // Fallback to legacy URL generation
+                    $images = $this->generateLegacyNewsUrls($imagePath, $defaultUrl);
+                }
+            } elseif ($imagePath) {
+                // Fallback to legacy URL generation
+                $images = $this->generateLegacyNewsUrls($imagePath, $defaultUrl);
+            }
+
+            return [
+                'id' => $newsItem->id,
+                'title' => $newsItem->title,
+                'content' => $newsItem->content,
+                'link' => $newsItem->link,
+                'images' => $images,
+                'published_at' => $newsItem->published_at?->toIso8601String(),
+            ];
+        })->values()->toArray();
+    }
+
+    /**
+     * Generate legacy news URLs for old file structure.
+     */
+    protected function generateLegacyNewsUrls(string $imagePath, ?string $defaultUrl): array
+    {
+        $images = [
+            'default' => $defaultUrl,
+            'mobile' => null,
+            'tablet' => null,
+            'desktop' => null,
+        ];
+
+        $pathInfo = pathinfo($imagePath);
+        $filename = $pathInfo['filename'] ?? '';
+        $directory = $pathInfo['dirname'] ?? '';
+        $extension = $pathInfo['extension'] ?? 'jpg';
+
+        $lastUnderscorePos = strrpos($filename, '_');
+        $uuid = $lastUnderscorePos !== false ? substr($filename, 0, $lastUnderscorePos) : $filename;
+
+        // Use relative URLs for cross-device compatibility
+        $images['mobile'] = "/storage/{$directory}/{$uuid}_480.{$extension}";
+        $images['tablet'] = "/storage/{$directory}/{$uuid}_768.{$extension}";
+        $images['desktop'] = "/storage/{$directory}/{$uuid}_1920.{$extension}";
+
+        return $images;
     }
 }
 

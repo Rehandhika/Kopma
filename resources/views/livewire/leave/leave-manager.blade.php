@@ -63,7 +63,7 @@
         <div wire:key="req-{{ $req->id }}" wire:click="viewRequest({{ $req->id }})" class="p-4 hover:bg-gray-50 cursor-pointer flex items-center justify-between">
             <div class="flex-1 min-w-0">
                 <div class="flex items-center gap-2 mb-1">
-                    @if($activeTab === 'approvals')
+                    @if($activeTab === 'approvals' && $req->user)
                     <span class="font-medium text-gray-900">{{ $req->user->name }}</span>
                     <span class="text-gray-300">•</span>
                     @endif
@@ -186,7 +186,7 @@
                             <span class="px-3 py-1 text-sm rounded-full bg-gray-100 text-gray-700">{{ $viewingRequest->getLeaveTypeLabel() }}</span>
                         </div>
 
-                        @if($activeTab === 'approvals')
+                        @if($activeTab === 'approvals' && $viewingRequest->user)
                         <div>
                             <p class="text-xs text-gray-500">Pemohon</p>
                             <p class="font-medium">{{ $viewingRequest->user->name }}</p>

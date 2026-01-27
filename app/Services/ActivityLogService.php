@@ -388,6 +388,43 @@ class ActivityLogService
     }
 
     // ==========================================
+    // News Management
+    // ==========================================
+
+    /**
+     * Log news creation
+     */
+    public static function logNewsCreated(string $title): void
+    {
+        self::log("Membuat berita baru '{$title}'");
+    }
+
+    /**
+     * Log news update
+     */
+    public static function logNewsUpdated(string $title): void
+    {
+        self::log("Mengubah berita '{$title}'");
+    }
+
+    /**
+     * Log news deletion
+     */
+    public static function logNewsDeleted(string $title): void
+    {
+        self::log("Menghapus berita '{$title}'");
+    }
+
+    /**
+     * Log news status toggle
+     */
+    public static function logNewsStatusChanged(string $title, bool $isActive): void
+    {
+        $statusText = $isActive ? 'mengaktifkan' : 'menonaktifkan';
+        self::log("Berhasil {$statusText} berita '{$title}'");
+    }
+
+    // ==========================================
     // Attendance Management
     // ==========================================
 

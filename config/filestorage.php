@@ -39,6 +39,20 @@ return [
             ],
         ],
 
+        'news' => [
+            'disk' => 'public',
+            'base_path' => 'news',
+            'max_size' => 5 * 1024 * 1024, // 5MB
+            'allowed_mimes' => ['image/jpeg', 'image/png'],
+            'convert_to_webp' => false, // Keep original format
+            'preserve_original' => true, // Keep original without compression
+            'variants' => [
+                'desktop' => ['width' => 1920, 'quality' => 100],
+                'tablet' => ['width' => 768, 'quality' => 100],
+                'mobile' => ['width' => 480, 'quality' => 100],
+            ],
+        ],
+
         'attendance' => [
             'disk' => 'public',
             'base_path' => 'attendance',
