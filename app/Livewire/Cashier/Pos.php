@@ -6,8 +6,10 @@ use App\Models\Product;
 use App\Models\ProductVariant;
 use App\Models\Sale;
 use App\Models\SaleItem;
+use App\Models\Student;
 use App\Services\ActivityLogService;
 use App\Services\PaymentConfigurationService;
+use App\Services\ShuPointService;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Computed;
@@ -31,6 +33,8 @@ class Pos extends Component
 
     public int $paymentAmount = 0;
 
+    public string $studentNim = '';
+
     // UI State
     public bool $showCart = false;
 
@@ -52,6 +56,11 @@ class Pos extends Component
     public array $quickAmounts = [10000, 20000, 50000, 100000];
 
     protected $listeners = ['barcode-scanned' => 'handleBarcode'];
+
+    protected array $messages = [
+        'studentNim.digits' => 'NIM harus 9 digit angka',
+        'studentNim.exists' => 'NIM tidak terdaftar',
+    ];
 
     #[Computed]
     public function products()
@@ -517,12 +526,37 @@ class Pos extends Component
         $this->showCart = ! $this->showCart;
     }
 
+    /**
+     * Get all students for client-side search (cached)
+     */
+    #[Computed]
+    public function allStudents(): array
+    {
+        return Cache::remember('pos_all_students', 300, function () {
+            return Student::query()
+                ->select(['nim', 'full_name', 'points_balance'])
+                ->orderBy('nim')
+                ->get()
+                ->toArray();
+        });
+    }
+
     public function processPayment(): void
     {
         if (empty($this->cart)) {
             $this->dispatch('toast', message: 'Keranjang kosong', type: 'error');
 
             return;
+        }
+
+        $student = null;
+        $studentNim = trim($this->studentNim);
+        if ($studentNim !== '') {
+            $this->studentNim = $studentNim;
+            $this->validate([
+                'studentNim' => ['digits:9', 'exists:students,nim'],
+            ]);
+            $student = Student::where('nim', $studentNim)->first();
         }
 
         // Validate payment method is enabled - Requirements: 5.1
@@ -556,7 +590,8 @@ class Pos extends Component
         }
 
         try {
-            DB::transaction(function () use ($total) {
+            $shuPointsEarned = 0;
+            DB::transaction(function () use ($total, $student, &$shuPointsEarned) {
                 // Re-validate stock with row locking to prevent race conditions
                 foreach ($this->cart as $item) {
                     if (! empty($item['variant_id'])) {
@@ -622,6 +657,10 @@ class Pos extends Component
                     ProductVariant::where('id', $variantId)->decrement('stock', $quantity);
                 }
 
+                if ($student) {
+                    $shuPointsEarned = app(ShuPointService::class)->awardPointsForSale($sale, $student);
+                }
+
                 // Dispatch success event
                 $this->dispatch('payment-success', [
                     'invoice' => $sale->invoice_number,
@@ -629,16 +668,22 @@ class Pos extends Component
                     'payment' => $this->paymentAmount,
                     'change' => $this->paymentAmount - $total,
                     'method' => $this->paymentMethod,
+                    'student_nim' => $student?->nim,
+                    'shu_points' => $shuPointsEarned,
                 ]);
 
                 // Log activity
                 ActivityLogService::logSaleCreated($sale->invoice_number, $total);
             });
 
-            $this->dispatch('toast', message: 'Transaksi berhasil!', type: 'success');
+            if ($student && $shuPointsEarned > 0) {
+                $this->dispatch('toast', message: "Transaksi berhasil! Poin SHU +{$shuPointsEarned} untuk NIM {$student->nim}", type: 'success');
+            } else {
+                $this->dispatch('toast', message: 'Transaksi berhasil!', type: 'success');
+            }
 
             // Reset state
-            $this->reset(['cart', 'paymentAmount', 'showPayment', 'showCart']);
+            $this->reset(['cart', 'paymentAmount', 'showPayment', 'showCart', 'studentNim']);
             $this->paymentMethod = 'cash';
 
             // Clear categories cache to reflect stock changes
@@ -646,6 +691,9 @@ class Pos extends Component
 
         } catch (\Exception $e) {
             report($e);
+            if (app()->environment('testing')) {
+                throw $e;
+            }
             $this->dispatch('toast', message: $e->getMessage() ?: 'Gagal memproses transaksi', type: 'error');
         }
     }

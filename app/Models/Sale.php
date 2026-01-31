@@ -13,12 +13,15 @@ class Sale extends Model
 
     protected $fillable = [
         'cashier_id',
+        'student_id',
         'invoice_number',
         'date',
         'total_amount',
         'payment_method',
         'payment_amount',
         'change_amount',
+        'shu_points_earned',
+        'shu_percentage_bps',
         'notes',
     ];
 
@@ -27,6 +30,8 @@ class Sale extends Model
         'total_amount' => 'decimal:2',
         'payment_amount' => 'decimal:2',
         'change_amount' => 'decimal:2',
+        'shu_points_earned' => 'integer',
+        'shu_percentage_bps' => 'integer',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
@@ -37,9 +42,19 @@ class Sale extends Model
         return $this->belongsTo(User::class, 'cashier_id');
     }
 
+    public function student()
+    {
+        return $this->belongsTo(Student::class);
+    }
+
     public function items()
     {
         return $this->hasMany(SaleItem::class);
+    }
+
+    public function shuPointTransactions()
+    {
+        return $this->hasMany(ShuPointTransaction::class);
     }
 
     // Scopes
@@ -77,11 +92,16 @@ class Sale extends Model
         $date = $forDate ? \Carbon\Carbon::parse($forDate)->format('Ymd') : now()->format('Ymd');
         $prefix = "INV-{$date}-";
 
+        $driver = DB::connection()->getDriverName();
+        $sequenceSql = $driver === 'sqlite'
+            ? "MAX(CAST(substr(invoice_number, -4) AS INTEGER)) as max_seq"
+            : "MAX(CAST(SUBSTRING_INDEX(invoice_number, '-', -1) AS UNSIGNED)) as max_seq";
+
         // Get max sequence with row locking
         $maxSeq = static::withTrashed()
             ->where('invoice_number', 'like', $prefix.'%')
             ->lockForUpdate()
-            ->selectRaw("MAX(CAST(SUBSTRING_INDEX(invoice_number, '-', -1) AS UNSIGNED)) as max_seq")
+            ->selectRaw($sequenceSql)
             ->value('max_seq');
 
         $newNumber = ($maxSeq ?? 0) + 1;
@@ -102,11 +122,16 @@ class Sale extends Model
         $date = $forDate ? \Carbon\Carbon::parse($forDate)->format('Ymd') : now()->format('Ymd');
         $prefix = "INV-{$date}-";
 
+        $driver = DB::connection()->getDriverName();
+        $sequenceSql = $driver === 'sqlite'
+            ? "MAX(CAST(substr(invoice_number, -4) AS INTEGER)) as max_seq"
+            : "MAX(CAST(SUBSTRING_INDEX(invoice_number, '-', -1) AS UNSIGNED)) as max_seq";
+
         // Get max sequence with row locking to prevent race conditions
         $maxSeq = static::withTrashed()
             ->where('invoice_number', 'like', $prefix.'%')
             ->lockForUpdate()
-            ->selectRaw("MAX(CAST(SUBSTRING_INDEX(invoice_number, '-', -1) AS UNSIGNED)) as max_seq")
+            ->selectRaw($sequenceSql)
             ->value('max_seq');
 
         $startNumber = ($maxSeq ?? 0) + 1;

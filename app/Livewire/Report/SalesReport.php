@@ -2,9 +2,12 @@
 
 namespace App\Livewire\Report;
 
+use App\Exports\SaleItemsExport;
+use App\Exports\SalesExport;
 use App\Models\Product;
 use App\Models\Sale;
 use App\Services\ActivityLogService;
+use App\Services\ShuPointService;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -13,6 +16,7 @@ use Livewire\Attributes\Locked;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Maatwebsite\Excel\Facades\Excel;
 
 #[Title('Laporan Penjualan')]
 class SalesReport extends Component
@@ -147,6 +151,8 @@ class SalesReport extends Component
             DB::transaction(function () {
                 $sale = Sale::with('items:id,sale_id,product_id,quantity')->findOrFail($this->saleToDelete);
                 $invoiceNumber = $sale->invoice_number;
+
+                app(ShuPointService::class)->reverseSalePoints($sale);
 
                 // Kembalikan stok produk
                 foreach ($sale->items as $item) {
@@ -324,6 +330,32 @@ class SalesReport extends Component
             ]))
             ->values()
             ->toArray();
+    }
+
+    /**
+     * Export laporan penjualan ke Excel (per transaksi)
+     */
+    public function exportSales()
+    {
+        $filename = 'laporan_penjualan_' . $this->dateFrom . '_' . $this->dateTo . '.xlsx';
+
+        return Excel::download(
+            new SalesExport($this->dateFrom, $this->dateTo),
+            $filename
+        );
+    }
+
+    /**
+     * Export detail item penjualan ke Excel
+     */
+    public function exportSaleItems()
+    {
+        $filename = 'detail_item_penjualan_' . $this->dateFrom . '_' . $this->dateTo . '.xlsx';
+
+        return Excel::download(
+            new SaleItemsExport($this->dateFrom, $this->dateTo),
+            $filename
+        );
     }
 
     public function render()

@@ -3,8 +3,12 @@
 namespace App\Livewire\Admin\Settings;
 
 use App\Models\AcademicHoliday;
+use App\Models\AuditLog;
+use App\Models\Setting as AppSetting;
+use App\Services\ActivityLogService;
 use App\Services\StoreStatusService;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Cache;
 use Livewire\Component;
 
 class StoreSettings extends Component
@@ -39,6 +43,9 @@ class StoreSettings extends Component
         'end_date' => '',
     ];
 
+    // Poin SHU Settings
+    public string $shuPercentage = '0';
+
     protected StoreStatusService $storeStatusService;
 
     public function boot(StoreStatusService $storeStatusService)
@@ -55,6 +62,7 @@ class StoreSettings extends Component
         $this->refreshStatus();
         $this->loadNextOpenSettings();
         $this->loadAcademicHolidays();
+        $this->loadShuSettings();
     }
 
     public function loadNextOpenSettings()
@@ -77,6 +85,12 @@ class StoreSettings extends Component
             ->take(20)
             ->get()
             ->toArray();
+    }
+
+    public function loadShuSettings()
+    {
+        $bps = (int) AppSetting::get('shu_point_percentage_bps', 0);
+        $this->shuPercentage = number_format($bps / 100, 2, '.', '');
     }
 
     public function refreshStatus()
@@ -119,7 +133,7 @@ class StoreSettings extends Component
         $this->refreshStatus();
 
         $statusText = $isOpen ? 'BUKA' : 'TUTUP';
-        $this->dispatch('toast', message: "Status diubah menjadi {$statusText} (mode manual, type: 'success')");
+        $this->dispatch('toast', message: "Status diubah menjadi {$statusText} (mode manual)", type: 'success');
     }
 
     public function disableManualMode()
@@ -284,6 +298,35 @@ class StoreSettings extends Component
         $this->storeStatusService->forceUpdate();
         $this->refreshStatus();
         $this->dispatch('toast', message: 'Libur berhasil dihapus', type: 'success');
+    }
+
+    // Poin SHU Settings methods
+    public function saveShuSettings(): void
+    {
+        if (! auth()->user()->can('manage.shu_settings')) {
+            $this->dispatch('toast', message: 'Anda tidak memiliki akses untuk mengubah pengaturan Poin SHU.', type: 'error');
+            return;
+        }
+
+        $this->shuPercentage = str_replace(',', '.', trim($this->shuPercentage));
+
+        $this->validate([
+            'shuPercentage' => ['required', 'numeric', 'min:0', 'max:100'],
+        ]);
+
+        $existing = AppSetting::where('key', 'shu_point_percentage_bps')->first();
+        $oldValue = $existing?->value;
+
+        $bps = (int) round(((float) $this->shuPercentage) * 100);
+        $bps = max(0, min(10000, $bps));
+
+        $saved = AppSetting::set('shu_point_percentage_bps', (string) $bps);
+        Cache::forget('shu_point_percentage_bps');
+
+        AuditLog::log('update', $saved, ['value' => $oldValue], ['value' => (string) $bps]);
+        ActivityLogService::logSettingsUpdated('Poin SHU');
+
+        $this->dispatch('toast', message: 'Pengaturan Poin SHU berhasil disimpan', type: 'success');
     }
 
     public function render()

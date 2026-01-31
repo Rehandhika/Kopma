@@ -236,16 +236,18 @@
 
     {{-- Payment Modal --}}
     @if($showPayment)
-        <div class="fixed inset-0 z-50 flex items-end lg:items-center lg:justify-center p-0 lg:p-4">
+        <div class="fixed inset-0 z-50 flex items-end lg:items-center lg:justify-center p-0 lg:p-4"
+             x-data="nimAutocomplete(@js($this->allStudents))"
+             @click.away="closeSuggestions()">
             <div wire:click="closePayment" class="absolute inset-0 bg-black/50"></div>
-            
-            <div class="relative w-full lg:max-w-md lg:mx-auto bg-white dark:bg-gray-800 rounded-t-2xl lg:rounded-2xl max-h-[85vh] lg:max-h-[80vh] flex flex-col animate-slide-up lg:animate-fade-in" @click.stop>
-                
+
+            <div class="relative w-full lg:max-w-sm lg:mx-auto bg-white dark:bg-gray-800 rounded-t-2xl lg:rounded-2xl max-h-[85vh] lg:max-h-[600px] flex flex-col animate-slide-up lg:animate-fade-in" @click.stop>
+
                 <div class="lg:hidden flex justify-center pt-2 pb-1">
                     <div class="w-10 h-1 bg-gray-300 rounded-full"></div>
                 </div>
-                
-                <header class="flex items-center justify-between px-5 py-3 border-b border-gray-200 dark:border-gray-700">
+
+                <header class="flex items-center justify-between px-5 py-3 border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
                     <h3 class="text-lg font-bold text-gray-900 dark:text-white">Pembayaran</h3>
                     <button wire:click="closePayment" class="p-1.5 text-gray-400">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -254,10 +256,52 @@
                     </button>
                 </header>
 
-                <div class="flex-1 overflow-y-auto p-5 space-y-5">
-                    <div class="text-center py-4 bg-primary-50 dark:bg-primary-900/20 rounded-xl">
+                <div class="flex-1 overflow-y-auto p-4 space-y-4">
+                    <div class="text-center py-3 bg-primary-50 dark:bg-primary-900/20 rounded-xl">
                         <p class="text-sm text-primary-600 dark:text-primary-400 font-medium">Total</p>
-                        <p class="text-2xl font-bold text-primary-700 dark:text-primary-300">Rp {{ number_format($this->cartTotal, 0, ',', '.') }}</p>
+                        <p class="text-xl font-bold text-primary-700 dark:text-primary-300">Rp {{ number_format($this->cartTotal, 0, ',', '.') }}</p>
+                    </div>
+
+                    {{-- NIM Input with Client-Side Autocomplete --}}
+                    <div class="relative">
+                        <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">NIM Mahasiswa (Opsional)</label>
+                        <input type="text"
+                            x-model="searchNim"
+                            @input="filterStudents()"
+                            @keydown.escape="closeSuggestions()"
+                            @keydown.enter.prevent="selectFirst()"
+                            inputmode="numeric"
+                            maxlength="9"
+                            class="w-full px-3 py-2.5 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl text-gray-900 dark:text-white placeholder-gray-500 focus:ring-2 focus:ring-primary-500 text-sm"
+                            placeholder="Ketik NIM atau nama...">
+                        <input type="hidden" wire:model="studentNim" :value="searchNim">
+                        @error('studentNim')
+                            <p class="mt-1.5 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+
+                        {{-- NIM Suggestions Dropdown --}}
+                        <div x-show="showSuggestions && filteredStudents.length > 0"
+                             x-transition:enter="transition ease-out duration-200"
+                             x-transition:enter-start="opacity-0 translate-y-1"
+                             x-transition:enter-end="opacity-100 translate-y-0"
+                             x-transition:leave="transition ease-in duration-150"
+                             x-transition:leave-start="opacity-100 translate-y-0"
+                             x-transition:leave-end="opacity-0 translate-y-1"
+                             class="absolute left-0 right-0 mt-1 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl shadow-lg z-50 max-h-48 overflow-auto">
+                            <template x-for="student in filteredStudents" :key="student.nim">
+                                <button type="button"
+                                    @click="selectStudent(student)"
+                                    class="w-full px-3 py-2 text-left hover:bg-gray-50 dark:hover:bg-gray-600 flex items-center justify-between border-b border-gray-100 dark:border-gray-600 last:border-0">
+                                    <div>
+                                        <span class="text-sm font-medium text-gray-900 dark:text-white" x-text="student.nim"></span>
+                                        <span class="text-xs text-gray-500 dark:text-gray-400 block" x-text="student.full_name"></span>
+                                    </div>
+                                    <span class="text-xs text-primary-600 dark:text-primary-400 font-medium">
+                                        <span x-text="student.points_balance.toLocaleString('id-ID')"></span> poin
+                                    </span>
+                                </button>
+                            </template>
+                        </div>
                     </div>
 
                     {{-- Dynamic Payment Methods - Requirements: 5.1 --}}
@@ -398,12 +442,12 @@
                     @endif
                 </div>
 
-                <footer class="px-5 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
-                    <button wire:click="processPayment" 
+                <footer class="px-5 py-3 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 flex-shrink-0">
+                    <button wire:click="processPayment"
                         wire:loading.attr="disabled"
                         @if($paymentMethod === 'cash' && $paymentAmount < $this->cartTotal) disabled @endif
                         @if(count($this->paymentMethods) === 0) disabled @endif
-                        class="w-full py-3.5 bg-green-600 disabled:bg-gray-300 dark:disabled:bg-gray-700 text-white font-bold rounded-xl">
+                        class="w-full py-3 bg-green-600 disabled:bg-gray-300 dark:disabled:bg-gray-700 text-white font-bold rounded-xl text-sm">
                         <span wire:loading.remove wire:target="processPayment">Proses Pembayaran</span>
                         <span wire:loading wire:target="processPayment">Memproses...</span>
                     </button>
@@ -554,4 +598,63 @@
             animation: fade-in 0.2s ease-out;
         }
     </style>
+
+    {{-- NIM Autocomplete Alpine.js Component --}}
+    <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('nimAutocomplete', (students) => ({
+                searchNim: '',
+                showSuggestions: false,
+                filteredStudents: [],
+                allStudents: students || [],
+                debounceTimer: null,
+
+                init() {
+                    // Sync with Livewire model
+                    this.$watch('searchNim', value => {
+                        this.$wire.studentNim = value;
+                    });
+                },
+
+                filterStudents() {
+                    clearTimeout(this.debounceTimer);
+                    this.debounceTimer = setTimeout(() => {
+                        const search = this.searchNim.toLowerCase().trim();
+
+                        if (search.length < 2) {
+                            this.filteredStudents = [];
+                            this.showSuggestions = false;
+                            return;
+                        }
+
+                        this.filteredStudents = this.allStudents
+                            .filter(s =>
+                                s.nim.toLowerCase().includes(search) ||
+                                s.full_name.toLowerCase().includes(search)
+                            )
+                            .slice(0, 5);
+
+                        this.showSuggestions = this.filteredStudents.length > 0;
+                    }, 150); // 150ms debounce
+                },
+
+                selectStudent(student) {
+                    this.searchNim = student.nim;
+                    this.$wire.studentNim = student.nim;
+                    this.showSuggestions = false;
+                    this.filteredStudents = [];
+                },
+
+                selectFirst() {
+                    if (this.filteredStudents.length > 0) {
+                        this.selectStudent(this.filteredStudents[0]);
+                    }
+                },
+
+                closeSuggestions() {
+                    this.showSuggestions = false;
+                }
+            }));
+        });
+    </script>
 </div>

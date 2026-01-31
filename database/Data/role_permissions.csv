@@ -76,6 +76,10 @@ Super Admin,view.audit.logs
 Super Admin,send.notifications
 Super Admin,manage.notifications
 Super Admin,manage.banners
+Super Admin,view.shu
+Super Admin,manage.shu_students
+Super Admin,redeem.shu
+Super Admin,manage.shu_settings
 Ketua,view.users
 Ketua,create.users
 Ketua,edit.users
@@ -132,6 +136,10 @@ Ketua,view.audit.logs
 Ketua,send.notifications
 Ketua,manage.notifications
 Ketua,manage.banners
+Ketua,view.shu
+Ketua,manage.shu_students
+Ketua,redeem.shu
+Ketua,manage.shu_settings
 Wakil Ketua,view.users
 Wakil Ketua,edit.users
 Wakil Ketua,view.attendance.all
@@ -171,6 +179,9 @@ Wakil Ketua,view.toko.reports
 Wakil Ketua,view.psda.reports
 Wakil Ketua,view.humsar.reports
 Wakil Ketua,view.produksi.reports
+Wakil Ketua,view.shu
+Wakil Ketua,manage.shu_students
+Wakil Ketua,redeem.shu
 Wakil Ketua,send.notifications
 
 Sekretaris,view.users

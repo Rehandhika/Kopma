@@ -76,3 +76,7 @@ id,name,guard_name,group,description
 74,send.notifications,web,Notifications,Kirim notifikasi
 75,manage.notifications,web,Notifications,Kelola notifikasi
 76,manage.banners,web,Desain,Kelola banner
+77,view.shu,web,Poin SHU,Lihat monitoring Poin SHU
+78,manage.shu_students,web,Poin SHU,Kelola database mahasiswa
+79,redeem.shu,web,Poin SHU,Proses pencairan poin
+80,manage.shu_settings,web,Poin SHU,Kelola pengaturan Poin SHU

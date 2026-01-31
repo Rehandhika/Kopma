@@ -5,7 +5,10 @@ namespace App\Livewire\Cashier;
 use App\Models\Product;
 use App\Models\Sale;
 use App\Models\SaleItem;
+use App\Models\ShuPointTransaction;
+use App\Models\Student;
 use App\Services\ActivityLogService;
+use App\Services\ShuPointService;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -15,6 +18,22 @@ use Livewire\Component;
 class PosEntry extends Component
 {
     public string $selectedDate;
+
+    public bool $showShuAdjustmentModal = false;
+
+    public ?int $shuAdjustSaleId = null;
+
+    public string $shuAdjustInvoiceNumber = '';
+
+    public string $shuAdjustStudentNim = '';
+
+    public string $shuAdjustStudentName = '';
+
+    public int $shuAdjustOldPoints = 0;
+
+    public int $shuAdjustNewPoints = 0;
+
+    public string $shuAdjustNotes = '';
 
     public function mount(): void
     {
@@ -51,6 +70,21 @@ class PosEntry extends Component
         );
     }
 
+    /**
+     * Get all students for client-side NIM autocomplete (cached)
+     */
+    #[Computed]
+    public function allStudents(): array
+    {
+        return Cache::remember('pos_entry_all_students', 300, function () {
+            return Student::query()
+                ->select(['nim', 'full_name', 'points_balance'])
+                ->orderBy('nim')
+                ->get()
+                ->toArray();
+        });
+    }
+
     #[Computed]
     public function dailySummary(): array
     {
@@ -80,11 +114,82 @@ class PosEntry extends Component
         return Sale::query()
             ->with(['items:id,sale_id,product_name,quantity,price,subtotal'])
             ->whereDate('date', $this->selectedDate)
-            ->select('id', 'invoice_number', 'total_amount', 'payment_method', 'created_at')
+            ->select('id', 'invoice_number', 'student_id', 'shu_points_earned', 'total_amount', 'payment_method', 'created_at')
             ->orderByDesc('id')
             ->limit(100)
             ->get()
             ->toArray();
+    }
+
+    public function openShuAdjustment(int $saleId): void
+    {
+        if (! auth()->user()->can('adjust.shu')) {
+            $this->dispatch('toast', message: 'Anda tidak memiliki akses untuk penyesuaian poin.', type: 'error');
+            return;
+        }
+
+        $sale = Sale::query()
+            ->with('student:id,nim,full_name')
+            ->select('id', 'invoice_number', 'student_id', 'shu_points_earned')
+            ->find($saleId);
+
+        if (! $sale) {
+            $this->dispatch('toast', message: 'Transaksi tidak ditemukan.', type: 'error');
+            return;
+        }
+
+        if (! $sale->student_id || ! $sale->student) {
+            $this->dispatch('toast', message: 'Transaksi ini tidak terkait mahasiswa.', type: 'error');
+            return;
+        }
+
+        $this->shuAdjustSaleId = $sale->id;
+        $this->shuAdjustInvoiceNumber = (string) ($sale->invoice_number ?? '');
+        $this->shuAdjustStudentNim = (string) ($sale->student->nim ?? '');
+        $this->shuAdjustStudentName = (string) ($sale->student->full_name ?? '');
+        $this->shuAdjustOldPoints = (int) $sale->shu_points_earned;
+        $this->shuAdjustNewPoints = (int) $sale->shu_points_earned;
+        $this->shuAdjustNotes = '';
+        $this->showShuAdjustmentModal = true;
+    }
+
+    public function closeShuAdjustment(): void
+    {
+        $this->reset([
+            'showShuAdjustmentModal',
+            'shuAdjustSaleId',
+            'shuAdjustInvoiceNumber',
+            'shuAdjustStudentNim',
+            'shuAdjustStudentName',
+            'shuAdjustOldPoints',
+            'shuAdjustNewPoints',
+            'shuAdjustNotes',
+        ]);
+        $this->resetValidation();
+    }
+
+    public function saveShuAdjustment(): void
+    {
+        if (! auth()->user()->can('adjust.shu')) {
+            $this->dispatch('toast', message: 'Anda tidak memiliki akses untuk penyesuaian poin.', type: 'error');
+            return;
+        }
+
+        $this->validate([
+            'shuAdjustSaleId' => ['required', 'integer'],
+            'shuAdjustNewPoints' => ['required', 'integer', 'min:0'],
+            'shuAdjustNotes' => ['nullable', 'string', 'max:2000'],
+        ]);
+
+        try {
+            $sale = Sale::findOrFail($this->shuAdjustSaleId);
+            app(ShuPointService::class)->adjustSalePoints($sale, $this->shuAdjustNewPoints, $this->shuAdjustNotes ?: null);
+
+            $this->dispatch('toast', message: 'Penyesuaian poin berhasil disimpan.', type: 'success');
+            $this->closeShuAdjustment();
+        } catch (\Exception $e) {
+            $this->dispatch('toast', message: $e->getMessage() ?: 'Gagal menyimpan penyesuaian poin.', type: 'error');
+        }
     }
 
     /**
@@ -144,6 +249,22 @@ class PosEntry extends Component
             ->get()
             ->keyBy('id');
 
+        $studentNims = array_unique(array_filter(array_map(function ($row) {
+            $nim = $row['student_nim'] ?? '';
+            $nim = preg_replace('/\D+/', '', trim((string) $nim));
+            return $nim !== '' ? $nim : null;
+        }, $rows)));
+
+        $studentsByNim = [];
+        if (! empty($studentNims)) {
+            $studentsByNim = Student::query()
+                ->select('id', 'nim')
+                ->whereIn('nim', $studentNims)
+                ->get()
+                ->keyBy('nim')
+                ->toArray();
+        }
+
         $stockUsage = [];
 
         foreach ($rows as $index => $row) {
@@ -159,6 +280,21 @@ class PosEntry extends Component
                 continue;
             }
 
+            $nim = preg_replace('/\D+/', '', trim((string) ($row['student_nim'] ?? '')));
+            $studentId = null;
+            if ($nim !== '') {
+                if (strlen($nim) !== 9) {
+                    $errors[] = 'Baris '.($index + 1).': NIM harus 9 digit angka';
+                    continue;
+                }
+
+                $studentId = $studentsByNim[$nim]['id'] ?? null;
+                if (! $studentId) {
+                    $errors[] = 'Baris '.($index + 1).': NIM tidak terdaftar';
+                    continue;
+                }
+            }
+
             $qty = max(1, (int) ($row['qty'] ?? 1));
             $stockUsage[$productId] = ($stockUsage[$productId] ?? 0) + $qty;
 
@@ -172,6 +308,7 @@ class PosEntry extends Component
             $validRows[] = [
                 'product_id' => $productId,
                 'product_name' => $product->name,
+                'student_id' => $studentId,
                 'qty' => $qty,
                 'price' => (float) $product->price,
                 'payment_method' => in_array($row['payment_method'] ?? '', ['cash', 'transfer', 'qris'])
@@ -196,6 +333,7 @@ class PosEntry extends Component
             $now = now();
             $cashierId = auth()->id();
             $date = $this->selectedDate;
+            $percentageBps = app(ShuPointService::class)->getPercentageBps();
 
             // Generate invoice numbers inside transaction with lock
             $invoices = Sale::generateBatchInvoiceNumbers(count($salesData), $date);
@@ -203,18 +341,29 @@ class PosEntry extends Component
             // Prepare sales data
             $salesToInsert = [];
             $stockUpdates = [];
+            $transactionsToInsert = [];
+            $pointsByStudent = [];
 
             foreach ($salesData as $i => $data) {
                 $subtotal = $data['qty'] * $data['price'];
+                $amount = (int) round($subtotal);
+                $studentId = $data['student_id'] ?? null;
+                $points = $studentId ? app(ShuPointService::class)->computeEarnedPoints($amount, $percentageBps) : 0;
+                if ($studentId) {
+                    $pointsByStudent[$studentId] = ($pointsByStudent[$studentId] ?? 0) + $points;
+                }
 
                 $salesToInsert[] = [
                     'cashier_id' => $cashierId,
+                    'student_id' => $studentId,
                     'invoice_number' => $invoices[$i],
                     'date' => $date,
                     'total_amount' => $subtotal,
                     'payment_method' => $data['payment_method'],
                     'payment_amount' => $subtotal,
                     'change_amount' => 0,
+                    'shu_points_earned' => $points,
+                    'shu_percentage_bps' => $studentId ? $percentageBps : 0,
                     'created_at' => $now,
                     'updated_at' => $now,
                 ];
@@ -225,16 +374,25 @@ class PosEntry extends Component
             // Insert sales
             Sale::insert($salesToInsert);
 
-            // Get inserted sale IDs
-            $lastId = DB::getPdo()->lastInsertId();
-            $firstId = $lastId;
+            $saleIdsByInvoice = Sale::query()
+                ->whereIn('invoice_number', $invoices)
+                ->pluck('id', 'invoice_number')
+                ->toArray();
 
-            // For MySQL with bulk insert, lastInsertId returns the first ID
+            if (count($saleIdsByInvoice) !== count($invoices)) {
+                throw new \Exception('Gagal mengambil ID transaksi yang baru dibuat.');
+            }
+
             // Prepare sale items
             $itemsToInsert = [];
             foreach ($salesData as $i => $data) {
+                $saleId = $saleIdsByInvoice[$invoices[$i]] ?? null;
+                if (! $saleId) {
+                    throw new \Exception('Gagal memetakan transaksi tersimpan.');
+                }
+
                 $itemsToInsert[] = [
-                    'sale_id' => $firstId + $i,
+                    'sale_id' => $saleId,
                     'product_id' => $data['product_id'],
                     'product_name' => $data['product_name'],
                     'quantity' => $data['qty'],
@@ -243,9 +401,44 @@ class PosEntry extends Component
                     'created_at' => $now,
                     'updated_at' => $now,
                 ];
+
+                $studentId = $data['student_id'] ?? null;
+                if ($studentId) {
+                    $amount = (int) round($data['qty'] * $data['price']);
+                    $points = app(ShuPointService::class)->computeEarnedPoints($amount, $percentageBps);
+
+                    $transactionsToInsert[] = [
+                        'student_id' => $studentId,
+                        'sale_id' => $saleId,
+                        'type' => 'earn',
+                        'amount' => $amount,
+                        'percentage_bps' => $percentageBps,
+                        'points' => $points,
+                        'cash_amount' => null,
+                        'notes' => null,
+                        'created_by' => $cashierId,
+                        'created_at' => $now,
+                    ];
+                }
             }
 
             SaleItem::insert($itemsToInsert);
+
+            if (! empty($pointsByStudent)) {
+                $lockedStudents = Student::query()
+                    ->whereIn('id', array_keys($pointsByStudent))
+                    ->lockForUpdate()
+                    ->get(['id', 'points_balance']);
+
+                foreach ($lockedStudents as $lockedStudent) {
+                    $lockedStudent->points_balance += (int) ($pointsByStudent[$lockedStudent->id] ?? 0);
+                    $lockedStudent->save();
+                }
+
+                if (! empty($transactionsToInsert)) {
+                    ShuPointTransaction::insert($transactionsToInsert);
+                }
+            }
 
             // Update stock
             foreach ($stockUpdates as $productId => $qty) {
@@ -265,6 +458,8 @@ class PosEntry extends Component
             DB::transaction(function () use ($id) {
                 $sale = Sale::with('items:id,sale_id,product_id,quantity')->findOrFail($id);
                 $invoiceNumber = $sale->invoice_number;
+
+                app(ShuPointService::class)->reverseSalePoints($sale);
 
                 // Restore stock
                 foreach ($sale->items as $item) {

@@ -4,9 +4,21 @@
         <div>
             <h1 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Laporan Penjualan</h1>
             <p class="text-xs sm:text-sm text-gray-500 mt-0.5">
-                {{ \Carbon\Carbon::parse($dateFrom)->translatedFormat('d M Y') }} - 
+                {{ \Carbon\Carbon::parse($dateFrom)->translatedFormat('d M Y') }} -
                 {{ \Carbon\Carbon::parse($dateTo)->translatedFormat('d M Y') }}
             </p>
+        </div>
+        <div class="flex gap-2">
+            <x-ui.button variant="secondary" wire:click="exportSales" wire:loading.attr="disabled" size="sm">
+                <x-ui.icon name="arrow-down-tray" class="w-4 h-4 mr-1.5" />
+                <span wire:loading.remove wire:target="exportSales">Export Transaksi</span>
+                <span wire:loading wire:target="exportSales">Mengunduh...</span>
+            </x-ui.button>
+            <x-ui.button variant="secondary" wire:click="exportSaleItems" wire:loading.attr="disabled" size="sm">
+                <x-ui.icon name="arrow-down-tray" class="w-4 h-4 mr-1.5" />
+                <span wire:loading.remove wire:target="exportSaleItems">Export Item</span>
+                <span wire:loading wire:target="exportSaleItems">Mengunduh...</span>
+            </x-ui.button>
         </div>
     </div>
 

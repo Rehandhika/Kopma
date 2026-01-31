@@ -4,12 +4,12 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    
+
     <title>{{ $title ?? 'POS' }} - {{ config('app.name') }}</title>
-    
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
-    
+
     <style>
         input[type="number"]::-webkit-inner-spin-button,
         input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
@@ -19,11 +19,14 @@
 <body class="bg-gray-50 dark:bg-gray-900 antialiased">
     {{-- Maintenance Mode Warning Banner for Admins --}}
     <x-layout.maintenance-banner />
-    
+
     {{ $slot }}
-    
+
+    {{-- Toast Notifications --}}
+    <x-ui.toast />
+
     @livewireScripts
-    
+
     <script>
         document.addEventListener('livewire:init', () => {
             Livewire.on('alert', (data) => {

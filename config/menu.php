@@ -65,6 +65,13 @@ return [
             ],
         ],
         [
+            'key' => 'shu',
+            'label' => 'Poin SHU',
+            'icon' => 'heart',
+            'route' => 'admin.poin-shu.monitoring',
+            'permissions' => ['view.shu'],
+        ],
+        [
             'key' => 'inventory',
             'label' => 'Inventaris',
             'icon' => 'cube',

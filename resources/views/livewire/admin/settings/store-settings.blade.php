@@ -1,7 +1,7 @@
 <div class="space-y-6">
     <x-layout.page-header 
         title="Pengaturan Toko"
-        description="Kelola status operasional koperasi"
+        description="Kelola status operasional koperasi dan konfigurasi Poin SHU"
     />
 
     {{-- Current Status Section --}}
@@ -164,6 +164,38 @@
             </div>
         </x-layout.form-section>
     </x-ui.card>
+
+    {{-- Poin SHU Settings Section --}}
+    @can('manage.shu_settings')
+        <x-ui.card>
+            <x-layout.form-section 
+                title="Pengaturan Poin SHU"
+                description="Konfigurasi persentase poin yang didapat dari nominal pembelian"
+            >
+                <form wire:submit.prevent="saveShuSettings" class="space-y-5">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Persentase Poin (%)</label>
+                            <input
+                                type="text"
+                                inputmode="decimal"
+                                wire:model.defer="shuPercentage"
+                                class="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl"
+                            >
+                            @error('shuPercentage') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+                            <p class="mt-2 text-sm text-gray-500">Rumus: Total Poin = Nominal Pembelian × Persentase / 100</p>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end">
+                        <button type="submit" class="px-5 py-2.5 bg-primary-600 text-white font-semibold rounded-xl">
+                            Simpan Pengaturan Poin SHU
+                        </button>
+                    </div>
+                </form>
+            </x-layout.form-section>
+        </x-ui.card>
+    @endcan
 
     {{-- Academic Holiday Section --}}
     <x-ui.card>

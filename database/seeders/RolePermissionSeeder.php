@@ -72,6 +72,13 @@ class RolePermissionSeeder extends Seeder
             'edit.sales',
             'delete.sales',
 
+            'view.shu',
+            'manage.shu_students',
+            'manage.shu_settings',
+            'redeem.shu',
+            'adjust.shu',
+            'export.shu',
+
             // Products
             'view.products',
             'create.products',
@@ -121,6 +128,7 @@ class RolePermissionSeeder extends Seeder
             // Desain
             'manage.desain',
             'view.desain.assets',
+            'manage.banners',
 
             // System settings
             'manage.settings',
@@ -163,6 +171,7 @@ class RolePermissionSeeder extends Seeder
             'view.penalty.all', 'create.penalty', 'edit.penalty', 'manage.penalty',
             // Sales & Products
             'view.sales.all', 'view.products', 'create.products', 'edit.products',
+            'view.shu', 'manage.shu_students', 'manage.shu_settings', 'redeem.shu', 'adjust.shu', 'export.shu',
             // Purchases
             'view.purchases',
             // Reports
@@ -195,6 +204,7 @@ class RolePermissionSeeder extends Seeder
             'view.penalty.all', 'create.penalty',
             // Sales & Products
             'view.sales.all', 'view.products', 'edit.products',
+            'view.shu', 'manage.shu_students', 'manage.shu_settings', 'redeem.shu', 'adjust.shu', 'export.shu',
             // Purchases
             'view.purchases',
             // Reports
@@ -244,6 +254,7 @@ class RolePermissionSeeder extends Seeder
             'view.schedule.all',
             // Sales
             'view.sales.all', 'edit.sales',
+            'view.shu', 'redeem.shu', 'adjust.shu', 'export.shu',
             // Products
             'view.products',
             // Purchases
@@ -288,6 +299,7 @@ class RolePermissionSeeder extends Seeder
             'view.schedule.all', 'input.availability',
             // Sales
             'view.sales.all', 'create.sales', 'edit.sales',
+            'view.shu', 'redeem.shu', 'adjust.shu', 'export.shu',
             // Products
             'view.products', 'edit.products',
             // Purchases
@@ -319,6 +331,7 @@ class RolePermissionSeeder extends Seeder
             'view.sales.all', 'create.sales', 'edit.sales', 'delete.sales',
             // Products - Full access
             'view.products', 'create.products', 'edit.products', 'delete.products',
+            'view.shu', 'manage.shu_students', 'manage.shu_settings', 'redeem.shu', 'adjust.shu', 'export.shu',
             // Purchases
             'view.purchases', 'create.purchases', 'edit.purchases',
             // Stock
